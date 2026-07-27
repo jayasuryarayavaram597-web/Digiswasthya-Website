@@ -1,0 +1,260 @@
+{
+    "nav": {
+        "home": "Home",
+        "about": "About Us",
+        "impact": "Our Impact",
+        "network": "Our Network",
+        "contact": "Contact Us",
+        "team": "Our Team",
+        "resources": "Resources",
+        "healthTools": "Health Tools",
+        "media": "Media & Resources",
+        "privacy": "Privacy Policy",
+        "terms": "Terms and Conditions",
+        "donate": "Donate Now"
+    },
+    "footer": {
+        "tagline": "Making healthcare services affordable and accessible for rural communities across India.",
+        "address": "Kali Road, Kathaicha Chauraha, Nath Nagar, Sant Kabir Nagar, UP - 272176",
+        "quickLinks": "Quick Links",
+        "connect": "Connect With Us",
+        "sendMessage": "Send us a message",
+        "form": {
+            "name": "Your Name",
+            "email": "Your Email",
+            "message": "Message",
+            "consent": "I consent to Digiswasthya collecting my details.",
+            "submit": "Send Message",
+            "sending": "Sending...",
+            "nameRequired": "Name is required",
+            "emailRequired": "Email is required",
+            "messageRequired": "Message is required",
+            "consentRequired": "Consent required"
+        },
+        "copyright": "© 2023 Digiswasthya - All Rights Reserved.",
+        "success": "Thank you for your message!",
+        "error": "Something went wrong. Please try again, or reach us directly via call or WhatsApp."
+    },
+    "hero": {
+        "titlePart1": "Making Quality Healthcare Reach",
+        "titleHighlight": "Every",
+        "titlePart2": "Rural Family",
+        "subtitle": "Bridging the gap between rural India and modern medicine through expert teleconsultation and essential diagnostics at your doorstep.",
+        "bookConsultation": "Find Care Near You",
+        "chatNowLabel": "Or chat with us now on WhatsApp"
+    },
+    "stats": {
+        "patientsServed": "Patients Served",
+        "consultations": "Consultations",
+        "villagesCovered": "Villages Covered",
+        "livesImpacted": "Lives Impacted"
+    },
+    "services": {
+        "badge": "Comprehensive Healthcare Ecosystem",
+        "titlePart1": "Bridging the Gap Between",
+        "titleHighlight": "Rural India",
+        "titlePart2": "& Modern Medicine",
+        "description": "We provide a full spectrum of healthcare services directly to underserved communities, ensuring quality care is accessible to all.",
+        "items": {
+            "primaryCheckup": {
+                "title": "Primary Health Checkup",
+                "description": "Comprehensive screenings in rural areas to identify symptoms, perform physical exams, and monitor vital signs for early disease detection."
+            },
+            "teleconsultation": {
+                "title": "Tele - Consultation With Health Professionals",
+                "description": "Connecting rural patients with specialist doctors via high-speed video links, bridging the gap between villages and urban medical centers."
+            },
+            "awarenessCamps": {
+                "title": "Awareness And Health Camps",
+                "description": "Regularly conducting village health camps and awareness sessions to educate communities on hygiene, preventive care, and digital consultations."
+            },
+            "diagnosticsEMR": {
+                "title": "Diagnosis, EMR Generation And Treatment Plan",
+                "description": "Providing on-site diagnostic tests, generating Electronic Medical Records (EMR), and crafting personalized treatment plans for every patient."
+            },
+            "referrals": {
+                "title": "Referral Pathways To Esteemed Hospitals",
+                "description": "Ensuring seamless guidance and referral pathways to trusted secondary and tertiary partner hospitals for surgeries or advanced treatments."
+            },
+            "convenienceSupport": {
+                "title": "Convenience Support",
+                "description": "Assisting patients with logistics, scheduling appointments, travel support, and navigating hospital processes to ensure a hassle-free experience."
+            },
+            "financialSupport": {
+                "title": "Financial Support Guidance",
+                "description": "Connecting eligible patients with government healthcare schemes, corporate CSR funds, and donor networks to cover medical and treatment costs."
+            }
+        }
+    },
+    "impact": {
+        "title": "Health Camps & Awareness.",
+        "highlight": "Reaching the Last Mile.",
+        "description": "We conduct regular health camps and healthcare awareness drives in remote villages. By educating families about hygiene, preventive care, and digital consultations, we empower rural communities to take control of their health.",
+        "campaignDetail1": "Interactive sessions educating villages on hygiene, nutrition, and preventive healthcare.",
+        "campaignDetail2": "Conducting free basic diagnostic checkups and health screenings on-the-ground.",
+        "campaignDetail3": "Connecting patients directly to remote medical specialists via telemedicine."
+    },
+    "donateSection": {
+        "title": "DONATE FOR THE CAUSE!",
+        "description": "As of January 2026, DigiSwasthya has been able to facilitate 117,644+ teleconsultations, and many of these have been financed by our valuable donors. You can join our patron program through which a monthly contribution from you would be directed towards funding a few consultations.",
+        "boxText": "You can sponsor teleconsultations for four patients by donating a sum of",
+        "boxHighlight": "₹1,000/-",
+        "boxTextAfter": "only.",
+        "donateNowLabel": "Donate Now",
+        "upiLabel": "UPI ID"
+    },
+    "bmi": {
+        "title": "BMI Health Assessment",
+        "subtitle": "Understand your Body Mass Index and take informed steps toward better health.",
+        "disclaimer": "This tool is for general health awareness and does not replace medical advice."
+    },
+    "bmiCalculator": {
+        "assessment": "Assessment",
+        "metric": "Metric",
+        "imperial": "Imperial",
+        "weight": "Weight",
+        "height": "Height",
+        "kg": "kg",
+        "lbs": "lbs",
+        "cm": "cm",
+        "ftIn": "ft & in",
+        "calculate": "Calculate BMI",
+        "reset": "Reset",
+        "readyTitle": "Ready to assess?",
+        "readySub": "Enter your height and weight to see your health category.",
+        "yourBmiValue": "Your BMI Value",
+        "under": "UNDER",
+        "normal": "NORMAL",
+        "over": "OVER",
+        "obese": "OBESE",
+        "categories": {
+            "underweight": "Underweight",
+            "normal": "Normal",
+            "overweight": "Overweight",
+            "obese": "Obese"
+        },
+        "messages": {
+            "underweight": "Your BMI is in the underweight range. Consider consulting a healthcare provider for personalized nutritional advice.",
+            "normal": "Great job! Your BMI is within the healthy range. Maintain a balanced diet and regular physical activity to stay healthy.",
+            "overweight": "Your BMI is in the overweight range. Small changes in diet and regular exercise can help you reach a healthier weight.",
+            "obese": "Your BMI is in the obese range. We recommend consulting a healthcare professional to discuss a personalized health plan."
+        }
+    },
+    "social": {
+        "followTitle": "Follow Us On Social Media"
+    },
+    "award": {
+        "badge": "AWARD & RECOGNITION",
+        "titlePart1": "Recognized for Excellence in",
+        "titleHighlight": "Rural Healthcare",
+        "quote": "\"DigiSwasthya aims 'Making healthcare services affordable and accessible for rural communities across India by leveraging technology'\"",
+        "description": "Our commitment to transparency and impact has been recognized by leading institutions. This award serves as a testament to our dedicated team and the rural families we serve every day."
+    },
+    "centres": {
+        "badge": "Our Network",
+        "headingPart1": "Find a",
+        "headingPart2": "Centre Near You",
+        "subheading": "Bringing quality healthcare closer to your home. Locate our technology-enabled health centres across India.",
+        "countSuffix": "centres across India and growing",
+        "howItWorksTitle": "How It Works",
+        "step1Title": "Reach Out",
+        "step1Desc": "Call or message us on WhatsApp to tell us what's wrong — no appointment needed.",
+        "step2Title": "Visit Your Nearest Centre",
+        "step2Desc": "Walk in to your nearest DigiSwasthya centre, or we'll guide you to the right one.",
+        "step3Title": "Get Checked & Consult a Specialist",
+        "step3Desc": "Our staff run an on-site health checkup and connect you with a specialist doctor via video consultation.",
+        "step4Title": "Receive Your Treatment Plan",
+        "step4Desc": "Get a personalized treatment plan, prescriptions, or a referral to a partner hospital if needed.",
+        "viewOnMap": "View on Map"
+    },
+    "network": {
+        "heroTitle": "Find Care Near You",
+        "heroSubtitle": "DigiSwasthya runs technology-enabled telemedicine centres across India, bringing specialist doctors and essential diagnostics within reach of rural families. Find your nearest centre below.",
+        "heroHelpNote": "Not sure which centre is closest? Call or message us and we'll guide you."
+    },
+    "contactForm": {
+        "successTitle": "Message Sent!",
+        "successBody": "Thank you for reaching out. We have sent a confirmation to your email and our team will get back to you shortly.",
+        "sendAnother": "Send Another Message",
+        "heading": "Get in Touch",
+        "subheading": "Whether you need care, want to volunteer, or wish to support our mission — we'd love to hear from you.",
+        "contactingAs": "I am contacting as a...",
+        "typeGeneral": "General Inquiry",
+        "typeDonor": "Donor / Supporter",
+        "typeVolunteer": "Volunteer",
+        "typePatient": "Patient / Need Help",
+        "patientHelpNote": "Need urgent help? Calling or messaging us on WhatsApp is faster than filling this form.",
+        "fullName": "Full Name",
+        "nameRequired": "Name is required",
+        "namePlaceholder": "Enter your full name",
+        "email": "Email Address",
+        "emailOrPhoneRequired": "Please provide an email or phone number",
+        "emailInvalid": "Please enter a valid email address",
+        "emailPlaceholder": "you@example.com",
+        "phone": "Phone Number",
+        "phoneOptionalUnlessNoEmail": "(required if no email is provided)",
+        "phonePlaceholder": "+91 XXXXX XXXXX",
+        "locationLabel": "Your Village/Town & District",
+        "locationPlaceholder": "e.g. Sant Kabir Nagar, Uttar Pradesh",
+        "assistanceLabel": "What kind of help do you need?",
+        "assistancePlaceholder": "e.g. Need a doctor consultation for diabetes",
+        "subject": "Subject",
+        "subjectPlaceholder": "What is this regarding?",
+        "message": "Message",
+        "messageRequired": "Message is required",
+        "messagePlaceholder": "Tell us more...",
+        "volunteerNote": "Ready to volunteer with us?",
+        "volunteerNoteLink": "Apply through our volunteer form",
+        "volunteerNoteEnd": " — it only takes a few minutes.",
+        "consent": "I consent to Digiswasthya collecting my details to respond to this inquiry.",
+        "errorTitle": "Something went wrong",
+        "errorBody": "We couldn't submit your message. Please try calling or messaging us on WhatsApp instead.",
+        "submit": "Send Message"
+    },
+    "founderTeaser": {
+        "badge": "Our Founder's Story",
+        "heading": "Built from a personal fight for the right diagnosis",
+        "paragraph1": "In 2007, Sandeep Kumar fell ill and spent six months moving between hospitals in his home district before doctors could even diagnose him — his district simply didn't have the specialists or equipment to find the cause. He was eventually diagnosed with Ewing Sarcoma, a bone cancer that nearly cost him his arm and his mobility.",
+        "paragraph2": "That experience of being failed by a lack of local healthcare never left him. In July 2020, he invested his own savings to open DigiSwasthya's first telemedicine clinic in that same district — determined to make quality healthcare reachable for rural India.",
+        "signature": "— Sandeep Kumar, Founder, DigiSwasthya Foundation",
+        "readMore": "Read Sandeep's Full Story"
+    },
+    "beneficiaryStories": {
+        "badge": "Real Impact",
+        "headingPart1": "Lives changed,",
+        "headingHighlight": "through timely support",
+        "subheading": "Real stories and patient voices from the rural communities supported by DigiSwasthya programs.",
+        "videoSectionTitle": "Featured Video Testimonials",
+        "videoBadge": "Video Story",
+        "challengeLabel": "Challenge:",
+        "writtenSectionTitle": "Patient Voices & Written Stories"
+    },
+    "collaboration": {
+        "badge": "Partner With Us",
+        "heading": "Help us fulfil our mission",
+        "subheading": "Here are some of the ways you can collaborate with DigiSwasthya Foundation.",
+        "card1Title": "Impact Investors",
+        "card1Desc": "We are looking for social/impact investors to provide capital and guidance to scale up. Apart from patient capital, we seek know-how in emerging medical technologies and experiences in implementing public-private partnerships.",
+        "card2Title": "Centre Sponsors",
+        "card2Desc": "We are seeking sponsors to fund expansion into rural areas and aspirational districts of their choice. The center can be co-branded with the sponsoring brand, making a meaningful social impact while strengthening your brand presence.",
+        "card3Title": "Campaign Sponsors",
+        "card3Desc": "Companies, trusts, and individuals with a thrust to sponsor specific interventions like breast care detections, girls screening for anemia, newborn baby screening, diabetic screening, and heart screening programs.",
+        "ctaHeading": "Together, we can reach the last mile",
+        "ctaText": "Interested in partnering with us? Let's talk about how we can work together.",
+        "ctaButton": "Get in Touch"
+    },
+    "ourTeam": {
+        "volunteerCta": {
+            "heading": "Make an Impact With Us",
+            "body": "Are you a doctor, medical student, or passionate volunteer? Join our mission to transform healthcare accessibility in rural India.",
+            "emailLabel": "Email:",
+            "applyButton": "Apply as a Volunteer"
+        }
+    },
+    "common": {
+        "selectLanguage": "Select Language",
+        "english": "English",
+        "hindi": "Hindi (हिंदी)",
+        "tagline": "Jahan Kam, Wahan Hum!"
+    }
+}

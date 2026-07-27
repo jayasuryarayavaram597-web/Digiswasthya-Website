@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary: Deep Forest Green — credible, health, trust, Indian NGO */
+  --color-primary-50: #eef6f0;
+  --color-primary-100: #d0e9d8;
+  --color-primary-200: #a1d3b1;
+  --color-primary-300: #6cb885;
+  --color-primary-400: #3d9b5e;
+  --color-primary-500: #1e7e42;
+  --color-primary-600: #1a6636;
+  --color-primary-700: #154f2a;
+  --color-primary-800: #0f3a1f;
+  --color-primary-900: #092614;
+  --color-primary-950: #04130a;
+
+  /* Secondary: Rich Amber — action, warmth, Indian */
+  --color-secondary-50: #fffbeb;
+  --color-secondary-100: #fef3c7;
+  --color-secondary-200: #fde68a;
+  --color-secondary-300: #fcd34d;
+  --color-secondary-400: #fbbf24;
+  --color-secondary-500: #d97706;
+  --color-secondary-600: #b45309;
+  --color-secondary-700: #92400e;
+  --color-secondary-800: #78350f;
+  --color-secondary-900: #451a03;
+  --color-secondary-950: #27100a;
+
+  /* Typography — DM Sans body, Lora serif headings */
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif), Georgia, "Times New Roman", serif;
+
+  /* Container */
+}
+
+/* Custom Container Utility Override */
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+  max-width: 1400px;
+  /* Custom 2xl override simulation */
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessibility Overrides */
+html.acc-text-lg {
+  font-size: 110%;
+}
+
+html.acc-text-xl {
+  font-size: 120%;
+}
+
+html.acc-grayscale {
+  filter: grayscale(100%);
+}
+
+html.acc-high-contrast {
+  filter: contrast(150%);
+}
+
+html.acc-negative-contrast {
+  filter: invert(100%);
+}
+
+html.acc-light-bg {
+  background-color: white !important;
+  color: black !important;
+}
+
+html.acc-light-bg * {
+  background-color: white !important;
+  color: black !important;
+}
+
+html.acc-links-underline a {
+  text-decoration: underline !important;
+}
+
+html.acc-readable-font {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* Custom Scrollbar for Webkit */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  /* gray-300 */
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+  /* gray-400 */
+}
+
+/* Card Flip styles */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
