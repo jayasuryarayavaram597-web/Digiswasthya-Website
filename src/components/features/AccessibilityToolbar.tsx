@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Settings, ZoomIn, ZoomOut, Eye, Sun, Moon, Type, RefreshCcw, Underline } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -123,7 +123,7 @@ export function AccessibilityToolbar() {
     );
 }
 
-function ToolBtn({ icon, label, onClick, isActive }: { icon: any, label: string, onClick: () => void, isActive: boolean }) {
+function ToolBtn({ icon, label, onClick, isActive }: { icon: React.ReactNode, label: string, onClick: () => void, isActive: boolean }) {
     return (
         <button
             onClick={onClick}

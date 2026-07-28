@@ -30,7 +30,7 @@ export default function ContactUs() {
                         transition={{ duration: 0.5 }}
                     >
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold mb-6 tracking-tight drop-shadow-lg">
-                            Let's Get in <span className="text-secondary-400 drop-shadow-[0_0_30px_rgba(251,191,36,0.4)]">Touch</span>
+                            Let&apos;s Get in <span className="text-secondary-400 drop-shadow-[0_0_30px_rgba(251,191,36,0.4)]">Touch</span>
                         </h1>
                         <p className="text-lg md:text-xl text-primary-100 max-w-2xl mx-auto font-medium leading-relaxed">
                             &quot;Making healthcare services affordable and accessible for rural communities across India.&quot;

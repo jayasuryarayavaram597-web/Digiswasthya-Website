@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Input } from "@/components/ui/input";
@@ -276,9 +277,9 @@ export default function DonatePage() {
                                             <div className="text-sm text-primary-700 font-semibold border border-primary-200 bg-primary-50 px-5 py-2 rounded-md mb-8">
                                                 {isRecurring ? "Monthly" : "One-time"} Contribution: ₹{Number(amount).toLocaleString("en-IN")}
                                             </div>
-                                            <a href="/" className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold text-sm px-7 py-3 rounded-md transition-colors">
-                                                Return to Home <ArrowRight size={15} />
-                                            </a>
+                                             <Link href="/" className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold text-sm px-7 py-3 rounded-md transition-colors">
+                                                 Return to Home <ArrowRight size={15} />
+                                             </Link>
                                         </motion.div>
                                     ) : (
                                         <motion.div key="form" initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="p-7">

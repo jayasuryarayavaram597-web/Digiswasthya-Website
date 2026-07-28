@@ -46,7 +46,7 @@ function UnsubscribeContent() {
 
             {resubscribed ? (
                 <>
-                    <h1 className="text-2xl font-bold text-slate-800 mb-2">You're back on the list!</h1>
+                    <h1 className="text-2xl font-bold text-slate-800 mb-2">You&apos;re back on the list!</h1>
                     <p className="text-slate-600 text-sm mb-8">
                         Thank you for resubscribing. You will continue to receive our weekly updates and impact stories.
                     </p>
@@ -58,7 +58,7 @@ function UnsubscribeContent() {
                 <>
                     <h1 className="text-2xl font-bold text-slate-800 mb-2">Successfully Unsubscribed</h1>
                     <p className="text-slate-600 text-sm mb-6">
-                        You have been unsubscribed from our weekly impact update emails. We're sorry to see you go!
+                        You have been unsubscribed from our weekly impact update emails. We&apos;re sorry to see you go!
                     </p>
                     {email && (
                         <p className="text-xs text-slate-400 mb-8 bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-wrap break-all">
@@ -78,7 +78,7 @@ function UnsubscribeContent() {
                 <>
                     <h1 className="text-2xl font-bold text-slate-800 mb-2">Something went wrong</h1>
                     <p className="text-slate-600 text-sm mb-8">
-                        We couldn't process your unsubscribe request. You may have already unsubscribed, or the link is invalid.
+                        We couldn&apos;t process your unsubscribe request. You may have already unsubscribed, or the link is invalid.
                     </p>
                     <Link href="/" className="inline-block w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 px-6 rounded-xl transition duration-200 shadow-lg shadow-slate-100">
                         Go back to home page

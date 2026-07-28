@@ -59,7 +59,7 @@ export default function OurTeam() {
                     <div className="text-center sm:text-left space-y-1.5">
                         <h3 className="text-lg font-bold text-gray-900">Great Place to Work Certified™</h3>
                         <p className="text-sm text-gray-500 leading-relaxed max-w-2xl font-medium">
-                            We are delighted to share that DigiSwasthya Foundation was certified as a <span className="text-gray-700 font-semibold">Great Place to Work (2023–2024)</span> under the category of Non-profit and Charity Organizations. This recognition highlights our team's commitment to building a workplace rooted in trust, respect, and mutual support.
+                            We are delighted to share that DigiSwasthya Foundation was certified as a <span className="text-gray-700 font-semibold">Great Place to Work (2023–2024)</span> under the category of Non-profit and Charity Organizations. This recognition highlights our team&apos;s commitment to building a workplace rooted in trust, respect, and mutual support.
                         </p>
                     </div>
                 </div>

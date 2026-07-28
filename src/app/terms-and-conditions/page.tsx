@@ -26,7 +26,7 @@ export default function TermsAndConditions() {
                         transition={{ delay: 0.1 }}
                         className="text-lg text-primary-100 max-w-2xl mx-auto font-medium"
                     >
-                        Review the terms and conditions for using DigiSwasthya Foundation's services.
+                        Review the terms and conditions for using DigiSwasthya Foundation&apos;s services.
                     </motion.p>
                 </div>
             </section>

@@ -19,14 +19,14 @@ export interface DonationRecord {
     amount: number;
     pan?: string;
     address?: string;
-    date?: any;
+    date?: Date | string | number;
 }
 
 export interface SubscriberRecord {
     email: string;
     name: string;
     isSubscribed: boolean;
-    createdAt?: any;
+    createdAt?: Date | string | number;
 }
 
 export interface InquiryRecord {

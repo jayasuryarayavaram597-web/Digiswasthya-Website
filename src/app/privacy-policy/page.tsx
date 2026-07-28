@@ -26,7 +26,7 @@ export default function PrivacyPolicy() {
                         transition={{ delay: 0.1 }}
                         className="text-lg text-primary-100 max-w-2xl mx-auto font-medium"
                     >
-                        DigiSwasthya Foundation's commitment to your privacy and data protection.
+                        DigiSwasthya Foundation&apos;s commitment to your privacy and data protection.
                     </motion.p>
                 </div>
             </section>
