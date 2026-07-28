@@ -20,30 +20,37 @@ const translations: Record<string, Translations> = {
 };
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-    const [language, setLanguageState] = useState("en");
+    const [language, setLanguageState] = useState<string>(() => {
+        if (typeof window !== "undefined") {
+            const savedLang = localStorage.getItem("ds-language");
+            if (savedLang && (savedLang === "en" || savedLang === "hi")) {
+                return savedLang;
+            }
+        }
+        return "en";
+    });
 
     useEffect(() => {
-        const savedLang = localStorage.getItem("ds-language");
-        if (savedLang && (savedLang === "en" || savedLang === "hi")) {
-            setLanguageState(savedLang);
-            // Apply HTML lang attribute
-            document.documentElement.lang = savedLang;
+        if (typeof document !== "undefined") {
+            document.documentElement.lang = language;
         }
-    }, []);
+    }, [language]);
 
     const setLanguage = (lang: string) => {
         setLanguageState(lang);
         localStorage.setItem("ds-language", lang);
-        document.documentElement.lang = lang;
+        if (typeof document !== "undefined") {
+            document.documentElement.lang = lang;
+        }
     };
 
     const t = (key: string): string => {
         const keys = key.split(".");
-        let value: any = translations[language];
+        let value: Record<string, unknown> | string | undefined = translations[language];
 
         for (const k of keys) {
-            if (value && value[k]) {
-                value = value[k];
+            if (value && typeof value === "object" && k in value) {
+                value = (value as Record<string, unknown>)[k];
             } else {
                 return key; // Return the key if translation not found
             }

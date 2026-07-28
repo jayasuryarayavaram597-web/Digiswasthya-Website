@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { impactData, ImpactPageData } from "@/data/impactData";
 
 /**
@@ -12,16 +12,9 @@ import { impactData, ImpactPageData } from "@/data/impactData";
  * Future: Will read live values from Firebase Firestore once the agent pipeline is active.
  */
 export function useImpactData() {
-    const [data, setData] = useState<ImpactPageData>(impactData);
-    const [loading, setLoading] = useState(true);
-    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-
-    useEffect(() => {
-        // Currently using static fallback data.
-        // When Firebase agent pipeline is ready, replace this with Firestore fetch.
-        setData(impactData);
-        setLoading(false);
-    }, []);
+    const [data] = useState<ImpactPageData>(impactData);
+    const [loading] = useState(false);
+    const [lastUpdated] = useState<Date | null>(new Date());
 
     return { data, loading, lastUpdated };
 }

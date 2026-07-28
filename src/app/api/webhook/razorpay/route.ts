@@ -4,7 +4,7 @@ import { Resend } from "resend";
 import { saveDonation, enrollSubscriber } from "@/lib/db";
 import { generate80GReceipt, generateCertificate } from "@/lib/pdf";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "");
+// Resend initialization guarded inside POST handler below
 
 export async function POST(req: NextRequest) {
     try {
@@ -138,26 +138,29 @@ export async function POST(req: NextRequest) {
             </html>
             `;
 
-            console.log(`[Webhook] Sending Welcome Email to: ${email}`);
-
-            const emailResponse = await resend.emails.send({
-                from: `Digiswasthya Foundation <${fromEmail}>`,
-                to: [email],
-                subject: `Thank you for your donation, ${name}!`,
-                html: welcomeHtml,
-                attachments: [
-                    {
-                        filename: `80G_Receipt_${paymentId}.pdf`,
-                        content: receiptBuffer
-                    },
-                    {
-                        filename: `Certificate_of_Appreciation_${paymentId}.pdf`,
-                        content: certificateBuffer
-                    }
-                ]
-            });
-
-            console.log(`[Webhook] Resend response:`, emailResponse);
+            if (process.env.RESEND_API_KEY) {
+                console.log(`[Webhook] Sending Welcome Email to: ${email}`);
+                const resend = new Resend(process.env.RESEND_API_KEY);
+                const emailResponse = await resend.emails.send({
+                    from: `Digiswasthya Foundation <${fromEmail}>`,
+                    to: [email],
+                    subject: `Thank you for your donation, ${name}!`,
+                    html: welcomeHtml,
+                    attachments: [
+                        {
+                            filename: `80G_Receipt_${paymentId}.pdf`,
+                            content: receiptBuffer
+                        },
+                        {
+                            filename: `Certificate_of_Appreciation_${paymentId}.pdf`,
+                            content: certificateBuffer
+                        }
+                    ]
+                });
+                console.log(`[Webhook] Resend response:`, emailResponse);
+            } else {
+                console.log(`[Webhook] RESEND_API_KEY not set. Skipping email dispatch for payment ${paymentId}.`);
+            }
         }
 
         return NextResponse.json({ status: "ok" });

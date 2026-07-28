@@ -676,7 +676,7 @@ function RazorpayModal({ amount, isRecurring, onConfirm, onClose }: {
                                 </button>
                             ))}
                             {filteredBanks.length === 0 && (
-                                <p className="text-center text-sm text-gray-400 py-6">No banks found for "{bankSearch}"</p>
+                                <p className="text-center text-sm text-gray-400 py-6">No banks found for &quot;{bankSearch}&quot;</p>
                             )}
                         </div>
 

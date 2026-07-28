@@ -3,7 +3,7 @@ import { db } from "@/lib/firebase";
 import { collection, getDocs, doc, getDoc, setDoc, serverTimestamp, query, where } from "firebase/firestore";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Resend initialization guarded inside POST function below
 
 /**
  * Milestone definitions.
@@ -143,19 +143,21 @@ export async function POST(req: NextRequest) {
 </body>
 </html>`;
 
-        // ── 6. Send emails to all subscribers ────────────────────────
-        const emailPromises = subscribers.map(sub =>
-            resend.emails.send({
-                from: "DigiSwasthya Foundation <no-reply@digiswasthya.org>",
-                to: sub.email,
-                subject: `🎉 DigiSwasthya just crossed ${newMilestones[0].label}!`,
-                html: emailHTML,
-            }).catch(err => {
-                console.error(`[Milestone Email] Failed to send to ${sub.email}:`, err);
-            })
-        );
-
-        await Promise.allSettled(emailPromises);
+        // ── 6. Send emails to all subscribers if Resend is configured ──
+        if (process.env.RESEND_API_KEY) {
+            const resend = new Resend(process.env.RESEND_API_KEY);
+            const emailPromises = subscribers.map(sub =>
+                resend.emails.send({
+                    from: "DigiSwasthya Foundation <no-reply@digiswasthya.org>",
+                    to: sub.email,
+                    subject: `🎉 DigiSwasthya just crossed ${newMilestones[0].label}!`,
+                    html: emailHTML,
+                }).catch(err => {
+                    console.error(`[Milestone Email] Failed to send to ${sub.email}:`, err);
+                })
+            );
+            await Promise.allSettled(emailPromises);
+        }
 
         // ── 7. Save triggered milestones to Firestore ─────────────────
         await setDoc(triggeredRef, { list: triggered, updatedAt: serverTimestamp() });

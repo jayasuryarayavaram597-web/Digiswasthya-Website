@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { getActiveSubscribers } from "@/lib/db";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "");
-
 export async function GET(req: NextRequest) {
     try {
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) {
+            return NextResponse.json({ status: "ok", message: "RESEND_API_KEY is not configured. Email feature disabled." });
+        }
+        const resend = new Resend(apiKey);
         const { searchParams } = new URL(req.url);
         const secretParam = searchParams.get("secret");
         const authHeader = req.headers.get("Authorization");
