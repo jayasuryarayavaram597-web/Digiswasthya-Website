@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID || "",
-    key_secret: process.env.RAZORPAY_KEY_SECRET || "",
-});
+// Razorpay instantiation guarded inside handler function below
 
 export async function POST(req: NextRequest) {
     try {
@@ -18,16 +15,21 @@ export async function POST(req: NextRequest) {
 
         // 2. Immediate Order Creation
         if (method === "razorpay") {
-            // Check for placeholder/demo mode
-            if (!process.env.RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID.includes("placeholder")) {
+            const keyId = process.env.RAZORPAY_KEY_ID;
+            const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+            // Check for missing or placeholder keys
+            if (!keyId || !keySecret || keyId.includes("placeholder") || keySecret.includes("placeholder")) {
                 return NextResponse.json({
                     orderId: `demo_${Date.now()}`,
                     amount: amount * 100,
                     currency: "INR",
-                    key: "rzp_test_placeholder",
+                    key: keyId || "rzp_test_placeholder",
                     isMock: true
                 });
             }
+
+            const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
 
             const order = await razorpay.orders.create({
                 amount: Math.round(amount * 100),

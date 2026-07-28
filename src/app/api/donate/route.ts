@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
 
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_placeholder",
-    key_secret: process.env.RAZORPAY_KEY_SECRET || "your_secret_here",
-});
+// Razorpay instantiation guarded inside handler function below
 
 export async function POST(req: NextRequest) {
     try {
@@ -22,12 +19,23 @@ export async function POST(req: NextRequest) {
         // 2. Logging for debugging (In production, use a proper logger)
         console.log(`[Donation API] Received request for ₹${amount}. Recurring: ${isRecurring}`);
 
-        // 3. Create Razorpay Order
-        // Amount is in smaller currency unit (paise for INR)
-        const amountInPaise = Math.round(amount * 100);
+        const keyId = process.env.RAZORPAY_KEY_ID;
+        const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+        if (!keyId || !keySecret || keyId.includes("placeholder") || keySecret.includes("placeholder")) {
+            return NextResponse.json({
+                id: `mock_don_${Date.now()}`,
+                amount: Math.round(amount * 100),
+                currency: "INR",
+                key: keyId || "rzp_test_placeholder",
+                isMock: true
+            });
+        }
+
+        const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
 
         const options = {
-            amount: amountInPaise,
+            amount: Math.round(amount * 100),
             currency: "INR",
             receipt: `receipt_don_${Date.now()}`,
             notes: {
