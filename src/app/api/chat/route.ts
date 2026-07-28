@@ -4,10 +4,7 @@ import OpenAI from "openai";
 // Optional: You can specify edge runtime for better performance with streaming
 // export const runtime = 'edge'; 
 
-const openai = new OpenAI({
-    baseURL: "https://openrouter.ai/api/v1",
-    apiKey: process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || "dummy-key-to-prevent-crash",
-});
+// OpenAI client initialized dynamically inside POST function below
 
 import { getWebsiteContext } from "@/data/botKnowledge";
 
@@ -43,8 +40,7 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { messages, amount } = body;
 
-        // If it's a preset amount quick-action, we can respond instantly without hitting the LLM (or we can hit the LLM for a dynamic response).
-        // For speed and reliability of the payment button showing up, we return a structured JSON response instantly.
+        // If it's a preset amount quick-action, return a structured JSON response instantly.
         if (amount) {
             let impact = "support our health initiatives";
             if (amount === 500) impact = "provide essential medicines for a patient";
@@ -58,15 +54,21 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        // If no API key is provided yet, return a friendly placeholder response.
-        if (!process.env.OPENAI_API_KEY) {
-             return new NextResponse("I am currently in demo mode because my AI brain (API key) hasn't been connected yet, but I'm ready to help you change the world once it is!", {
-                status: 200,
-                headers: { "Content-Type": "text/plain; charset=utf-8" }
-             });
+        // Check for any available AI API key (OpenRouter, OpenAI, or Gemini)
+        const apiKey = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            return NextResponse.json({
+                content: "I am currently in demo mode because my AI brain (API key) hasn't been connected yet, but I'm ready to help you change the world once it is!",
+                suggestedLink: { title: "Learn About Us", url: "/about-us" }
+            });
         }
 
-        // Otherwise, stream a response from OpenAI
+        const openai = new OpenAI({
+            baseURL: "https://openrouter.ai/api/v1",
+            apiKey: apiKey,
+        });
+
+        // Otherwise, fetch response from AI
         const response = await openai.chat.completions.create({
             model: "openai/gpt-4o-mini", // Using OpenRouter syntax for gpt-4o-mini
             messages: [
