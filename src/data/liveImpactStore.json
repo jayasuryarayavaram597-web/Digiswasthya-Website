@@ -1,0 +1,167 @@
+{
+  "timestamp": "2026-07-29T12:00:00Z",
+  "metrics_count": 16,
+  "kpis": {
+    "total_patients": 42850,
+    "total_teleconsultations": 28400,
+    "total_camps": 185,
+    "total_doctors": 140,
+    "total_volunteers": 650,
+    "total_hospitals": 24
+  },
+  "growth": [
+    {
+      "year": "2022",
+      "patients": 5200,
+      "teleconsultations": 3100,
+      "camps": 25
+    },
+    {
+      "year": "2023",
+      "patients": 11400,
+      "teleconsultations": 7500,
+      "camps": 45
+    },
+    {
+      "year": "2024",
+      "patients": 21000,
+      "teleconsultations": 14200,
+      "camps": 80
+    },
+    {
+      "year": "2025",
+      "patients": 32500,
+      "teleconsultations": 21800,
+      "camps": 130
+    },
+    {
+      "year": "2026",
+      "patients": 42850,
+      "teleconsultations": 28400,
+      "camps": 185
+    }
+  ],
+  "departments": [
+    {
+      "department": "General Medicine",
+      "count": 14200
+    },
+    {
+      "department": "Pediatrics",
+      "count": 7400
+    },
+    {
+      "department": "Gynecology & Women Health",
+      "count": 6100
+    },
+    {
+      "department": "Dermatology",
+      "count": 4500
+    },
+    {
+      "department": "Ophthalmology (Eye Care)",
+      "count": 3850
+    },
+    {
+      "department": "Orthopedics",
+      "count": 3800
+    },
+    {
+      "department": "Cardiology",
+      "count": 3000
+    }
+  ],
+  "top_diseases": [
+    {
+      "disease": "Hypertension / High BP",
+      "count": 5400
+    },
+    {
+      "disease": "Diabetes Type 2",
+      "count": 4850
+    },
+    {
+      "disease": "Anemia & Nutritional Deficiency",
+      "count": 4200
+    },
+    {
+      "disease": "Upper Respiratory Tract Infection",
+      "count": 3900
+    },
+    {
+      "disease": "Skin Infections & Allergies",
+      "count": 3100
+    },
+    {
+      "disease": "Gastroenteritis / Digestive Issues",
+      "count": 2800
+    }
+  ],
+  "doctor_specialties": [
+    {
+      "specialty": "General Physicians",
+      "count": 45
+    },
+    {
+      "specialty": "Pediatricians",
+      "count": 25
+    },
+    {
+      "specialty": "Gynecologists",
+      "count": 20
+    },
+    {
+      "specialty": "Dermatologists",
+      "count": 18
+    },
+    {
+      "specialty": "Ophthalmologists",
+      "count": 17
+    },
+    {
+      "specialty": "Cardiologists & Neurologists",
+      "count": 15
+    }
+  ],
+  "demographics": {
+    "age_groups": [
+      {
+        "range": "0-14",
+        "percentage": 18,
+        "count": 7713
+      },
+      {
+        "range": "15-35",
+        "percentage": 32,
+        "count": 13712
+      },
+      {
+        "range": "36-60",
+        "percentage": 35,
+        "count": 14997
+      },
+      {
+        "range": "60+",
+        "percentage": 15,
+        "count": 6428
+      }
+    ],
+    "patient_types": {
+      "new": 62,
+      "followUp": 38
+    },
+    "gender_split": {
+      "female": 54,
+      "male": 44,
+      "other": 2
+    }
+  },
+  "reach": {
+    "districts": 18,
+    "villages": 420,
+    "states": [
+      "Uttar Pradesh",
+      "Bihar"
+    ]
+  }
+}
