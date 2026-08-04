@@ -26,7 +26,7 @@ export interface TeleconsultationGrowthPoint {
 
 export interface DiseaseDistributionItem {
     name: LocalizedString;
-    value: number; // percentage (e.g. 35)
+    value: number;
     color: string;
 }
 
@@ -57,6 +57,7 @@ export interface DoctorsBySpecialtyItem {
 export interface AgeDistributionItem {
     ageGroup: string;
     count: number;
+    color: string;
 }
 
 export interface GenderItem {
@@ -92,16 +93,6 @@ export interface ImpactPageData {
     patientTypeDistribution: PatientTypeItem[];
 }
 
-/**
- * DigiSwasthya Impact Report Data
- *
- * NOTE FOR PRODUCTION:
- * All values below are DUMMY/PLACEHOLDER data.
- * Once Supabase credentials are obtained from DigiSwasthya, connect directly
- * to Supabase (Option B — Direct Supabase → Website) and replace these values
- * with live aggregate queries. Do NOT store sensitive patient records here —
- * only totals, counts, and year-wise summaries.
- */
 export const impactData: ImpactPageData = {
     hero: {
         badge: {
@@ -113,181 +104,167 @@ export const impactData: ImpactPageData = {
             hi: "हमारा मापने योग्य स्वास्थ्य प्रभाव"
         },
         subtitle: {
-            en: "We believe in transparency and data-driven storytelling. Explore DigiSwasthya's scale of operations, growth trends, and geographical footprint in rural India.",
-            hi: "हम पारदर्शिता और डेटा-आधारित कहानी कहने में विश्वास करते हैं। ग्रामीण भारत में डिजीस्वास्थ्य के संचालन के पैमाने, विकास के रुझान और भौगोलिक पहुंच का अन्वेषण करें।"
+            en: "Live aggregate figures from the DigiSwasthya Management Portal. Explore our healthcare reach, teleconsultations, and demographic distribution.",
+            hi: "डिजीस्वास्थ्य प्रबंधन पोर्टल से लाइव कुल आंकड़े। हमारी स्वास्थ्य पहुंच, टेलीमेडिसिन परामर्श और जनसांख्यिकीय वितरण का अन्वेषण करें।"
         }
     },
 
-    // ─── KPI CARDS ──────────────────────────────────────────────────────────────
+    // ─── TOP 5 KPI CARDS (Matching Management Portal Header) ─────────────────────
     kpis: [
         {
             id: "patients-served",
-            value: 150000,
-            suffix: "+",
+            value: 42950,
             label: { en: "Patients Served", hi: "मरीजों की सेवा की" },
             icon: "Users",
             description: {
-                en: "Total individuals registered and treated across our telemedicine network.",
-                hi: "हमारे टेलीमेडिसिन नेटवर्क के माध्यम से पंजीकृत और इलाज किए गए कुल व्यक्ति।"
+                en: "Total patients registered across all telemedicine centres.",
+                hi: "सभी टेलीमेडिसिन केंद्रों में पंजीकृत कुल मरीज।"
             }
         },
         {
             id: "total-consultations",
-            value: 97104,
-            label: { en: "Total Consultations", hi: "कुल परामर्श" },
+            value: 58894,
+            label: { en: "Teleconsultations", hi: "टेली-परामर्श" },
             icon: "Stethoscope",
             description: {
-                en: "Medical consultations successfully facilitated with specialist doctors.",
-                hi: "विशेषज्ञ डॉक्टरों के साथ सफलतापूर्वक प्रदान किए गए चिकित्सा परामर्श।"
+                en: "Completed consultations with specialist doctors.",
+                hi: "विशेषज्ञ डॉक्टरों के साथ पूरे किए गए परामर्श।"
             }
         },
         {
             id: "health-camps",
-            value: 2146,
-            label: { en: "Health & Awareness Camps", hi: "स्वास्थ्य एवं जागरूकता शिविर" },
-            icon: "Activity",
+            value: 5,
+            label: { en: "Health Camps", hi: "स्वास्थ्य शिविर" },
+            icon: "Tent",
             description: {
-                en: "Community drives conducted to raise hygiene, wellness, and preventive care awareness.",
-                hi: "स्वच्छता, कल्याण और निवारक देखभाल जागरूकता बढ़ाने के लिए आयोजित सामुदायिक अभियान।"
+                en: "On-ground medical camps conducted for rural communities.",
+                hi: "ग्रामीण समुदायों के लिए आयोजित जमीनी चिकित्सा शिविर।"
             }
         },
         {
             id: "expert-doctors",
-            value: 213,
-            label: { en: "Expert Doctors Onboard", hi: "विशेषज्ञ डॉक्टर संबद्ध" },
-            icon: "HeartHandshake",
+            value: 125,
+            label: { en: "Doctors", hi: "डॉक्टर" },
+            icon: "UserPlus",
             description: {
-                en: "Qualified physicians and specialists volunteering or working on our panel.",
-                hi: "हमारे पैनल में स्वेच्छा से या काम कर रहे योग्य चिकित्सक और विशेषज्ञ।"
-            }
-        },
-        {
-            id: "chc-phc-camps",
-            value: 133,
-            label: { en: "CHC / PHC Health Camps", hi: "सीएचसी/पीएचसी स्वास्थ्य शिविर" },
-            icon: "Building",
-            description: {
-                en: "Collaborative health clinics held at Government Community and Primary Health Centers.",
-                hi: "सरकारी सामुदायिक और प्राथमिक स्वास्थ्य केंद्रों पर आयोजित सहयोगी स्वास्थ्य क्लीनिक।"
-            }
-        },
-        {
-            id: "lives-impacted",
-            value: 2850000,
-            suffix: "+",
-            label: { en: "Lives Impacted", hi: "प्रभावित जीवन" },
-            icon: "TrendingUp",
-            description: {
-                en: "Indirect impact through awareness drives, family support, and community outreach.",
-                hi: "जागरूकता अभियानों, पारिवारिक सहायता और सामुदायिक पहुंच के माध्यम से अप्रत्यक्ष प्रभाव।"
-            }
-        },
-        {
-            id: "total-volunteers",
-            value: 312,
-            label: { en: "Active Volunteers", hi: "सक्रिय स्वयंसेवक" },
-            icon: "UserCheck",
-            description: {
-                en: "Dedicated ground-level volunteers enabling last-mile healthcare delivery across rural regions.",
-                hi: "ग्रामीण क्षेत्रों में अंतिम-मील स्वास्थ्य सेवा वितरण को सक्षम करने वाले समर्पित जमीनी स्तर के स्वयंसेवक।"
+                en: "Empanelled doctors and healthcare specialists.",
+                hi: "पैनल में शामिल डॉक्टर और स्वास्थ्य विशेषज्ञ।"
             }
         },
         {
             id: "partner-hospitals",
-            value: 28,
+            value: 0,
             label: { en: "Partner Hospitals", hi: "भागीदार अस्पताल" },
             icon: "Building2",
             description: {
-                en: "Empanelled hospitals and diagnostic centers supporting DigiSwasthya's referral network.",
-                hi: "डिजीस्वास्थ्य के रेफरल नेटवर्क का समर्थन करने वाले सूचीबद्ध अस्पताल और निदान केंद्र।"
+                en: "Empanelled tertiary care hospitals.",
+                hi: "सूचीबद्ध तृतीयक देखरेख अस्पताल।"
             }
         }
     ],
 
     // ─── GROWTH TRENDS ──────────────────────────────────────────────────────────
     growthTrends: [
-        { year: "2020", patients: 12450, camps: 230,  doctors: 32  },
-        { year: "2021", patients: 28900, camps: 580,  doctors: 65  },
-        { year: "2022", patients: 52400, camps: 980,  doctors: 110 },
-        { year: "2023", patients: 78100, camps: 1420, doctors: 155 },
-        { year: "2024", patients: 98450, camps: 1850, doctors: 190 },
-        { year: "2025", patients: 150000, camps: 2146, doctors: 213 }
+        { year: "2020", patients: 120, camps: 0, doctors: 10 },
+        { year: "2024", patients: 450, camps: 1, doctors: 40 },
+        { year: "2025", patients: 19836, camps: 3, doctors: 90 },
+        { year: "2026", patients: 28000, camps: 5, doctors: 125 }
     ],
 
     teleconsultationGrowth: [
-        { year: "2020", consultations: 5800  },
-        { year: "2021", consultations: 14200 },
-        { year: "2022", consultations: 32500 },
-        { year: "2023", consultations: 56800 },
-        { year: "2024", consultations: 78200 },
-        { year: "2025", consultations: 97104 }
+        { year: "2020", consultations: 150 },
+        { year: "2024", consultations: 600 },
+        { year: "2025", consultations: 21000 },
+        { year: "2026", consultations: 38000 }
     ],
 
-    // ─── DISEASE DISTRIBUTION ───────────────────────────────────────────────────
+    // ─── TOP DISEASES (Horizontal Bar Chart) ────────────────────────────────────
     diseaseDistribution: [
-        { name: { en: "General Medicine / Primary Ailments", hi: "सामान्य चिकित्सा / प्राथमिक रोग" }, value: 35, color: "#1e7e42" },
-        { name: { en: "Cardiovascular / Hypertension",       hi: "हृदय रोग / उच्च रक्तचाप" },         value: 18, color: "#b45309" },
-        { name: { en: "Diabetes & Endocrine",               hi: "मधुमेह और अंतःस्रावी" },             value: 15, color: "#0f3a1f" },
-        { name: { en: "Pediatrics & Child Health",           hi: "बाल रोग और बाल स्वास्थ्य" },        value: 12, color: "#fbbf24" },
-        { name: { en: "Ophthalmology / Eye Care",            hi: "नेत्र रोग / आंखों की देखभाल" },     value: 10, color: "#3d9b5e" },
-        { name: { en: "Other Specialties",                   hi: "अन्य विशिष्टताएं" },                value: 10, color: "#9ca3af" }
-    ],
-
-    // ─── REGIONAL REACH ─────────────────────────────────────────────────────────
-    regionalReach: [
-        { district: { en: "Sant Kabir Nagar", hi: "संत कबीर नगर" }, count: 42000 },
-        { district: { en: "Nagpur",           hi: "नागपुर" },        count: 28000 },
-        { district: { en: "Muzaffarpur",      hi: "मुजफ्फरपुर" },   count: 21000 },
-        { district: { en: "Pune",             hi: "पुणे" },          count: 14000 },
-        { district: { en: "Lucknow",          hi: "लखनऊ" },         count: 8500  },
-        { district: { en: "Other Regions",    hi: "अन्य क्षेत्र" }, count: 4144  }
+        { name: { en: "UrTI (Upper Respiratory Tract Infection)", hi: "ऊपरी श्वसन पथ संक्रमण" }, value: 2650, color: "#8b5cf6" },
+        { name: { en: "Eczema",                                  hi: "एक्जिमा" },               value: 2380, color: "#8b5cf6" },
+        { name: { en: "Xerosis",                                 hi: "जेरोसिस (सूखी त्वचा)" },   value: 795,  color: "#8b5cf6" },
+        { name: { en: "LRTI (Lower Respiratory Tract Infection)", hi: "निचले श्वसन पथ का संक्रमण" }, value: 760,  color: "#8b5cf6" },
+        { name: { en: "Upper Respiratory Infection",            hi: "ऊपरी श्वसन संक्रमण" },    value: 620,  color: "#8b5cf6" },
+        { name: { en: "T2DM (Type 2 Diabetes Mellitus)",         hi: "टाइप 2 मधुमेह" },         value: 580,  color: "#8b5cf6" },
+        { name: { en: "Age-Related Degeneration",                hi: "उम्र संबंधी स्थिति" },     value: 510,  color: "#8b5cf6" },
+        { name: { en: "Knee Pain / Osteoarthritis",              hi: "घुटने का दर्द" },         value: 480,  color: "#8b5cf6" }
     ],
 
     // ─── CONSULTATION BY DEPARTMENT ─────────────────────────────────────────────
     consultationByDepartment: [
-        { department: { en: "General Medicine",       hi: "सामान्य चिकित्सा" },       count: 38420, color: "#1e7e42" },
-        { department: { en: "Pediatrics",             hi: "बाल रोग" },                count: 18200, color: "#d97706" },
-        { department: { en: "Cardiology",             hi: "हृदय रोग" },               count: 12800, color: "#0f3a1f" },
-        { department: { en: "Ophthalmology",          hi: "नेत्र रोग" },              count: 9600,  color: "#3d9b5e" },
-        { department: { en: "Gynecology & Obstetrics",hi: "स्त्री रोग एवं प्रसूति" },count: 8900,  color: "#b45309" },
-        { department: { en: "Orthopedics",            hi: "हड्डी रोग" },              count: 6200,  color: "#6cb885" },
-        { department: { en: "ENT",                    hi: "कान, नाक और गला" },        count: 2984,  color: "#fbbf24" }
+        { department: { en: "General Medicine",  hi: "सामान्य चिकित्सा" }, count: 16120, color: "#2563eb" },
+        { department: { en: "Dermatologist",     hi: "त्वचा रोग" },        count: 10180, color: "#2563eb" },
+        { department: { en: "Pediatrician",       hi: "बाल रोग" },         count: 3680,  color: "#2563eb" },
+        { department: { en: "Gynaecologist",     hi: "स्त्री रोग" },       count: 3450,  color: "#2563eb" },
+        { department: { en: "Orthopaedics",      hi: "हड्डी रोग" },        count: 3250,  color: "#2563eb" },
+        { department: { en: "General Physician", hi: "सामान्य चिकित्सक" }, count: 3100,  color: "#2563eb" },
+        { department: { en: "Paediatrician",     hi: "बाल चिकित्सा" },     count: 2850,  color: "#2563eb" },
+        { department: { en: "ENT",               hi: "कान, नाक, गला" },    count: 2100,  color: "#2563eb" },
+        { department: { en: "Homoeopathic",      hi: "होम्योपैथिक" },      count: 520,   color: "#2563eb" },
+        { department: { en: "Neurologist",       hi: "न्यूरोलॉजिस्ट" },    count: 480,   color: "#2563eb" },
+        { department: { en: "Ophthalmology",     hi: "नेत्र विज्ञान" },     count: 310,   color: "#2563eb" },
+        { department: { en: "Cardiology",        hi: "हृदय रोग" },         count: 180,   color: "#2563eb" }
     ],
 
-    // ─── DOCTORS BY SPECIALTY ───────────────────────────────────────────────────
+    // ─── DOCTORS BY SPECIALTY (Horizontal Bar Chart) ────────────────────────────
     doctorsBySpecialty: [
-        { specialty: { en: "General Physicians",  hi: "सामान्य चिकित्सक" },          count: 88, color: "#1e7e42" },
-        { specialty: { en: "Pediatricians",       hi: "बाल रोग विशेषज्ञ" },          count: 32, color: "#d97706" },
-        { specialty: { en: "Cardiologists",       hi: "हृदय रोग विशेषज्ञ" },         count: 28, color: "#0f3a1f" },
-        { specialty: { en: "Ophthalmologists",    hi: "नेत्र रोग विशेषज्ञ" },        count: 24, color: "#3d9b5e" },
-        { specialty: { en: "Gynecologists",       hi: "स्त्री रोग विशेषज्ञ" },       count: 20, color: "#b45309" },
-        { specialty: { en: "Orthopedic Surgeons", hi: "अस्थि शल्य चिकित्सक" },      count: 14, color: "#6cb885" },
-        { specialty: { en: "ENT Specialists",     hi: "कान, नाक, गला विशेषज्ञ" },   count: 7,  color: "#fbbf24" }
+        { specialty: { en: "Dentist",              hi: "दंत चिकित्सक" },   count: 21, color: "#059669" },
+        { specialty: { en: "Paediatrician",        hi: "बाल रोग" },        count: 8,  color: "#059669" },
+        { specialty: { en: "Ophthalmologist",     hi: "नेत्र रोग" },       count: 6,  color: "#059669" },
+        { specialty: { en: "Gynecologist",        hi: "स्त्री रोग" },      count: 5,  color: "#059669" },
+        { specialty: { en: "Pulmonologist",       hi: "फेफड़े का रोग" },  count: 2,  color: "#059669" },
+        { specialty: { en: "Clinical Dietitian",  hi: "आहार विशेषज्ञ" },  count: 1,  color: "#059669" },
+        { specialty: { en: "Family Physician",   hi: "पारिवारिक डॉक्टर" }, count: 1,  color: "#059669" },
+        { specialty: { en: "General Surgeon",     hi: "सामान्य सर्जन" },    count: 1,  color: "#059669" },
+        { specialty: { en: "Gastrointestinal",   hi: "पेट रोग" },         count: 1,  color: "#059669" },
+        { specialty: { en: "Homoeopathic",       hi: "होम्योपैथी" },      count: 1,  color: "#059669" },
+        { specialty: { en: "Orthopaedics",       hi: "हड्डी रोग" },       count: 1,  color: "#059669" },
+        { specialty: { en: "Thoracic Surgeon",   hi: "थॉरेसिक सर्जन" },   count: 1,  color: "#059669" }
     ],
 
-    // ─── AGE DISTRIBUTION ───────────────────────────────────────────────────────
+    // ─── AGE DISTRIBUTION (7 Bands Multi-Color) ────────────────────────────────
     ageDistribution: [
-        { ageGroup: "0 – 14 yrs",  count: 22400 },
-        { ageGroup: "15 – 24 yrs", count: 14800 },
-        { ageGroup: "25 – 44 yrs", count: 42600 },
-        { ageGroup: "45 – 64 yrs", count: 49200 },
-        { ageGroup: "65+ yrs",     count: 21000 }
+        { ageGroup: "0-5",          count: 3100,  color: "#2563eb" },
+        { ageGroup: "6-12",         count: 4680,  color: "#059669" },
+        { ageGroup: "13-18",        count: 3620,  color: "#d97706" },
+        { ageGroup: "19-35",        count: 9350,  color: "#8b5cf6" },
+        { ageGroup: "36-60",        count: 14320, color: "#ef4444" },
+        { ageGroup: "60+",          count: 7840,  color: "#0891b2" },
+        { ageGroup: "Not recorded", count: 40,    color: "#ec4899" }
     ],
 
     // ─── GENDER DISTRIBUTION ────────────────────────────────────────────────────
     genderDistribution: [
-        { gender: { en: "Male",   hi: "पुरुष" },  count: 79800, percentage: 53, color: "#1e7e42" },
-        { gender: { en: "Female", hi: "महिला" }, count: 68400, percentage: 46, color: "#d97706" },
-        { gender: { en: "Other",  hi: "अन्य" },  count: 1800,  percentage: 1,  color: "#9ca3af" }
+        { gender: { en: "Female", hi: "महिला" }, count: 24050, percentage: 56, color: "#ec4899" },
+        { gender: { en: "Male",   hi: "पुरुष" },  count: 18450, percentage: 43, color: "#2563eb" },
+        { gender: { en: "Other",  hi: "अन्य" },  count: 450,   percentage: 1,  color: "#8b5cf6" }
     ],
 
-    // ─── NEW VS FOLLOW-UP PATIENTS ──────────────────────────────────────────────
+    // ─── NEW VS FOLLOW-UP ───────────────────────────────────────────────────────
     patientTypeDistribution: [
-        { type: { en: "New Patients",      hi: "नए मरीज" },      count: 96500, percentage: 64, color: "#1e7e42" },
-        { type: { en: "Follow-up Patients",hi: "अनुवर्ती मरीज" },count: 53500, percentage: 36, color: "#d97706" }
+        { type: { en: "Follow-up",      hi: "अनुवर्ती" },      count: 2100,  percentage: 5,  color: "#059669" },
+        { type: { en: "New",            hi: "नए मरीज" },      count: 11200, percentage: 26, color: "#2563eb" },
+        { type: { en: "Not categorised",hi: "अवर्गीकृत" },    count: 29650, percentage: 69, color: "#d97706" }
     ],
 
-    // ─── TIMELINE ───────────────────────────────────────────────────────────────
+    // ─── DISTRICTS COVERED (84 Districts · 633 Villages) ────────────────────────
+    regionalReach: [
+        { district: { en: "Basti",           hi: "बस्ती" },           count: 8 },
+        { district: { en: "Chandauli",       hi: "चंदौली" },          count: 8 },
+        { district: { en: "Giridih",         hi: "गिरिडीह" },         count: 5 },
+        { district: { en: "Jalgaon",         hi: "जलगांव" },          count: 5 },
+        { district: { en: "Ludhiana",        hi: "लुधियाना" },        count: 5 },
+        { district: { en: "Bengaluru Urban", hi: "बेंगलुरु अर्बन" },   count: 4 },
+        { district: { en: "Patna",           hi: "पटना" },            count: 4 },
+        { district: { en: "Rae Bareli",      hi: "रायबरेली" },        count: 4 },
+        { district: { en: "Sant Kabir Nagar",hi: "संत कबीर नगर" },    count: 24850 },
+        { district: { en: "Nagpur",          hi: "नागपुर" },          count: 8400 },
+        { district: { en: "Muzaffarpur",     hi: "मुजफ्फरपुर" },      count: 5600 },
+        { district: { en: "Pune",            hi: "पुणे" },             count: 3200 },
+        { district: { en: "Lucknow",         hi: "लखनऊ" },            count: 480 }
+    ],
+
+    // ─── TIMELINE (UNTOUCHED) ───────────────────────────────────────────────────
     timeline: [
         {
             year: "2020",

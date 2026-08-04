@@ -1,11 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
-
-// Optional: You can specify edge runtime for better performance with streaming
-// export const runtime = 'edge'; 
-
-// OpenAI client initialized dynamically inside POST function below
-
 import { getWebsiteContext } from "@/data/botKnowledge";
 
 const getSystemPrompt = () => `You are Swasthya, the official AI assistant for DigiSwasthya Foundation. You speak like a warm, friendly, and knowledgeable human receptionist of the NGO.
@@ -34,13 +28,47 @@ RULES:
 
 ${getWebsiteContext()}`;
 
+// Local fallback matcher for localhost when no API key is in local .env
+function getLocalSmartAnswer(userMessage: string) {
+    const msg = userMessage.toLowerCase();
+    
+    if (msg.includes("center") || msg.includes("clinic") || msg.includes("location") || msg.includes("telemedicine")) {
+        return {
+            content: "DigiSwasthya operates rural Telemedicine Centres across India providing consultations, diagnostic assistance, and affordable medicine access. 🏥",
+            suggestedLink: { title: "Explore Telemedicine Network", url: "/network" }
+        };
+    }
+    if (msg.includes("donate") || msg.includes("support") || msg.includes("help") || msg.includes("money") || msg.includes("fund")) {
+        return {
+            content: "Thank you for wanting to make a difference! Your contribution directly funds rural healthcare camps, telemedicine consultations, and patient care. 💖",
+            suggestedLink: { title: "Support DigiSwasthya", url: "/donate" }
+        };
+    }
+    if (msg.includes("doctor") || msg.includes("team") || msg.includes("founder") || msg.includes("sandeep")) {
+        return {
+            content: "DigiSwasthya was founded by Sandeep Kumar to bridge the healthcare gap in rural India. Our team includes dedicated doctors and advisors committed to affordable care. 🩺",
+            suggestedLink: { title: "Meet Our Team", url: "/our-team" }
+        };
+    }
+    if (msg.includes("impact") || msg.includes("patient") || msg.includes("count") || msg.includes("stats")) {
+        return {
+            content: "DigiSwasthya has served over 42,950+ patients and conducted 58,894+ teleconsultations across 84 districts and 633 villages! 📊",
+            suggestedLink: { title: "View Impact Dashboard", url: "/our-impact" }
+        };
+    }
+    
+    return {
+        content: "Welcome to DigiSwasthya! How can I assist you today with our telemedicine services, health camps, or donation programs? 🏥",
+        suggestedLink: { title: "About DigiSwasthya", url: "/about-us" }
+    };
+}
 
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const { messages, amount } = body;
 
-        // If it's a preset amount quick-action, return a structured JSON response instantly.
+        // Quick-action preset amounts
         if (amount) {
             let impact = "support our health initiatives";
             if (amount === 500) impact = "provide essential medicines for a patient";
@@ -54,23 +82,23 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        // Check for any available AI API key (OpenRouter, OpenAI, or Gemini)
+        // Check for any available AI API key (Vercel or local .env)
         const apiKey = process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY;
+        
+        // If running on localhost without a local API key, use local smart knowledge base fallback
         if (!apiKey) {
-            return NextResponse.json({
-                content: "I am currently in demo mode because my AI brain (API key) hasn't been connected yet, but I'm ready to help you change the world once it is!",
-                suggestedLink: { title: "Learn About Us", url: "/about-us" }
-            });
+            const lastUserMsg = messages && messages.length > 0 ? messages[messages.length - 1].content : "";
+            const fallback = getLocalSmartAnswer(lastUserMsg);
+            return NextResponse.json(fallback);
         }
 
         const openai = new OpenAI({
-            baseURL: "https://openrouter.ai/api/v1",
+            baseURL: process.env.OPENROUTER_API_KEY ? "https://openrouter.ai/api/v1" : undefined,
             apiKey: apiKey,
         });
 
-        // Otherwise, fetch response from AI
         const response = await openai.chat.completions.create({
-            model: "openai/gpt-4o-mini", // Using OpenRouter syntax for gpt-4o-mini
+            model: process.env.OPENROUTER_API_KEY ? "openai/gpt-4o-mini" : "gpt-4o-mini",
             messages: [
                 { role: "system", content: getSystemPrompt() },
                 ...messages.map((m: any) => ({ role: m.role, content: m.content }))
@@ -82,7 +110,7 @@ export async function POST(req: NextRequest) {
         });
 
         const replyContent = response.choices[0]?.message?.content;
-        let reply = "I'm sorry, I couldn't generate a response.";
+        let reply = "I'm happy to help you with any questions about DigiSwasthya!";
         let suggestedLink = null;
 
         if (replyContent) {
@@ -91,7 +119,6 @@ export async function POST(req: NextRequest) {
                 reply = parsed.text || replyContent;
                 suggestedLink = parsed.suggestedLink || null;
             } catch (e) {
-                // fallback if LLM didn't return valid JSON
                 reply = replyContent;
             }
         }

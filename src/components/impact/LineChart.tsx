@@ -70,7 +70,9 @@ export function LineChart({
 
     // Convert data to coordinates
     const points = data.map((d, i) => {
-        const x = paddingLeft + (chartWidth > 0 ? (i / (data.length - 1)) * chartWidth : 0);
+        const x = data.length > 1
+            ? paddingLeft + (chartWidth > 0 ? (i / (data.length - 1)) * chartWidth : 0)
+            : paddingLeft + chartWidth / 2;
         const y = paddingTop + chartHeight - (maxY > 0 ? ((d.value - minY) / (maxY - minY)) * chartHeight : 0);
         return { x, y, label: d.label, value: d.value };
     });

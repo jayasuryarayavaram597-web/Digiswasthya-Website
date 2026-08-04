@@ -1,167 +1,87 @@
 {
-  "timestamp": "2026-07-29T12:00:00Z",
+  "timestamp": "2026-08-04T12:00:00Z",
   "metrics_count": 16,
   "kpis": {
-    "total_patients": 42850,
-    "total_teleconsultations": 28400,
-    "total_camps": 185,
-    "total_doctors": 140,
-    "total_volunteers": 650,
-    "total_hospitals": 24
+    "total_patients": 42950,
+    "total_teleconsultations": 58894,
+    "total_camps": 5,
+    "total_doctors": 125,
+    "total_hospitals": 0
   },
   "growth": [
-    {
-      "year": "2022",
-      "patients": 5200,
-      "teleconsultations": 3100,
-      "camps": 25
-    },
-    {
-      "year": "2023",
-      "patients": 11400,
-      "teleconsultations": 7500,
-      "camps": 45
-    },
-    {
-      "year": "2024",
-      "patients": 21000,
-      "teleconsultations": 14200,
-      "camps": 80
-    },
-    {
-      "year": "2025",
-      "patients": 32500,
-      "teleconsultations": 21800,
-      "camps": 130
-    },
-    {
-      "year": "2026",
-      "patients": 42850,
-      "teleconsultations": 28400,
-      "camps": 185
-    }
+    { "year": "2020", "patients": 120, "teleconsultations": 150, "camps": 0 },
+    { "year": "2024", "patients": 450, "teleconsultations": 600, "camps": 1 },
+    { "year": "2025", "patients": 19836, "teleconsultations": 21000, "camps": 3 },
+    { "year": "2026", "patients": 28000, "teleconsultations": 38000, "camps": 5 }
   ],
   "departments": [
-    {
-      "department": "General Medicine",
-      "count": 14200
-    },
-    {
-      "department": "Pediatrics",
-      "count": 7400
-    },
-    {
-      "department": "Gynecology & Women Health",
-      "count": 6100
-    },
-    {
-      "department": "Dermatology",
-      "count": 4500
-    },
-    {
-      "department": "Ophthalmology (Eye Care)",
-      "count": 3850
-    },
-    {
-      "department": "Orthopedics",
-      "count": 3800
-    },
-    {
-      "department": "Cardiology",
-      "count": 3000
-    }
+    { "department": "General Medicine", "count": 16120 },
+    { "department": "Dermatologist", "count": 10180 },
+    { "department": "Pediatrician", "count": 3680 },
+    { "department": "Gynaecologist", "count": 3450 },
+    { "department": "Orthopaedics", "count": 3250 },
+    { "department": "General Physician", "count": 3100 },
+    { "department": "Paediatrician", "count": 2850 },
+    { "department": "ENT", "count": 2100 },
+    { "department": "Homoeopathic", "count": 520 },
+    { "department": "Neurologist", "count": 480 },
+    { "department": "Ophthalmology", "count": 310 },
+    { "department": "Cardiology", "count": 180 }
   ],
   "top_diseases": [
-    {
-      "disease": "Hypertension / High BP",
-      "count": 5400
-    },
-    {
-      "disease": "Diabetes Type 2",
-      "count": 4850
-    },
-    {
-      "disease": "Anemia & Nutritional Deficiency",
-      "count": 4200
-    },
-    {
-      "disease": "Upper Respiratory Tract Infection",
-      "count": 3900
-    },
-    {
-      "disease": "Skin Infections & Allergies",
-      "count": 3100
-    },
-    {
-      "disease": "Gastroenteritis / Digestive Issues",
-      "count": 2800
-    }
+    { "disease": "UrTI (Upper Respiratory Tract)", "count": 2650 },
+    { "disease": "Eczema", "count": 2380 },
+    { "disease": "Xerosis", "count": 795 },
+    { "disease": "LRTI (Lower Respiratory)", "count": 760 },
+    { "disease": "Upper Respiratory Infection", "count": 620 },
+    { "disease": "T2DM (Type 2 Diabetes)", "count": 580 },
+    { "disease": "Age-Related Degeneration", "count": 510 },
+    { "disease": "Knee Pain / Osteoarthritis", "count": 480 }
   ],
   "doctor_specialties": [
-    {
-      "specialty": "General Physicians",
-      "count": 45
-    },
-    {
-      "specialty": "Pediatricians",
-      "count": 25
-    },
-    {
-      "specialty": "Gynecologists",
-      "count": 20
-    },
-    {
-      "specialty": "Dermatologists",
-      "count": 18
-    },
-    {
-      "specialty": "Ophthalmologists",
-      "count": 17
-    },
-    {
-      "specialty": "Cardiologists & Neurologists",
-      "count": 15
-    }
+    { "specialty": "Dentist", "count": 21 },
+    { "specialty": "Paediatrician", "count": 8 },
+    { "specialty": "Ophthalmologist", "count": 6 },
+    { "specialty": "Gynecologist", "count": 5 },
+    { "specialty": "Pulmonologist", "count": 2 },
+    { "specialty": "Clinical Dietitian", "count": 1 },
+    { "specialty": "Family Physician", "count": 1 },
+    { "specialty": "General Surgeon", "count": 1 },
+    { "specialty": "Gastrointestinal", "count": 1 },
+    { "specialty": "Homoeopathic", "count": 1 },
+    { "specialty": "Orthopaedics", "count": 1 },
+    { "specialty": "Thoracic Surgeon", "count": 1 }
   ],
   "demographics": {
     "age_groups": [
-      {
-        "range": "0-14",
-        "percentage": 18,
-        "count": 7713
-      },
-      {
-        "range": "15-35",
-        "percentage": 32,
-        "count": 13712
-      },
-      {
-        "range": "36-60",
-        "percentage": 35,
-        "count": 14997
-      },
-      {
-        "range": "60+",
-        "percentage": 15,
-        "count": 6428
-      }
+      { "range": "0-5", "count": 3100 },
+      { "range": "6-12", "count": 4680 },
+      { "range": "13-18", "count": 3620 },
+      { "range": "19-35", "count": 9350 },
+      { "range": "36-60", "count": 14320 },
+      { "range": "60+", "count": 7840 },
+      { "range": "Not recorded", "count": 40 }
     ],
-    "patient_types": {
-      "new": 62,
-      "followUp": 38
-    },
-    "gender_split": {
-      "female": 54,
-      "male": 44,
-      "other": 2
-    }
+    "patient_types": { "followUp": 2100, "new": 11200, "notCategorised": 29650 },
+    "gender_split": { "female": 24050, "male": 18450, "other": 450 }
   },
   "reach": {
-    "districts": 18,
-    "villages": 420,
-    "states": [
-      "Uttar Pradesh",
-      "Bihar"
+    "districts": 84,
+    "villages": 633,
+    "district_list": [
+      { "name": "Basti", "count": 8 },
+      { "name": "Chandauli", "count": 8 },
+      { "name": "Giridih", "count": 5 },
+      { "name": "Jalgaon", "count": 5 },
+      { "name": "Ludhiana", "count": 5 },
+      { "name": "Bengaluru Urban", "count": 4 },
+      { "name": "Patna", "count": 4 },
+      { "name": "Rae Bareli", "count": 4 },
+      { "name": "Sant Kabir Nagar", "count": 24850 },
+      { "name": "Nagpur", "count": 8400 },
+      { "name": "Muzaffarpur", "count": 5600 },
+      { "name": "Pune", "count": 3200 },
+      { "name": "Lucknow", "count": 480 }
     ]
   }
 }
