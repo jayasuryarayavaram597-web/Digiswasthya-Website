@@ -80,34 +80,18 @@ export function PortalKPICards({ data }: PortalKPICardsProps) {
         },
     ];
 
-    const containerVariants = {
-        hidden: {},
-        show: {
-            transition: { staggerChildren: 0.08 }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
-    };
-
     return (
-        <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
             {cards.map((card, idx) => {
                 const IconComponent = card.icon;
                 return (
                     <motion.div
                         key={idx}
-                        variants={itemVariants}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-50px" }}
+                        transition={{ duration: 0.5, delay: idx * 0.08, ease: "easeOut" }}
                         whileHover={{ y: -4, scale: 1.02 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         className={`bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border ${card.borderColor} flex flex-col justify-between h-40 transition-shadow hover:shadow-xl cursor-pointer group`}
                     >
                         <div className="flex items-center justify-between">
@@ -128,6 +112,6 @@ export function PortalKPICards({ data }: PortalKPICardsProps) {
                     </motion.div>
                 );
             })}
-        </motion.div>
+        </div>
     );
 }

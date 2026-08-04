@@ -79,13 +79,13 @@ export default function OurImpact() {
     ];
 
     const ageDistributionData = [
-        { range: "0-5",          count: 3100,  gradient: "linear-gradient(180deg, #60a5fa 0%, #2563eb 100%)", shadowColor: "rgba(37,99,235,0.3)" },
-        { range: "6-12",         count: 4680,  gradient: "linear-gradient(180deg, #34d399 0%, #059669 100%)", shadowColor: "rgba(5,150,105,0.3)" },
-        { range: "13-18",        count: 3620,  gradient: "linear-gradient(180deg, #fbbf24 0%, #d97706 100%)", shadowColor: "rgba(217,119,6,0.3)" },
-        { range: "19-35",        count: 9350,  gradient: "linear-gradient(180deg, #c084fc 0%, #7e22ce 100%)", shadowColor: "rgba(126,34,206,0.3)" },
-        { range: "36-60",        count: 14320, gradient: "linear-gradient(180deg, #fb7185 0%, #e11d48 100%)", shadowColor: "rgba(225,29,72,0.3)" },
-        { range: "60+",          count: 7840,  gradient: "linear-gradient(180deg, #22d3ee 0%, #0891b2 100%)", shadowColor: "rgba(8,145,178,0.3)" },
-        { range: "Not recorded", count: 40,    gradient: "linear-gradient(180deg, #94a3b8 0%, #475569 100%)", shadowColor: "rgba(71,85,105,0.3)" }
+        { range: "0-5",          count: 3100,  color: "#2563eb", gradient: "linear-gradient(180deg, #60a5fa 0%, #2563eb 100%)", shadowColor: "rgba(37,99,235,0.3)" },
+        { range: "6-12",         count: 4680,  color: "#059669", gradient: "linear-gradient(180deg, #34d399 0%, #059669 100%)", shadowColor: "rgba(5,150,105,0.3)" },
+        { range: "13-18",        count: 3620,  color: "#d97706", gradient: "linear-gradient(180deg, #fbbf24 0%, #d97706 100%)", shadowColor: "rgba(217,119,6,0.3)" },
+        { range: "19-35",        count: 9350,  color: "#7e22ce", gradient: "linear-gradient(180deg, #c084fc 0%, #7e22ce 100%)", shadowColor: "rgba(126,34,206,0.3)" },
+        { range: "36-60",        count: 14320, color: "#e11d48", gradient: "linear-gradient(180deg, #fb7185 0%, #e11d48 100%)", shadowColor: "rgba(225,29,72,0.3)" },
+        { range: "60+",          count: 7840,  color: "#0891b2", gradient: "linear-gradient(180deg, #22d3ee 0%, #0891b2 100%)", shadowColor: "rgba(8,145,178,0.3)" },
+        { range: "Not recorded", count: 40,    color: "#475569", gradient: "linear-gradient(180deg, #94a3b8 0%, #475569 100%)", shadowColor: "rgba(71,85,105,0.3)" }
     ];
 
     const genderSlices = [

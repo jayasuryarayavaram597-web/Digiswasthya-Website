@@ -4,10 +4,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Users } from "lucide-react";
 
-interface AgeBand {
+export interface AgeBand {
     range: string;
     count: number;
-    color: string;
+    color?: string;
+    gradient?: string;
+    shadowColor?: string;
 }
 
 interface PortalAgeDistributionChartProps {
