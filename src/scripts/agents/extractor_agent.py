@@ -303,7 +303,7 @@ def extract_16_metrics(scraped_input) -> dict:
                 dists = data_obj.get("districts")
                 if isinstance(dists, list) and dists:
                     district_list = [
-                        { "name": d.get("district", d.get("name", "Unknown")), "count": d.get("count", 1) }
+                        { "name": d.get("label") or d.get("district") or d.get("name") or "Unknown", "count": d.get("count", 1) }
                         for d in dists
                     ]
 

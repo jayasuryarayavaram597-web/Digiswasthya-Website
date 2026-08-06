@@ -2,8 +2,8 @@
   "timestamp": "2026-08-05T12:00:00Z",
   "metrics_count": 16,
   "kpis": {
-    "total_patients": 43217,
-    "total_teleconsultations": 59354,
+    "total_patients": 43240,
+    "total_teleconsultations": 59381,
     "total_camps": 5,
     "total_doctors": 125,
     "total_hospitals": 0
@@ -23,19 +23,19 @@
     },
     {
       "year": "2026",
-      "patients": 27514,
-      "teleconsultations": 38365,
+      "patients": 27530,
+      "teleconsultations": 38392,
       "camps": 5
     }
   ],
   "departments": [
     {
       "department": "General Medicine",
-      "count": 16096
+      "count": 16099
     },
     {
       "department": "Dermatologist",
-      "count": 10321
+      "count": 10324
     },
     {
       "department": "Pediatrician",
@@ -43,7 +43,7 @@
     },
     {
       "department": "Gynaecologist",
-      "count": 3542
+      "count": 3545
     },
     {
       "department": "Orthopaedics, Ms",
@@ -51,7 +51,7 @@
     },
     {
       "department": "General Physician",
-      "count": 3292
+      "count": 3307
     },
     {
       "department": "Paediatrician",
@@ -99,7 +99,7 @@
     },
     {
       "department": "Opthalmologist",
-      "count": 143
+      "count": 144
     },
     {
       "department": "Dentistry",
@@ -115,7 +115,7 @@
     },
     {
       "department": "Clinical Dietitian",
-      "count": 56
+      "count": 57
     },
     {
       "department": "Gynecologist",
@@ -123,7 +123,7 @@
     },
     {
       "department": "Medical Oncologist",
-      "count": 33
+      "count": 34
     },
     {
       "department": "Oncologist",
@@ -209,7 +209,7 @@
     },
     {
       "disease": "Tinea",
-      "count": 1334
+      "count": 1335
     },
     {
       "disease": "Xerosis",
@@ -217,7 +217,7 @@
     },
     {
       "disease": "Acute Febrile Illness",
-      "count": 785
+      "count": 786
     },
     {
       "disease": "Lrti",
@@ -253,7 +253,7 @@
     },
     {
       "disease": "Knee Pain",
-      "count": 502
+      "count": 504
     }
   ],
   "doctor_specialties": [
@@ -438,11 +438,11 @@
     "age_groups": [
       {
         "range": "0-5",
-        "count": 3075
+        "count": 3077
       },
       {
         "range": "6-12",
-        "count": 4704
+        "count": 4705
       },
       {
         "range": "13-18",
@@ -450,15 +450,15 @@
       },
       {
         "range": "19-35",
-        "count": 9402
+        "count": 9412
       },
       {
         "range": "36-60",
-        "count": 14366
+        "count": 14374
       },
       {
         "range": "60+",
-        "count": 7936
+        "count": 7938
       },
       {
         "range": "Not recorded",
@@ -481,243 +481,243 @@
     "villages": 633,
     "district_list": [
       {
-        "name": "Unknown",
-        "count": 14520
+        "name": "Nagpur",
+        "count": 14523
       },
       {
-        "name": "Unknown",
-        "count": 6662
+        "name": "Pune",
+        "count": 6666
       },
       {
-        "name": "Unknown",
+        "name": "Sant Kabir Nagar",
         "count": 2473
       },
       {
-        "name": "Unknown",
-        "count": 1965
+        "name": "Lucknow",
+        "count": 1966
       },
       {
-        "name": "Unknown",
-        "count": 938
+        "name": "Sant Kabeer Nagar",
+        "count": 950
       },
       {
-        "name": "Unknown",
+        "name": "Barabanki",
         "count": 464
       },
       {
-        "name": "Unknown",
-        "count": 261
+        "name": "Raigad",
+        "count": 263
       },
       {
-        "name": "Unknown",
+        "name": "Nashik",
         "count": 194
       },
       {
-        "name": "Unknown",
+        "name": "Palghar",
         "count": 166
       },
       {
-        "name": "Unknown",
+        "name": "Gorakhpur",
         "count": 60
       },
       {
-        "name": "Unknown",
+        "name": "Muzaffarpur",
         "count": 27
       },
       {
-        "name": "Unknown",
+        "name": "Jharkhand",
         "count": 19
       },
       {
-        "name": "Unknown",
+        "name": "Mumbai City",
         "count": 18
       },
       {
-        "name": "Unknown",
+        "name": "Varanasi",
+        "count": 18
+      },
+      {
+        "name": "New Delhi",
         "count": 17
       },
       {
-        "name": "Unknown",
-        "count": 17
-      },
-      {
-        "name": "Unknown",
+        "name": "Nagaur",
         "count": 16
       },
       {
-        "name": "Unknown",
+        "name": "Basti",
         "count": 8
       },
       {
-        "name": "Unknown",
+        "name": "Chandauli",
         "count": 8
       },
       {
-        "name": "Unknown",
+        "name": "Giridih",
         "count": 5
       },
       {
-        "name": "Unknown",
+        "name": "Ludhiana",
         "count": 5
       },
       {
-        "name": "Unknown",
+        "name": "Patna",
         "count": 4
       },
       {
-        "name": "Unknown",
+        "name": "Rae Bareli",
         "count": 4
       },
       {
-        "name": "Unknown",
+        "name": "Bhandara",
         "count": 3
       },
       {
-        "name": "Unknown",
+        "name": "Bihar",
         "count": 3
       },
       {
-        "name": "Unknown",
+        "name": "East Champaran",
         "count": 3
       },
       {
-        "name": "Unknown",
+        "name": "Mumbai",
         "count": 3
       },
       {
-        "name": "Unknown",
+        "name": "Ranchi",
         "count": 3
       },
       {
-        "name": "Unknown",
+        "name": "Sejalpur",
         "count": 3
       },
       {
-        "name": "Unknown",
+        "name": "Thane",
         "count": 3
       },
       {
-        "name": "Unknown",
+        "name": "Bengaluru Urban",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Bkt",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Chandrapur",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Gautam Buddha Nagar",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Gaya",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Kanpur Nagar",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Khairthal Tijara",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Nagpure",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Pathankot",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Puri",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Shahjahanpur",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Tehri Garhwal",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "West Champaran",
         "count": 2
       },
       {
-        "name": "Unknown",
+        "name": "Agar Malwa",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Ajmer",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Aligarh",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Ambala",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Banda",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Bhojpur",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Birbhum",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Central Delhi",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Chandigarh",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Deogarh",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Durg",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "East Chmparan",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Gurugram",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Hazaribagh",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Jamm",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Javahar Palghar",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Maharashtra",
         "count": 1
       },
       {
-        "name": "Unknown",
+        "name": "Manali",
         "count": 1
       }
     ]
