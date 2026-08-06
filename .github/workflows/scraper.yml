@@ -40,10 +40,3 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
         run: |
           python src/scripts/agents/pipeline.py
-
-      - name: Commit & Push Updated Local Data Store to Repository (Optional Backup)
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "auto: update live impact data store from portal scraper"
-          file_pattern: "src/data/liveImpactStore.json src/data/google_sheet_backup.csv"
-          push_options: '--force'
