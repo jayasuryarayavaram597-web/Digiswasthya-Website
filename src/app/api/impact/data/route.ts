@@ -3,10 +3,28 @@ import fs from "fs";
 import path from "path";
 import { impactData } from "@/data/impactData";
 
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
 export async function GET() {
   try {
+    // 1. Attempt to fetch live metrics from Firebase Firestore
+    try {
+      const docRef = doc(db, "impact_store", "latest");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return NextResponse.json({
+          success: true,
+          source: "firebase_firestore",
+          data: docSnap.data()
+        });
+      }
+    } catch (fbError) {
+      console.warn("[Firebase API Warning] Firestore lookup fallback to local store:", fbError);
+    }
+
+    // 2. Fallback to local JSON file store
     const storePath = path.join(process.cwd(), "src", "data", "liveImpactStore.json");
-    
     if (fs.existsSync(storePath)) {
       const raw = fs.readFileSync(storePath, "utf-8");
       const liveData = JSON.parse(raw);

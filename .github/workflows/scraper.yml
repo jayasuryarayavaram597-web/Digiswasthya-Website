@@ -28,7 +28,7 @@ jobs:
       - name: Install Python Dependencies & Playwright Browsers
         run: |
           python -m pip install --upgrade pip
-          pip install playwright requests beautifulsoup4 gspread google-auth python-dotenv
+          pip install playwright requests beautifulsoup4 gspread google-auth python-dotenv firebase-admin
           playwright install chromium --with-deps
 
       - name: Execute Live Scraper Pipeline
@@ -37,16 +37,11 @@ jobs:
           MANAGEMENT_PORTAL_EMAIL: ${{ secrets.MANAGEMENT_PORTAL_EMAIL }}
           MANAGEMENT_PORTAL_PASSWORD: ${{ secrets.MANAGEMENT_PORTAL_PASSWORD }}
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
         run: |
           python src/scripts/agents/pipeline.py
 
-      - name: Pull Latest Remote Changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull origin main --rebase || true
-
-      - name: Commit & Push Updated Live Data Store to Repository
+      - name: Commit & Push Updated Local Data Store to Repository (Optional Backup)
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "auto: update live impact data store from portal scraper"
