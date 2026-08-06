@@ -40,6 +40,12 @@ jobs:
         run: |
           python src/scripts/agents/pipeline.py
 
+      - name: Pull Latest Remote Changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull origin main --rebase || true
+
       - name: Commit & Push Updated Live Data Store to Repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
