@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout Repository Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
@@ -43,3 +45,4 @@ jobs:
         with:
           commit_message: "auto: update live impact data store from portal scraper"
           file_pattern: "src/data/liveImpactStore.json src/data/google_sheet_backup.csv"
+          push_options: '--force'
