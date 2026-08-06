@@ -11,6 +11,7 @@ import { impactData, ImpactPageData } from "@/data/impactData";
  */
 export function useImpactData() {
     const [data, setData] = useState<ImpactPageData>(impactData);
+    const [rawLiveStore, setRawLiveStore] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [lastUpdated, setLastUpdated] = useState<Date | null>(new Date());
     const [isLive, setIsLive] = useState(false);
@@ -23,6 +24,7 @@ export function useImpactData() {
             
             if (json.success && json.data) {
                 const live = json.data;
+                setRawLiveStore(live);
                 if (live.kpis) {
                     setData((prev) => {
                         const updatedKpis = prev.kpis.map((kpi) => {
@@ -46,9 +48,17 @@ export function useImpactData() {
                             }
                             return kpi;
                         });
+                        const updatedRegionalReach = (live.reach && live.reach.district_list)
+                            ? live.reach.district_list.map((d: any) => ({
+                                district: { en: d.name, hi: d.name },
+                                count: d.count
+                              }))
+                            : prev.regionalReach;
+
                         return {
                             ...prev,
-                            kpis: updatedKpis
+                            kpis: updatedKpis,
+                            regionalReach: updatedRegionalReach
                         };
                     });
                     setIsLive(true);
@@ -66,5 +76,5 @@ export function useImpactData() {
         fetchLiveImpactData();
     }, [fetchLiveImpactData]);
 
-    return { data, loading, lastUpdated, isLive, refetch: fetchLiveImpactData };
+    return { data, rawLiveStore, loading, lastUpdated, isLive, refetch: fetchLiveImpactData };
 }

@@ -6,7 +6,7 @@ import json
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-from scraper_agent import fetch_report_html
+from scraper_agent import fetch_report_html, load_dotenv
 from extractor_agent import extract_16_metrics
 
 def run_agent_scraper_pipeline(report_url: str = None, username: str = None, password: str = None, sheet_id: str = None):
@@ -16,13 +16,15 @@ def run_agent_scraper_pipeline(report_url: str = None, username: str = None, pas
     2. Agent 2: Extracts the 16 impact data points.
     3. Storage Sync: Saves to local store (and Google Sheets if configured).
     """
+    load_dotenv()
+
     print("\n=======================================================")
     print("[Pipeline] RUNNING AGENT SCRAPER PIPELINE")
     print("=======================================================\n")
 
-    url = report_url or os.getenv("DIGISWASTHYA_PORTAL_URL", "public/sample-report.html")
-    user = username or os.getenv("DIGISWASTHYA_PORTAL_USER", "none")
-    pwd = password or os.getenv("DIGISWASTHYA_PORTAL_PASS", "none")
+    url = report_url or os.getenv("MANAGEMENT_PORTAL_URL", os.getenv("DIGISWASTHYA_PORTAL_URL", "public/sample-report.html"))
+    user = username or os.getenv("MANAGEMENT_PORTAL_EMAIL", os.getenv("DIGISWASTHYA_PORTAL_USER", "none"))
+    pwd = password or os.getenv("MANAGEMENT_PORTAL_PASSWORD", os.getenv("DIGISWASTHYA_PORTAL_PASS", "none"))
     target_sheet = sheet_id or os.getenv("GOOGLE_SHEET_ID", "local_sync_mode")
 
     # Step 1: Execute Agent 1

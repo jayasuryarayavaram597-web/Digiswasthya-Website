@@ -127,6 +127,9 @@ ${impactData.patientTypeDistribution.map(p => `- ${p.type.en}: ${p.count.toLocal
 Consultations by Medical Department:
 ${impactData.consultationByDepartment.map(d => `- ${d.department.en}: ${d.count.toLocaleString('en-IN')} consultations`).join("\n")}
 
+Top Diagnosed Diseases & Conditions:
+${impactData.diseaseDistribution.map(dis => `- ${dis.name.en}: ${dis.value.toLocaleString('en-IN')} cases`).join("\n")}
+
 Doctors by Specialty:
 ${impactData.doctorsBySpecialty.map(s => `- ${s.specialty.en}: ${s.count.toLocaleString('en-IN')} doctors`).join("\n")}
 

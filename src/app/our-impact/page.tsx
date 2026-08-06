@@ -3,116 +3,192 @@
 import { Navbar }                         from "@/components/layout/Navbar";
 import { Footer }                         from "@/components/layout/Footer";
 import { ImpactHero }                     from "@/components/impact/ImpactHero";
-import { ImpactFilterBar }                from "@/components/impact/ImpactFilterBar";
 import { PortalKPICards }                 from "@/components/impact/PortalKPICards";
 import { PortalSmoothLineChart }          from "@/components/impact/PortalSmoothLineChart";
 import { PortalDepartmentBarChart }       from "@/components/impact/PortalDepartmentBarChart";
 import { PortalTopDiseasesChart }         from "@/components/impact/PortalTopDiseasesChart";
 import { PortalAgeDistributionChart }     from "@/components/impact/PortalAgeDistributionChart";
 import { PortalDonutPair }                from "@/components/impact/PortalDonutPair";
-import { PortalHealthCampsBarChart }      from "@/components/impact/PortalHealthCampsBarChart";
 import { PortalDoctorsSpecialtyChart }    from "@/components/impact/PortalDoctorsSpecialtyChart";
-import { DistrictsList }                  from "@/components/impact/DistrictsList";
 import { ImpactTimeline }                 from "@/components/impact/ImpactTimeline";
 import { InteractiveReachMap }            from "@/components/impact/InteractiveReachMap";
 import { useImpactData }                  from "@/hooks/useImpactData";
-
 export default function OurImpact() {
-    const { data, refetch } = useImpactData();
+    const { data, rawLiveStore } = useImpactData();
 
-    const handleApplyFilters = (filters: any) => {
-        console.log("Filters applied:", filters);
-        refetch();
-    };
-
-    // Data mappings matching portal screenshots exact figures
+    // Live Data mappings with fallback defaults
     const kpiData = {
-        patientsServed: 42950,
-        teleconsultations: 58894,
-        healthCamps: 5,
-        doctors: 125,
-        partnerHospitals: 0
+        patientsServed: rawLiveStore?.kpis?.total_patients ?? 42950,
+        teleconsultations: rawLiveStore?.kpis?.total_teleconsultations ?? 58894,
+        healthCamps: rawLiveStore?.kpis?.total_camps ?? 5,
+        doctors: rawLiveStore?.kpis?.total_doctors ?? 125,
+        partnerHospitals: rawLiveStore?.kpis?.total_hospitals ?? 0
     };
 
-    const patientGrowthData = [
-        { year: "2020", value: 120 },
-        { year: "2024", value: 450 },
-        { year: "2025", value: 19836 },
-        { year: "2026", value: 28000 }
+    const patientGrowthData = rawLiveStore?.growth ? rawLiveStore.growth.map((g: any) => ({ year: g.year, value: g.patients })) : [
+        { year: "2024", value: 2 },
+        { year: "2025", value: 19823 },
+        { year: "2026", value: 27223 }
     ];
 
-    const teleconsultationGrowthData = [
-        { year: "2020", value: 150 },
-        { year: "2024", value: 600 },
-        { year: "2025", value: 21000 },
-        { year: "2026", value: 38000 }
+    const teleconsultationGrowthData = rawLiveStore?.growth ? rawLiveStore.growth.map((g: any) => ({ year: g.year, value: g.teleconsultations })) : [
+        { year: "2024", value: 2 },
+        { year: "2025", value: 20986 },
+        { year: "2026", value: 37880 }
     ];
 
     const healthCampsGrowthData = [
-        { year: "2026", value: 5 }
+        { year: "2026", value: rawLiveStore?.kpis?.total_camps ?? 5 }
     ];
 
-    const departmentData = [
-        { department: "General Medicine", count: 16120 },
-        { department: "Dermatologist", count: 10180 },
-        { department: "Pediatrician", count: 3680 },
-        { department: "Gynaecologist", count: 3450 },
-        { department: "Orthopaedics", count: 3250 },
-        { department: "General Physician", count: 3100 },
-        { department: "Paediatrician", count: 2850 },
-        { department: "ENT", count: 2100 },
-        { department: "Homoeopathic", count: 520 },
-        { department: "Neurologist", count: 480 },
-        { department: "Ophthalmology", count: 310 },
-        { department: "Cardiology", count: 180 }
+    const departmentData = rawLiveStore?.departments ?? [
+        { department: "General Medicine", count: 15967 },
+        { department: "Dermatologist", count: 10223 },
+        { department: "Pediatrician", count: 3700 },
+        { department: "Gynaecologist", count: 3513 },
+        { department: "Orthopaedics, MS", count: 3307 },
+        { department: "General Physician", count: 3245 },
+        { department: "Paediatrician", count: 2889 },
+        { department: "Internal Medicine", count: 2691 },
+        { department: "General Physician, Gynaecologist", count: 2132 },
+        { department: "Orthopedic", count: 2089 },
+        { department: "Orthopaedic", count: 1976 },
+        { department: "Ent", count: 1143 },
+        { department: "Homopathic", count: 498 },
+        { department: "Neurologist", count: 453 },
+        { department: "Ophthalmology", count: 323 },
+        { department: "Dermatology And Leprosy", count: 180 },
+        { department: "Cardiology", count: 150 },
+        { department: "Opthamologist", count: 140 },
+        { department: "Dentistry", count: 135 },
+        { department: "Dentist", count: 115 },
+        { department: "Ophthalmology", count: 68 },
+        { department: "Clinical Dietitian", count: 55 },
+        { department: "Gynecologist", count: 49 },
+        { department: "Medical Oncologist", count: 33 },
+        { department: "Oncologist", count: 25 },
+        { department: "General Surgeon, Gastrointestinal Endo Surgeons", count: 20 },
+        { department: "Diabetologist", count: 18 },
+        { department: "Gynecology & Obstetrics", count: 18 },
+        { department: "Physiotherapist", count: 15 },
+        { department: "Clinical Nutritionist", count: 14 },
+        { department: "General Surgeon", count: 14 },
+        { department: "Pulmonologist", count: 14 },
+        { department: "Nephrologist", count: 13 },
+        { department: "Oral And Dental Care", count: 10 },
+        { department: "Gastroenterologist", count: 6 },
+        { department: "Psychiatrist", count: 4 },
+        { department: "Nutritionist", count: 3 },
+        { department: "Orthopaedics", count: 3 },
+        { department: "Psychologist", count: 3 },
+        { department: "Cardiologist General", count: 2 },
+        { department: "Pediatric Hemato Oncology", count: 2 }
     ];
 
-    const diseaseData = [
-        { disease: "UrTI", count: 2650 },
-        { disease: "Eczema", count: 2380 },
-        { disease: "Xerosis", count: 795 },
-        { disease: "Lrti", count: 760 },
-        { disease: "Upper Respiratory Tract Inf", count: 620 },
-        { disease: "T2Dm", count: 580 },
-        { disease: "Age", count: 510 },
-        { disease: "Knee Pain", count: 480 }
+    const diseaseData = rawLiveStore?.top_diseases ?? [
+        { disease: "Upper Respiratory Infection (URTI)", count: 2599 },
+        { disease: "Hypertension (High BP)", count: 2376 },
+        { disease: "Eczema (Skin Condition)", count: 1431 },
+        { disease: "Tinea (Fungal Infection)", count: 1318 },
+        { disease: "Xerosis (Severe Dry Skin)", count: 795 },
+        { disease: "Acute Febrile Illness", count: 778 },
+        { disease: "Lower Respiratory Infection (LRTI)", count: 774 },
+        { disease: "Gastritis (Stomach Inflammation)", count: 675 },
+        { disease: "Upper Respiratory Tract Inf", count: 648 },
+        { disease: "General Weakness & Fatigue", count: 624 },
+        { disease: "Type 2 Diabetes Mellitus (T2DM)", count: 602 },
+        { disease: "Joint Pain & Inflammation", count: 587 },
+        { disease: "Age-Related Health Degeneration", count: 524 },
+        { disease: "Acne & Dermatitis", count: 504 },
+        { disease: "Knee Pain & Osteoarthritis", count: 499 }
     ];
 
-    const ageDistributionData = [
-        { range: "0-5",          count: 3100,  color: "#2563eb", gradient: "linear-gradient(180deg, #60a5fa 0%, #2563eb 100%)", shadowColor: "rgba(37,99,235,0.3)" },
+    const ageDistributionData = rawLiveStore?.demographics?.age_groups ? rawLiveStore.demographics.age_groups.map((a: any) => ({
+        range: a.range,
+        count: a.count,
+        color: a.range === "0-5" ? "#2563eb" : a.range === "6-12" ? "#059669" : a.range === "13-18" ? "#d97706" : a.range === "19-35" ? "#7e22ce" : a.range === "36-60" ? "#e11d48" : "#0891b2"
+    })).filter((a: any) => a.range !== "Not recorded") : [
+        { range: "0-5",          count: 3045,  color: "#2563eb", gradient: "linear-gradient(180deg, #60a5fa 0%, #2563eb 100%)", shadowColor: "rgba(37,99,235,0.3)" },
         { range: "6-12",         count: 4680,  color: "#059669", gradient: "linear-gradient(180deg, #34d399 0%, #059669 100%)", shadowColor: "rgba(5,150,105,0.3)" },
-        { range: "13-18",        count: 3620,  color: "#d97706", gradient: "linear-gradient(180deg, #fbbf24 0%, #d97706 100%)", shadowColor: "rgba(217,119,6,0.3)" },
-        { range: "19-35",        count: 9350,  color: "#7e22ce", gradient: "linear-gradient(180deg, #c084fc 0%, #7e22ce 100%)", shadowColor: "rgba(126,34,206,0.3)" },
-        { range: "36-60",        count: 14320, color: "#e11d48", gradient: "linear-gradient(180deg, #fb7185 0%, #e11d48 100%)", shadowColor: "rgba(225,29,72,0.3)" },
-        { range: "60+",          count: 7840,  color: "#0891b2", gradient: "linear-gradient(180deg, #22d3ee 0%, #0891b2 100%)", shadowColor: "rgba(8,145,178,0.3)" },
-        { range: "Not recorded", count: 40,    color: "#475569", gradient: "linear-gradient(180deg, #94a3b8 0%, #475569 100%)", shadowColor: "rgba(71,85,105,0.3)" }
+        { range: "13-18",        count: 3635,  color: "#d97706", gradient: "linear-gradient(180deg, #fbbf24 0%, #d97706 100%)", shadowColor: "rgba(217,119,6,0.3)" },
+        { range: "19-35",        count: 9330,  color: "#7e22ce", gradient: "linear-gradient(180deg, #c084fc 0%, #7e22ce 100%)", shadowColor: "rgba(126,34,206,0.3)" },
+        { range: "36-60",        count: 14266, color: "#e11d48", gradient: "linear-gradient(180deg, #fb7185 0%, #e11d48 100%)", shadowColor: "rgba(225,29,72,0.3)" },
+        { range: "60+",          count: 7889,  color: "#0891b2", gradient: "linear-gradient(180deg, #22d3ee 0%, #0891b2 100%)", shadowColor: "rgba(8,145,178,0.3)" }
     ];
 
-    const genderSlices = [
-        { label: "Female", percentage: 56, color: "#e11d48" },
-        { label: "Male", percentage: 43, color: "#2563eb" },
-        { label: "Other", percentage: 1, color: "#8b5cf6" }
+    const genderSplit = rawLiveStore?.demographics?.gender_split;
+    const genderSlices = genderSplit ? (() => {
+        const total = (genderSplit.female || 0) + (genderSplit.male || 0) + (genderSplit.other || 0);
+        return [
+            { label: "Female", percentage: total ? Math.round((genderSplit.female / total) * 100) : 0, count: genderSplit.female || 0, color: "#059669" },
+            { label: "Male", percentage: total ? Math.round((genderSplit.male / total) * 100) : 0, count: genderSplit.male || 0, color: "#1e3a8a" },
+            { label: "Other", percentage: total ? Math.round((genderSplit.other / total) * 100) : 0, count: genderSplit.other || 0, color: "#38bdf8" }
+        ];
+    })() : [
+        { label: "Female", percentage: 58, count: 25022, color: "#059669" },
+        { label: "Male", percentage: 42, count: 17897, color: "#1e3a8a" },
+        { label: "Other", percentage: 0, count: 7, color: "#38bdf8" }
     ];
 
-    const patientTypeSlices = [
-        { label: "Follow-up", percentage: 5, color: "#059669" },
-        { label: "New", percentage: 26, color: "#2563eb" },
-        { label: "Not categorised", percentage: 69, color: "#d97706" }
+    const ptTypes = rawLiveStore?.demographics?.patient_types;
+    const patientTypeSlices = ptTypes ? (() => {
+        const total = (ptTypes.followUp || 0) + (ptTypes.new || 0) + (ptTypes.notCategorised || 0);
+        return [
+            { label: "Follow-up", percentage: total ? Math.round((ptTypes.followUp / total) * 100) : 0, count: ptTypes.followUp || 0, color: "#059669" },
+            { label: "New", percentage: total ? Math.round((ptTypes.new / total) * 100) : 0, count: ptTypes.new || 0, color: "#2563eb" },
+            { label: "Not categorised", percentage: total ? Math.round((ptTypes.notCategorised / total) * 100) : 0, count: ptTypes.notCategorised || 0, color: "#d97706" }
+        ];
+    })() : [
+        { label: "Follow-up", percentage: 5, count: 2603, color: "#059669" },
+        { label: "New", percentage: 25, count: 14964, color: "#2563eb" },
+        { label: "Not categorised", percentage: 70, count: 41302, color: "#d97706" }
     ];
 
-    const doctorSpecialtyData = [
-        { specialty: "Dentist", count: 21 },
-        { specialty: "Paediatrician", count: 8 },
-        { specialty: "Ophthalmologist", count: 6 },
-        { specialty: "Gynecologist", count: 5 },
-        { specialty: "Pulmonologist", count: 2 },
-        { specialty: "Clinical Dietitian", count: 1 },
-        { specialty: "Family Physician", count: 1 },
-        { specialty: "General Surgeon", count: 1 },
-        { specialty: "Gastrointestinal", count: 1 },
-        { specialty: "Homoeopathic", count: 1 },
-        { specialty: "Orthopaedics", count: 1 },
-        { specialty: "Thoracic Surgeon", count: 1 }
+    const doctorSpecialtyData = rawLiveStore?.doctor_specialties ?? [
+        { specialty: "General Physician", count: 21 },
+        { specialty: "Dermatologist", count: 8 },
+        { specialty: "General Medicine", count: 7 },
+        { specialty: "Dentist", count: 6 },
+        { specialty: "Oncologist", count: 6 },
+        { specialty: "Ent", count: 5 },
+        { specialty: "Nutritionist", count: 5 },
+        { specialty: "Paediatrician", count: 5 },
+        { specialty: "Psychogist", count: 5 },
+        { specialty: "Gynarlogist", count: 4 },
+        { specialty: "Community Healthcare Specialist", count: 4 },
+        { specialty: "Opthamologist", count: 4 },
+        { specialty: "Physiotherapist", count: 4 },
+        { specialty: "Diabetologist", count: 3 },
+        { specialty: "Medical Oncologist", count: 3 },
+        { specialty: "Gynecologist", count: 2 },
+        { specialty: "Nephrologist", count: 2 },
+        { specialty: "Neurologist", count: 2 },
+        { specialty: "Oerthopedic", count: 2 },
+        { specialty: "Pulmonogist", count: 2 },
+        { specialty: "Urologist", count: 2 },
+        { specialty: "Cardiologist General", count: 1 },
+        { specialty: "Cardiology", count: 1 },
+        { specialty: "Clinical Dietitan", count: 1 },
+        { specialty: "Clinical Nutrionist", count: 1 },
+        { specialty: "Dentistey", count: 1 },
+        { specialty: "Dermatology And Leprosy", count: 1 },
+        { specialty: "Family physician ,A Surgeon of Standing And Proctological", count: 1 },
+        { specialty: "Gastronterologist", count: 1 },
+        { specialty: "General Physiciean,Gynaecologist", count: 1 },
+        { specialty: "Genaral Surgeon", count: 1 },
+        { specialty: "General Surgeon,Gastrointestinal Endo Surgeons", count: 1 },
+        { specialty: "Gynecologist,General physiciean", count: 1 },
+        { specialty: "Gynecology &Obstetrics", count: 1 },
+        { specialty: "Hepatologist", count: 1 },
+        { specialty: "Homopathic", count: 1 },
+        { specialty: "Neurosurgeon", count: 1 },
+        { specialty: "Opthathmology", count: 1 },
+        { specialty: "Oral And Dental Care", count: 1 },
+        { specialty: "Orthopaedics.MS", count: 1 },
+        { specialty: "Pediatric Hemato Oncology", count: 1 },
+        { specialty: "Peditrician", count: 1 },
+        { specialty: "Phychitrist", count: 1 },
+        { specialty: "Thoracis surgeon", count: 1 }
     ];
 
     return (
@@ -124,8 +200,6 @@ export default function OurImpact() {
                 <ImpactHero />
 
                 <div className="container max-w-7xl mx-auto px-4 pt-6">
-                    {/* Top Filter Bar (Image 1) */}
-                    <ImpactFilterBar onApplyFilters={handleApplyFilters} />
 
                     {/* Top 5 KPI Summary Cards (Image 1) */}
                     <PortalKPICards data={kpiData} />
@@ -153,32 +227,26 @@ export default function OurImpact() {
                         />
                     </div>
 
-                    {/* Consultations by Department Vertical Bar Chart (Image 4) */}
-                    <PortalDepartmentBarChart data={departmentData} />
+                    {/* Consultations by Department & Top Diseases Side-by-side Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <PortalDepartmentBarChart data={departmentData} />
+                        <PortalTopDiseasesChart data={diseaseData} />
+                    </div>
 
-                    {/* Top Diseases Horizontal Bar Chart (Image 5) */}
-                    <PortalTopDiseasesChart data={diseaseData} />
-
-                    {/* Age Distribution 7-Color Bar Chart (Image 6) */}
-                    <PortalAgeDistributionChart data={ageDistributionData} />
+                    {/* Age Distribution & Doctors by Specialty Side-by-side Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <PortalAgeDistributionChart data={ageDistributionData} />
+                        <PortalDoctorsSpecialtyChart data={doctorSpecialtyData} />
+                    </div>
 
                     {/* Gender Distribution & New vs Follow-up Donut Pair (Image 7) */}
                     <PortalDonutPair genderData={genderSlices} patientTypeData={patientTypeSlices} />
-
-                    {/* Health Camps Growth Chart (Image 8 - Golden Amber Bar Chart) */}
-                    <PortalHealthCampsBarChart />
-
-                    {/* Doctors by Specialty Emerald Horizontal Bar Chart (Image 9) */}
-                    <PortalDoctorsSpecialtyChart data={doctorSpecialtyData} />
-
-                    {/* Districts Covered List (Image 10) */}
-                    <DistrictsList data={data.regionalReach} totalDistricts={84} totalVillages={633} />
                 </div>
 
-                {/* Geographic Map (UNTOUCHED) */}
-                <InteractiveReachMap />
+                {/* Geographic Interactive Reach Map with Integrated District Search */}
+                <InteractiveReachMap districtList={data.regionalReach} totalVillages={633} />
 
-                {/* Journey Timeline (UNTOUCHED) */}
+                {/* Journey Timeline */}
                 <ImpactTimeline />
             </div>
 

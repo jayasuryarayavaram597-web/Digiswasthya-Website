@@ -7,6 +7,7 @@ import { PieChart } from "lucide-react";
 interface DonutSlice {
     label: string;
     percentage: number;
+    count?: number;
     color: string;
 }
 
@@ -16,7 +17,7 @@ interface PortalDonutPairProps {
 }
 
 function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitle: string; slices: DonutSlice[] }) {
-    const [activeIndex, setActiveIndex] = useState<number | null>(0);
+    const [activeIndex, setActiveIndex] = useState<number>(0);
 
     const radius = 54;
     const strokeWidth = 22;
@@ -31,7 +32,7 @@ function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitl
         return { ...s, strokeLength, strokeOffset };
     });
 
-    const activeSlice = activeIndex !== null ? slices[activeIndex] : slices[0];
+    const activeSlice = slices[activeIndex] || slices[0];
 
     return (
         <motion.div
@@ -39,36 +40,42 @@ function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitl
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-slate-100 flex-1 flex flex-col items-center hover:shadow-md transition-all duration-200 relative overflow-hidden"
+            className="bg-gradient-to-b from-blue-50/40 via-white to-white rounded-2xl p-5 shadow-[0_4px_20px_rgba(13,91,225,0.05)] border border-blue-100/70 flex-1 flex flex-col items-center hover:shadow-md hover:border-blue-200 transition-all duration-300 relative overflow-hidden font-sans"
         >
-            {/* Soft accent top line */}
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 via-emerald-500 to-indigo-500 opacity-80" />
+            {/* Dynamic accent top line based on active selection */}
+            <motion.div 
+                className="absolute top-0 inset-x-0 h-1 transition-all duration-300" 
+                style={{ backgroundColor: activeSlice.color }}
+            />
 
             {/* Header */}
-            <div className="w-full text-left mb-2 flex items-center justify-between">
+            <div className="w-full text-left mb-1 flex items-center justify-between">
                 <div>
                     <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest font-sans">
                         {title}
                     </h3>
-                    <p className="text-[11px] font-semibold text-slate-400 mt-0.5">
+                    <p className="text-[10.5px] font-semibold text-slate-400 mt-0.5">
                         {subtitle}
                     </p>
                 </div>
-                <div className="w-7 h-7 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center border border-slate-100">
-                    <PieChart className="w-3.5 h-3.5 text-slate-500" />
+                <div 
+                    className="w-7 h-7 rounded-lg flex items-center justify-center border transition-all duration-300"
+                    style={{ backgroundColor: `${activeSlice.color}15`, borderColor: `${activeSlice.color}30` }}
+                >
+                    <PieChart className="w-3.5 h-3.5 transition-colors duration-300" style={{ color: activeSlice.color }} />
                 </div>
             </div>
 
             {/* SVG Donut */}
-            <div className="relative w-36 h-36 my-2 flex items-center justify-center">
-                <svg width="140" height="140" viewBox="0 0 160 160" className="transform -rotate-90 select-none overflow-visible">
+            <div className="relative w-32 h-32 my-2 flex items-center justify-center">
+                <svg width="130" height="130" viewBox="0 0 160 160" className="transform -rotate-90 select-none overflow-visible">
                     <circle
                         cx={center}
                         cy={center}
                         r={radius}
                         fill="transparent"
                         stroke="#f1f5f9"
-                        strokeWidth={strokeWidth}
+                        strokeWidth={strokeWidth - 2}
                     />
 
                     {strokeSlices.map((slice, idx) => {
@@ -81,15 +88,19 @@ function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitl
                                 r={radius}
                                 fill="transparent"
                                 stroke={slice.color}
-                                strokeWidth={isActive ? strokeWidth + 3 : strokeWidth}
+                                strokeWidth={isActive ? strokeWidth + 5 : strokeWidth - 2}
                                 strokeDasharray={`${slice.strokeLength} ${circumference}`}
                                 strokeDashoffset={slice.strokeOffset}
                                 initial={{ strokeDasharray: `0 ${circumference}` }}
                                 whileInView={{ strokeDasharray: `${slice.strokeLength} ${circumference}` }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: idx * 0.08 }}
-                                className="cursor-pointer transition-all duration-150"
-                                opacity={isActive ? 1 : 0.85}
+                                className="cursor-pointer transition-all duration-300 origin-center"
+                                style={{
+                                    opacity: isActive ? 1 : 0.35,
+                                    filter: isActive ? `drop-shadow(0 0 6px ${slice.color}80)` : "none"
+                                }}
+                                onClick={() => setActiveIndex(idx)}
                                 onMouseEnter={() => setActiveIndex(idx)}
                             />
                         );
@@ -97,64 +108,82 @@ function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitl
                 </svg>
 
                 {/* Center Readout */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none p-1.5">
                     {activeSlice && (
                         <motion.div
                             key={activeSlice.label}
-                            initial={{ scale: 0.9, opacity: 0 }}
+                            initial={{ scale: 0.85, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            className="flex flex-col items-center"
+                            transition={{ duration: 0.2 }}
+                            className="flex flex-col items-center justify-center"
                         >
-                            <span className="text-2xl font-black text-slate-900 leading-none tracking-tight" style={{ color: activeSlice.color }}>
+                            <span 
+                                className="text-2xl font-black leading-none tracking-tight transition-colors duration-200" 
+                                style={{ color: activeSlice.color }}
+                            >
                                 {activeSlice.percentage}%
                             </span>
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1 px-1 truncate max-w-[90px]">
+                            <span className="text-[9.5px] font-extrabold text-slate-800 uppercase tracking-wider mt-0.5 px-2 py-0.5 rounded-full bg-slate-100/80 truncate max-w-[90px]">
                                 {activeSlice.label}
                             </span>
+                            {activeSlice.count !== undefined && (
+                                <span className="text-[9.5px] font-bold text-slate-500 mt-0.5">
+                                    {activeSlice.count.toLocaleString("en-IN")} patients
+                                </span>
+                            )}
                         </motion.div>
                     )}
                 </div>
             </div>
 
-            {/* Legend Pills */}
-            <div className="w-full space-y-1.5 mt-2">
+            {/* Interactive Legend Pills */}
+            <div className="w-full space-y-1.5 mt-1">
                 {slices.map((slice, idx) => {
                     const isActive = activeIndex === idx;
                     return (
                         <div
                             key={idx}
-                            className={`flex items-center justify-between px-3 py-1.5 rounded-xl transition-all duration-150 cursor-pointer ${
-                                isActive
-                                    ? "bg-slate-100/90 border border-slate-200/90"
-                                    : "bg-slate-50/60 border border-slate-100 hover:bg-slate-100/40"
-                            }`}
+                            onClick={() => setActiveIndex(idx)}
                             onMouseEnter={() => setActiveIndex(idx)}
+                            style={{
+                                backgroundColor: isActive ? `${slice.color}15` : "rgba(248,250,252,0.7)",
+                                borderColor: isActive ? slice.color : "rgba(241,245,249,1)"
+                            }}
+                            className={`flex items-center justify-between px-3 py-1.5 rounded-xl border transition-all duration-200 cursor-pointer ${
+                                isActive
+                                    ? "shadow-2xs scale-[1.01] ring-1"
+                                    : "hover:bg-slate-100/60"
+                            }`}
                         >
                             <div className="flex items-center gap-2 truncate">
                                 <span
-                                    className="w-2.5 h-2.5 rounded-full shrink-0"
-                                    style={{ backgroundColor: slice.color }}
+                                    className="w-2.5 h-2.5 rounded-full shrink-0 shadow-2xs transition-transform duration-200"
+                                    style={{ 
+                                        backgroundColor: slice.color,
+                                        boxShadow: isActive ? `0 0 6px ${slice.color}` : "none",
+                                        transform: isActive ? "scale(1.15)" : "scale(1)"
+                                    }}
                                 />
-                                <span className="text-[11px] font-bold text-slate-700 tracking-wide">
+                                <span className={`text-[11.5px] font-extrabold tracking-wide ${isActive ? "text-slate-900" : "text-slate-600"}`}>
                                     {slice.label}
                                 </span>
                             </div>
-                            <span
-                                className="text-[10px] font-extrabold px-2 py-0.5 rounded-md text-white font-mono"
-                                style={{ backgroundColor: slice.color }}
-                            >
-                                {slice.percentage}%
-                            </span>
+                            <div className="flex items-center gap-1.5">
+                                {slice.count !== undefined && (
+                                    <span className="text-[10.5px] font-bold text-slate-500">
+                                        {slice.count.toLocaleString("en-IN")}
+                                    </span>
+                                )}
+                                <span
+                                    className="text-[10px] font-black px-2 py-0.5 rounded-md text-white font-mono shadow-2xs"
+                                    style={{ backgroundColor: slice.color }}
+                                >
+                                    {slice.percentage}%
+                                </span>
+                            </div>
                         </div>
                     );
                 })}
-            </div>
-
-            {/* Pagination dots */}
-            <div className="flex justify-center gap-1 mt-3">
-                {[...Array(6)].map((_, i) => (
-                    <span key={i} className={`w-1 h-1 rounded-full ${i === 0 ? "bg-slate-400" : "bg-slate-200"}`} />
-                ))}
             </div>
         </motion.div>
     );

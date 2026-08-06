@@ -14,6 +14,7 @@ interface PortalTopDiseasesChartProps {
 }
 
 export function PortalTopDiseasesChart({ data }: PortalTopDiseasesChartProps) {
+    const displayData = data.slice(0, 8);
     const [hoveredIdx, setHoveredIdx] = useState<number | null>(2);
 
     const maxScale = 2600;
@@ -24,7 +25,7 @@ export function PortalTopDiseasesChart({ data }: PortalTopDiseasesChartProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="bg-white rounded-3xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] border border-slate-100 mb-6 hover:shadow-md transition-all duration-200 relative overflow-hidden"
+            className="bg-white rounded-2xl p-6 shadow-xs border border-slate-100 h-full flex flex-col justify-between relative overflow-hidden font-sans"
         >
             {/* Soft accent top bar */}
             <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 opacity-80" />
@@ -38,36 +39,32 @@ export function PortalTopDiseasesChart({ data }: PortalTopDiseasesChartProps) {
                         </h3>
                         <span className="inline-flex items-center gap-1 text-[9px] font-bold text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-200/60">
                             <Activity className="w-3 h-3 text-purple-600" />
-                            Diagnoses Distribution
+                            Top 8 Diagnoses
                         </span>
                     </div>
                     <p className="text-[11px] font-medium text-slate-400 mt-0.5">
-                        Recorded diagnoses. A diagnosis seen only once is not shown.
+                        Recorded diagnoses distribution
                     </p>
-                </div>
-
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 self-start sm:self-auto">
-                    Top Conditions
                 </div>
             </div>
 
             {/* Horizontal Bar Chart Container */}
-            <div className="relative pt-2 pb-6 px-4 border-b border-l border-slate-200">
+            <div className="relative pt-2 pb-2 px-2 border-b border-l border-slate-200">
                 <div className="space-y-2.5">
-                    {data.map((item, idx) => {
+                    {displayData.map((item, idx) => {
                         const widthPct = Math.min((item.count / maxScale) * 100, 100);
                         const isHovered = hoveredIdx === idx;
 
                         return (
                             <div
                                 key={idx}
-                                className={`flex items-center gap-4 py-1 px-2 rounded-xl transition-colors cursor-pointer relative ${
+                                className={`flex items-center gap-3 py-1 px-2 rounded-xl transition-colors cursor-pointer relative ${
                                     isHovered ? "bg-slate-100/70" : "hover:bg-slate-50"
                                 }`}
                                 onMouseEnter={() => setHoveredIdx(idx)}
                             >
                                 {/* Left Label */}
-                                <div className="w-36 text-right text-[11px] font-semibold text-slate-600 truncate">
+                                <div className="w-36 text-right text-[11px] font-semibold text-slate-600 truncate" title={item.disease}>
                                     {item.disease}
                                 </div>
 
@@ -91,7 +88,7 @@ export function PortalTopDiseasesChart({ data }: PortalTopDiseasesChartProps) {
                                     <motion.div
                                         initial={{ opacity: 0, scale: 0.95 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        className="absolute left-[38%] -top-3 bg-white/95 backdrop-blur-md border border-slate-200 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-xl shadow-lg z-20 pointer-events-none flex items-center gap-2"
+                                        className="absolute left-[35%] -top-3 bg-white/95 backdrop-blur-md border border-slate-200 text-slate-900 text-xs font-bold px-3 py-1 rounded-xl shadow-lg z-20 pointer-events-none flex items-center gap-2"
                                     >
                                         <span className="w-2 h-2 rounded-full bg-purple-600 shrink-0" />
                                         <span>{item.disease}:</span>
@@ -106,18 +103,9 @@ export function PortalTopDiseasesChart({ data }: PortalTopDiseasesChartProps) {
                 {/* X Axis scale labels */}
                 <div className="flex justify-between text-[9.5px] font-semibold text-slate-400 mt-4 pl-40 pr-2">
                     <span>0</span>
-                    <span>650</span>
                     <span>1,300</span>
-                    <span>1,950</span>
                     <span>2,600</span>
                 </div>
-            </div>
-
-            {/* Pagination dots indicator */}
-            <div className="flex justify-center gap-1.5 mt-4">
-                {[...Array(6)].map((_, i) => (
-                    <span key={i} className={`w-1.5 h-1.5 rounded-full ${i === 0 ? "bg-slate-400" : "bg-slate-200"}`} />
-                ))}
             </div>
         </motion.div>
     );

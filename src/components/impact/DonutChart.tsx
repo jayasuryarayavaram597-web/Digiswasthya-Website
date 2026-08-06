@@ -61,6 +61,7 @@ export function DonutChart({ data, title }: DonutChartProps) {
                     {/* Slices */}
                     {slices.map((slice) => {
                         const isActive = activeIndex === slice.index;
+                        const hasSelection = activeIndex !== null;
                         return (
                             <motion.circle
                                 key={slice.index}
@@ -69,7 +70,7 @@ export function DonutChart({ data, title }: DonutChartProps) {
                                 r={radius}
                                 fill="transparent"
                                 stroke={slice.color}
-                                strokeWidth={isActive ? strokeWidth + 4 : strokeWidth}
+                                strokeWidth={isActive ? strokeWidth + 6 : strokeWidth - 2}
                                 strokeDasharray={`${slice.strokeLength} ${circumference}`}
                                 strokeDashoffset={slice.strokeOffset}
                                 strokeLinecap="butt"
@@ -77,7 +78,12 @@ export function DonutChart({ data, title }: DonutChartProps) {
                                 whileInView={{ strokeDasharray: `${slice.strokeLength} ${circumference}` }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: slice.index * 0.05 }}
-                                className="cursor-pointer transition-all duration-200 origin-center"
+                                className="cursor-pointer transition-all duration-300 origin-center"
+                                style={{
+                                    opacity: !hasSelection || isActive ? 1 : 0.3,
+                                    filter: isActive ? `drop-shadow(0 0 10px ${slice.color}90)` : "none"
+                                }}
+                                onClick={() => setActiveIndex(slice.index)}
                                 onMouseEnter={() => setActiveIndex(slice.index)}
                                 onMouseLeave={() => setActiveIndex(null)}
                             />
@@ -89,23 +95,23 @@ export function DonutChart({ data, title }: DonutChartProps) {
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
                     {activeIndex !== null && slices[activeIndex] ? (
                         <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
+                            initial={{ scale: 0.85, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             className="flex flex-col items-center"
                         >
-                            <span className="text-3xl font-black text-gray-950 leading-none tracking-tighter">
+                            <span className="text-3xl font-black leading-none tracking-tighter" style={{ color: slices[activeIndex].color }}>
                                 {slices[activeIndex].value}%
                             </span>
-                            <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest mt-1 px-3 truncate max-w-[130px]">
+                            <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest mt-1 px-3 py-0.5 rounded-full bg-slate-100/90 truncate max-w-[130px]">
                                 {slices[activeIndex].label}
                             </span>
                         </motion.div>
                     ) : (
                         <div className="flex flex-col items-center">
-                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
                                 Share
                             </span>
-                            <span className="text-2xl font-black text-gray-950 mt-1 leading-none tracking-tight">
+                            <span className="text-2xl font-black text-slate-900 mt-1 leading-none tracking-tight">
                                 100%
                             </span>
                         </div>
@@ -124,24 +130,36 @@ export function DonutChart({ data, title }: DonutChartProps) {
                         return (
                             <div
                                 key={slice.index}
-                                className={`flex items-center justify-between p-2.5 rounded-xl transition-all duration-200 cursor-pointer ${
+                                style={{
+                                    backgroundColor: isActive ? `${slice.color}15` : "rgba(248,250,252,0.7)",
+                                    borderColor: isActive ? slice.color : "rgba(241,245,249,1)"
+                                }}
+                                className={`flex items-center justify-between p-2.5 rounded-xl border transition-all duration-200 cursor-pointer ${
                                     isActive
-                                    ? "bg-slate-100/90 shadow-sm border border-slate-200"
-                                    : "bg-slate-50/70 border border-slate-100 hover:bg-slate-100/60"
+                                    ? "shadow-sm scale-[1.02] ring-1"
+                                    : "hover:bg-slate-100/60"
                                 }`}
+                                onClick={() => setActiveIndex(slice.index)}
                                 onMouseEnter={() => setActiveIndex(slice.index)}
                                 onMouseLeave={() => setActiveIndex(null)}
                             >
                                 <div className="flex items-center gap-3 truncate mr-2">
                                     <span
-                                        className="h-3 w-3 rounded-full shrink-0 shadow-sm transition-transform duration-200"
-                                        style={{ backgroundColor: slice.color, boxShadow: `0 0 6px ${slice.color}80` }}
+                                        className="h-3 w-3 rounded-full shrink-0 shadow-xs transition-transform duration-200"
+                                        style={{ 
+                                            backgroundColor: slice.color,
+                                            boxShadow: isActive ? `0 0 8px ${slice.color}` : "none",
+                                            transform: isActive ? "scale(1.2)" : "scale(1)"
+                                        }}
                                     />
                                     <span className="text-xs md:text-sm font-extrabold text-slate-900 tracking-wide font-sans">
                                         {slice.label}
                                     </span>
                                 </div>
-                                <span className="text-xs md:text-sm font-black text-slate-950 font-mono shrink-0 bg-white px-2 py-0.5 rounded-md border border-slate-200/60">
+                                <span 
+                                    className="text-xs md:text-sm font-black font-mono shrink-0 px-2.5 py-0.5 rounded-md text-white shadow-xs"
+                                    style={{ backgroundColor: slice.color }}
+                                >
                                     {slice.value}%
                                 </span>
                             </div>

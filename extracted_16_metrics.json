@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-04T12:00:00Z",
+  "timestamp": "2026-08-05T12:00:00Z",
   "metrics_count": 16,
   "kpis": {
     "total_patients": 42950,
@@ -9,263 +9,202 @@
     "total_hospitals": 0
   },
   "growth": [
-    {
-      "year": "2020",
-      "patients": 120,
-      "teleconsultations": 150,
-      "camps": 0
-    },
-    {
-      "year": "2024",
-      "patients": 450,
-      "teleconsultations": 600,
-      "camps": 1
-    },
-    {
-      "year": "2025",
-      "patients": 19836,
-      "teleconsultations": 21000,
-      "camps": 3
-    },
-    {
-      "year": "2026",
-      "patients": 28000,
-      "teleconsultations": 38000,
-      "camps": 5
-    }
+    { "year": "2020", "patients": 120, "teleconsultations": 150, "camps": 0 },
+    { "year": "2024", "patients": 450, "teleconsultations": 600, "camps": 1 },
+    { "year": "2025", "patients": 19836, "teleconsultations": 21000, "camps": 3 },
+    { "year": "2026", "patients": 28000, "teleconsultations": 38000, "camps": 5 }
   ],
   "departments": [
-    {
-      "department": "General Medicine",
-      "count": 16120
-    },
-    {
-      "department": "Dermatologist",
-      "count": 10180
-    },
-    {
-      "department": "Pediatrician",
-      "count": 3680
-    },
-    {
-      "department": "Gynaecologist",
-      "count": 3450
-    },
-    {
-      "department": "Orthopaedics",
-      "count": 3250
-    },
-    {
-      "department": "General Physician",
-      "count": 3100
-    },
-    {
-      "department": "Paediatrician",
-      "count": 2850
-    },
-    {
-      "department": "ENT",
-      "count": 2100
-    },
-    {
-      "department": "Homoeopathic",
-      "count": 520
-    },
-    {
-      "department": "Neurologist",
-      "count": 480
-    },
-    {
-      "department": "Ophthalmology",
-      "count": 310
-    },
-    {
-      "department": "Cardiology",
-      "count": 180
-    }
+    { "department": "General Medicine", "count": 15967 },
+    { "department": "Dermatologist", "count": 10223 },
+    { "department": "Pediatrician", "count": 3700 },
+    { "department": "Gynaecologist", "count": 3513 },
+    { "department": "Orthopaedics, MS", "count": 3307 },
+    { "department": "General Physician", "count": 3245 },
+    { "department": "Paediatrician", "count": 2889 },
+    { "department": "Not specified", "count": 2691 },
+    { "department": "General Physician, Gynaecologist", "count": 2132 },
+    { "department": "Orthopedic", "count": 2089 },
+    { "department": "Orthopaedic", "count": 1976 },
+    { "department": "Ent", "count": 1143 },
+    { "department": "Homopathic", "count": 498 },
+    { "department": "Neurologist", "count": 453 },
+    { "department": "Ophthalmology", "count": 323 },
+    { "department": "Dermatology And Leprosy", "count": 180 },
+    { "department": "Cardiology", "count": 150 },
+    { "department": "Opthamologist", "count": 140 },
+    { "department": "Dentistry", "count": 135 },
+    { "department": "Dentist", "count": 115 },
+    { "department": "Ophthalmology", "count": 68 },
+    { "department": "Clinical Dietitian", "count": 55 },
+    { "department": "Gynecologist", "count": 49 },
+    { "department": "Medical Oncologist", "count": 33 },
+    { "department": "Oncologist", "count": 25 },
+    { "department": "General Surgeon, Gastrointestinal Endo Surgeons", "count": 20 },
+    { "department": "Diabetologist", "count": 18 },
+    { "department": "Gynecology & Obstetrics", "count": 18 },
+    { "department": "Physiotherapist", "count": 15 },
+    { "department": "Clinical Nutritionist", "count": 14 },
+    { "department": "General Surgeon", "count": 14 },
+    { "department": "Pulmonologist", "count": 14 },
+    { "department": "Nephrologist", "count": 13 },
+    { "department": "Oral And Dental Care", "count": 10 },
+    { "department": "Gastroenterologist", "count": 6 },
+    { "department": "Psychiatrist", "count": 4 },
+    { "department": "Nutritionist", "count": 3 },
+    { "department": "Orthopaedics", "count": 3 },
+    { "department": "Psychologist", "count": 3 },
+    { "department": "Cardiologist General", "count": 2 },
+    { "department": "Pediatric Hemato Oncology", "count": 2 }
   ],
   "top_diseases": [
-    {
-      "disease": "UrTI (Upper Respiratory Tract)",
-      "count": 2650
-    },
-    {
-      "disease": "Eczema",
-      "count": 2380
-    },
-    {
-      "disease": "Xerosis",
-      "count": 795
-    },
-    {
-      "disease": "LRTI (Lower Respiratory)",
-      "count": 760
-    },
-    {
-      "disease": "Upper Respiratory Infection",
-      "count": 620
-    },
-    {
-      "disease": "T2DM (Type 2 Diabetes)",
-      "count": 580
-    },
-    {
-      "disease": "Age-Related Degeneration",
-      "count": 510
-    },
-    {
-      "disease": "Knee Pain / Osteoarthritis",
-      "count": 480
-    }
+    { "disease": "urti", "count": 2599 },
+    { "disease": "Htn", "count": 2376 },
+    { "disease": "Ecsema", "count": 1431 },
+    { "disease": "Tinea", "count": 1318 },
+    { "disease": "Xerosis", "count": 795 },
+    { "disease": "Acute Febrile illnes", "count": 778 },
+    { "disease": "Lrti", "count": 774 },
+    { "disease": "Gastritis", "count": 675 },
+    { "disease": "Upper Respiratory Tract Inf", "count": 648 },
+    { "disease": "Gen Weakness", "count": 624 },
+    { "disease": "T2Dm", "count": 602 },
+    { "disease": "Joint Pain", "count": 587 },
+    { "disease": "Age", "count": 524 },
+    { "disease": "Acne", "count": 504 },
+    { "disease": "Knee Pain", "count": 499 }
   ],
   "doctor_specialties": [
-    {
-      "specialty": "Dentist",
-      "count": 21
-    },
-    {
-      "specialty": "Paediatrician",
-      "count": 8
-    },
-    {
-      "specialty": "Ophthalmologist",
-      "count": 6
-    },
-    {
-      "specialty": "Gynecologist",
-      "count": 5
-    },
-    {
-      "specialty": "Pulmonologist",
-      "count": 2
-    },
-    {
-      "specialty": "Clinical Dietitian",
-      "count": 1
-    },
-    {
-      "specialty": "Family Physician",
-      "count": 1
-    },
-    {
-      "specialty": "General Surgeon",
-      "count": 1
-    },
-    {
-      "specialty": "Gastrointestinal",
-      "count": 1
-    },
-    {
-      "specialty": "Homoeopathic",
-      "count": 1
-    },
-    {
-      "specialty": "Orthopaedics",
-      "count": 1
-    },
-    {
-      "specialty": "Thoracic Surgeon",
-      "count": 1
-    }
+    { "specialty": "General Physician", "count": 21 },
+    { "specialty": "Dermatologist", "count": 8 },
+    { "specialty": "General Medicine", "count": 7 },
+    { "specialty": "Dentist", "count": 6 },
+    { "specialty": "Oncologist", "count": 6 },
+    { "specialty": "Ent", "count": 5 },
+    { "specialty": "Nutritionist", "count": 5 },
+    { "specialty": "Paediatrician", "count": 5 },
+    { "specialty": "Psychogist", "count": 5 },
+    { "specialty": "Gynarlogist", "count": 4 },
+    { "specialty": "Not Specified", "count": 4 },
+    { "specialty": "Opthamologist", "count": 4 },
+    { "specialty": "Physiotherapist", "count": 4 },
+    { "specialty": "Diabetologist", "count": 3 },
+    { "specialty": "Medical Oncologist", "count": 3 },
+    { "specialty": "Gynecologist", "count": 2 },
+    { "specialty": "Nephrologist", "count": 2 },
+    { "specialty": "Neurologist", "count": 2 },
+    { "specialty": "Oerthopedic", "count": 2 },
+    { "specialty": "Pulmonogist", "count": 2 },
+    { "specialty": "Urologist", "count": 2 },
+    { "specialty": "Cardiologist General", "count": 1 },
+    { "specialty": "Cardiology", "count": 1 },
+    { "specialty": "Clinical Dietitan", "count": 1 },
+    { "specialty": "Clinical Nutrionist", "count": 1 },
+    { "specialty": "Dentistey", "count": 1 },
+    { "specialty": "Dermatology And Leprosy", "count": 1 },
+    { "specialty": "Family physician ,A Surgeon of Standing And Proctological", "count": 1 },
+    { "specialty": "Gastronterologist", "count": 1 },
+    { "specialty": "General Physiciean,Gynaecologist", "count": 1 },
+    { "specialty": "Genaral Surgeon", "count": 1 },
+    { "specialty": "General Surgeon,Gastrointestinal Endo Surgeons", "count": 1 },
+    { "specialty": "Gynecologist,General physiciean", "count": 1 },
+    { "specialty": "Gynecology &Obstetrics", "count": 1 },
+    { "specialty": "Hepatologist", "count": 1 },
+    { "specialty": "Homopathic", "count": 1 },
+    { "specialty": "Neurosurgeon", "count": 1 },
+    { "specialty": "Opthathmology", "count": 1 },
+    { "specialty": "Oral And Dental Care", "count": 1 },
+    { "specialty": "Orthopaedics.MS", "count": 1 },
+    { "specialty": "Pediatric Hemato Oncology", "count": 1 },
+    { "specialty": "Peditrician", "count": 1 },
+    { "specialty": "Phychitrist", "count": 1 },
+    { "specialty": "Thoracis surgeon", "count": 1 }
   ],
   "demographics": {
     "age_groups": [
-      {
-        "range": "0-5",
-        "count": 3100
-      },
-      {
-        "range": "6-12",
-        "count": 4680
-      },
-      {
-        "range": "13-18",
-        "count": 3620
-      },
-      {
-        "range": "19-35",
-        "count": 9350
-      },
-      {
-        "range": "36-60",
-        "count": 14320
-      },
-      {
-        "range": "60+",
-        "count": 7840
-      },
-      {
-        "range": "Not recorded",
-        "count": 40
-      }
+      { "range": "0-5", "count": 3045 },
+      { "range": "6-12", "count": 4680 },
+      { "range": "13-18", "count": 3635 },
+      { "range": "19-35", "count": 9330 },
+      { "range": "36-60", "count": 14266 },
+      { "range": "60+", "count": 7889 },
+      { "range": "Not recorded", "count": 81 }
     ],
     "patient_types": {
-      "followUp": 2100,
-      "new": 11200,
-      "notCategorised": 29650
+      "followUp": 2603,
+      "new": 14964,
+      "notCategorised": 41302
     },
     "gender_split": {
-      "female": 24050,
-      "male": 18450,
-      "other": 450
+      "female": 25022,
+      "male": 17897,
+      "other": 7
     }
   },
   "reach": {
-    "districts": 84,
+    "districts": 60,
     "villages": 633,
     "district_list": [
-      {
-        "name": "Basti",
-        "count": 8
-      },
-      {
-        "name": "Chandauli",
-        "count": 8
-      },
-      {
-        "name": "Giridih",
-        "count": 5
-      },
-      {
-        "name": "Jalgaon",
-        "count": 5
-      },
-      {
-        "name": "Ludhiana",
-        "count": 5
-      },
-      {
-        "name": "Bengaluru Urban",
-        "count": 4
-      },
-      {
-        "name": "Patna",
-        "count": 4
-      },
-      {
-        "name": "Rae Bareli",
-        "count": 4
-      },
-      {
-        "name": "Sant Kabir Nagar",
-        "count": 24850
-      },
-      {
-        "name": "Nagpur",
-        "count": 8400
-      },
-      {
-        "name": "Muzaffarpur",
-        "count": 5600
-      },
-      {
-        "name": "Pune",
-        "count": 3200
-      },
-      {
-        "name": "Lucknow",
-        "count": 480
-      }
+      { "name": "Nagpur", "count": 14430 },
+      { "name": "Pune", "count": 6595 },
+      { "name": "Sant Kabir Nagar", "count": 2473 },
+      { "name": "Lucknow", "count": 1965 },
+      { "name": "Sant Kabeer Nagar", "count": 895 },
+      { "name": "Barabanki", "count": 438 },
+      { "name": "Raigad", "count": 249 },
+      { "name": "Nashik", "count": 188 },
+      { "name": "Palghar", "count": 163 },
+      { "name": "Gorakhpur", "count": 60 },
+      { "name": "Muzaffarpur", "count": 25 },
+      { "name": "Jharkhand", "count": 19 },
+      { "name": "Mumbai City", "count": 18 },
+      { "name": "New Delhi", "count": 17 },
+      { "name": "Varanasi", "count": 17 },
+      { "name": "Nagaur", "count": 16 },
+      { "name": "Basti", "count": 8 },
+      { "name": "Chandauli", "count": 8 },
+      { "name": "Giridih", "count": 5 },
+      { "name": "Ludhiana", "count": 5 },
+      { "name": "Patna", "count": 4 },
+      { "name": "Rae Bareli", "count": 4 },
+      { "name": "Bhandara", "count": 3 },
+      { "name": "Bihar", "count": 3 },
+      { "name": "East Champaran", "count": 3 },
+      { "name": "Mumbai", "count": 3 },
+      { "name": "Ranchi", "count": 3 },
+      { "name": "Sejalpur", "count": 3 },
+      { "name": "Thane", "count": 3 },
+      { "name": "Bengaluru Urban", "count": 2 },
+      { "name": "Bkt", "count": 2 },
+      { "name": "Chandrapur", "count": 2 },
+      { "name": "Gautam Buddha Nagar", "count": 2 },
+      { "name": "Gaya", "count": 2 },
+      { "name": "Kanpur Nagar", "count": 2 },
+      { "name": "Khairthal Tijara", "count": 2 },
+      { "name": "Nagpure", "count": 2 },
+      { "name": "Pathankot", "count": 2 },
+      { "name": "Puri", "count": 2 },
+      { "name": "Shahjahanpur", "count": 2 },
+      { "name": "Tehri Garhwal", "count": 2 },
+      { "name": "West Champaran", "count": 2 },
+      { "name": "Agar Malwa", "count": 1 },
+      { "name": "Ajmer", "count": 1 },
+      { "name": "Aligarh", "count": 1 },
+      { "name": "Ambala", "count": 1 },
+      { "name": "Banda", "count": 1 },
+      { "name": "Bhojpur", "count": 1 },
+      { "name": "Birbhum", "count": 1 },
+      { "name": "Central Delhi", "count": 1 },
+      { "name": "Chandigarh", "count": 1 },
+      { "name": "Deogarh", "count": 1 },
+      { "name": "Durg", "count": 1 },
+      { "name": "East Chmparan", "count": 1 },
+      { "name": "Gurugram", "count": 1 },
+      { "name": "Hazaribagh", "count": 1 },
+      { "name": "Jamm", "count": 1 },
+      { "name": "Javahar Palghar", "count": 1 },
+      { "name": "Maharashtra", "count": 1 },
+      { "name": "Manali", "count": 1 }
     ]
   }
 }

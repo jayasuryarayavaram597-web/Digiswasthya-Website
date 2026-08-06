@@ -52,7 +52,7 @@ function getLocalSmartAnswer(userMessage: string) {
     }
     if (msg.includes("impact") || msg.includes("patient") || msg.includes("count") || msg.includes("stats")) {
         return {
-            content: "DigiSwasthya has served over 42,950+ patients and conducted 58,894+ teleconsultations across 84 districts and 633 villages! 📊",
+            content: "DigiSwasthya has served over 42,950+ patients and conducted 58,894+ teleconsultations across 60 districts and 633 villages! 📊",
             suggestedLink: { title: "View Impact Dashboard", url: "/our-impact" }
         };
     }
@@ -95,10 +95,16 @@ export async function POST(req: NextRequest) {
         const openai = new OpenAI({
             baseURL: process.env.OPENROUTER_API_KEY ? "https://openrouter.ai/api/v1" : undefined,
             apiKey: apiKey,
+            defaultHeaders: process.env.OPENROUTER_API_KEY ? {
+                "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+                "X-Title": "DigiSwasthya Foundation"
+            } : undefined
         });
 
+        const modelToUse = process.env.OPENROUTER_API_KEY ? "openai/gpt-4o-mini" : "gpt-4o-mini";
+
         const response = await openai.chat.completions.create({
-            model: process.env.OPENROUTER_API_KEY ? "openai/gpt-4o-mini" : "gpt-4o-mini",
+            model: modelToUse,
             messages: [
                 { role: "system", content: getSystemPrompt() },
                 ...messages.map((m: any) => ({ role: m.role, content: m.content }))
@@ -128,10 +134,10 @@ export async function POST(req: NextRequest) {
             suggestedLink: suggestedLink
         });
 
-    } catch (error) {
-        console.error("Chat API error:", error);
+    } catch (error: any) {
+        console.error("Chat API error details:", error?.response?.data || error?.message || error);
         return NextResponse.json(
-            { error: "Failed to process chat request" },
+            { error: error?.message || "Failed to process chat request" },
             { status: 500 }
         );
     }

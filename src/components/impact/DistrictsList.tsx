@@ -15,10 +15,12 @@ interface DistrictsListProps {
     totalVillages?: number;
 }
 
-export function DistrictsList({ data, totalDistricts = 84, totalVillages = 633 }: DistrictsListProps) {
+export function DistrictsList({ data, totalDistricts, totalVillages = 633 }: DistrictsListProps) {
     const { language } = useLanguage();
     const currentLang = (language === "en" || language === "hi") ? language : "en";
     const [searchQuery, setSearchQuery] = useState("");
+
+    const totalCount = totalDistricts || data.length;
 
     const filtered = data.filter((item) =>
         item.district[currentLang].toLowerCase().includes(searchQuery.toLowerCase())
@@ -41,19 +43,19 @@ export function DistrictsList({ data, totalDistricts = 84, totalVillages = 633 }
                 </div>
 
                 <div className="text-xs font-bold text-slate-500 bg-slate-50 px-3 py-1.5 rounded-full border border-slate-200 self-start sm:self-auto">
-                    <span className="text-blue-600 font-extrabold">{totalDistricts} districts</span> · <span className="text-emerald-600 font-extrabold">{totalVillages} villages</span>
+                    <span className="text-blue-600 font-extrabold">{totalCount} districts</span> · <span className="text-emerald-600 font-extrabold">{totalVillages} villages</span>
                 </div>
             </div>
 
             {/* Search Input */}
             <div className="relative mb-4">
-                <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search district..."
-                    className="w-full bg-gray-50 border border-gray-200 text-xs font-medium rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                    className="w-full bg-slate-50 border border-slate-300 text-slate-900 font-bold text-xs rounded-xl pl-9 pr-4 py-2.5 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all shadow-2xs"
                 />
             </div>
 
@@ -85,7 +87,7 @@ export function DistrictsList({ data, totalDistricts = 84, totalVillages = 633 }
 
             {/* Scroll indicator footer */}
             <div className="mt-3 pt-2 text-[10px] text-gray-400 font-bold uppercase tracking-wider flex items-center justify-center gap-1 border-t border-gray-50">
-                <span>Scroll to see all {totalDistricts} districts</span>
+                <span>Scroll to see all {totalCount} districts</span>
                 <ChevronDown className="w-3 h-3 text-gray-400" />
             </div>
         </div>

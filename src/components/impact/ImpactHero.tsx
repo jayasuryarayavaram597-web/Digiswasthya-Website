@@ -55,19 +55,6 @@ export function ImpactHero() {
                 >
                     {heroContent.subtitle[currentLang]}
                 </motion.p>
-
-                {/* Live last-updated badge */}
-                {lastUpdated && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.6 }}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-[11px] font-bold shadow-sm"
-                    >
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        Live Data Connected · Updated {lastUpdated.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-                    </motion.div>
-                )}
             </div>
         </section>
     );

@@ -20,11 +20,13 @@ def load_dotenv():
 
 load_dotenv()
 
-def fetch_report_html(target_url: str, username: str = None, password: str = None) -> str:
+def fetch_report_html(target_url: str, username: str = None, password: str = None) -> dict:
     """
-    Agent 1: Web-Scraper Agent
-    Fetches raw HTML report from target portal or local HTTP endpoint.
-    Handles login flow via Playwright to access all 41 departments and complete disease records.
+    Agent 1: Web-Scraper & API Interceptor Agent
+    1. Authenticates at target portal via Playwright.
+    2. Listens to API responses to intercept live JSON payloads.
+    3. Automates hover/tap interactions over dynamic charts to reveal hidden tooltips.
+    4. Extracts embedded window state (__NEXT_DATA__ / __INITIAL_STATE__).
     """
     print(f"[Agent 1] Target Portal URL: {target_url}")
 
@@ -36,35 +38,60 @@ def fetch_report_html(target_url: str, username: str = None, password: str = Non
         and 'your-secure-password' not in password.lower()
     )
 
+    captured_api_payloads = []
+
     if not is_valid_auth:
-        print("[Agent 1] No valid live credentials provided. Using fallback HTML reader...")
+        print("[Agent 1] No valid live credentials provided. Checking local/sample sources...")
+        fallback_file = "public/sample-report.html"
+        html_text = ""
         if target_url and target_url.startswith("http"):
             try:
                 response = requests.get(target_url, timeout=15)
                 response.raise_for_status()
-                return response.text
+                html_text = response.text
             except Exception:
                 pass
         
-        fallback_file = "public/sample-report.html"
-        if os.path.exists(fallback_file):
+        if not html_text and os.path.exists(fallback_file):
             with open(fallback_file, "r", encoding="utf-8") as f:
-                return f.read()
-        return "<html><body><h1>DigiSwasthya Management Portal</h1></body></html>"
+                html_text = f.read()
+        
+        return {
+            "html": html_text or "<html><body><h1>DigiSwasthya Portal Sync</h1></body></html>",
+            "json_payloads": []
+        }
 
-    # Authenticated Portal Flow via Playwright
+    # Authenticated Portal Flow via Playwright with API Interception & Hover Automation
     try:
         import importlib
         playwright_sync = importlib.import_module("playwright.sync_api")
         sync_playwright = getattr(playwright_sync, "sync_playwright")
+        
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             context = browser.new_context()
             page = context.new_page()
 
+            # Listener: Intercept live API responses & log errors
+            page.on("console", lambda msg: print(f"[Browser Console] {msg.type}: {msg.text}"))
+            page.on("requestfailed", lambda req: print(f"[Browser Request Failed] {req.url} - {req.failure}"))
+
+            def handle_response(response):
+                try:
+                    content_type = response.headers.get("content-type", "")
+                    if "application/json" in content_type and response.status == 200:
+                        data = response.json()
+                        captured_api_payloads.append({
+                            "url": response.url,
+                            "data": data
+                        })
+                except Exception:
+                    pass
+
+            page.on("response", handle_response)
+
             print(f"[Agent 1] Authenticating at {target_url} with user '{username}'...")
-            page.goto(target_url)
-            page.wait_for_load_state("networkidle")
+            page.goto(target_url, wait_until="networkidle")
 
             # Click Management Portal or Admin Login if landing screen is shown
             try:
@@ -95,24 +122,80 @@ def fetch_report_html(target_url: str, username: str = None, password: str = Non
                 if outreach_tab.is_visible():
                     outreach_tab.click()
                     page.wait_for_load_state("networkidle")
-                    page.wait_for_timeout(2500)
+                    
+                    # Try clicking Apply button if present
+                    try:
+                        apply_btn = page.get_by_role("button", name="Apply").first
+                        if apply_btn.is_visible() and not apply_btn.is_disabled():
+                            apply_btn.click()
+                            page.wait_for_timeout(2000)
+                    except Exception:
+                        pass
+
+                    # Wait for Loading indicator to detach or 15s
+                    try:
+                        print("[Agent 1] Waiting for portal live database to finish loading...")
+                        page.wait_for_selector("text=Loading…", state="detached", timeout=20000)
+                    except Exception as err:
+                        print(f"[Agent 1 Note] Waiting selector timeout: {err}")
+                        page.wait_for_timeout(5000)
+            except Exception:
+                pass
+
+            # Save screenshot for exact visual inspection
+            page.screenshot(path="portal_debug.png", full_page=True)
+            print("[Agent 1] Debug screenshot saved to portal_debug.png")
+
+            # Automate Hover Actions over Interactive Chart Elements
+            try:
+                chart_elements = page.locator("rect, circle, path, canvas, .recharts-rectangle, .apexcharts-series, .bar, .chart-point").all()
+                print(f"[Agent 1] Found {len(chart_elements)} interactive chart elements. Triggering hover events...")
+                for el in chart_elements[:40]: # Hover first 40 chart elements to reveal hidden tooltips
+                    try:
+                        if el.is_visible():
+                            el.hover(timeout=300)
+                            page.wait_for_timeout(50)
+                    except Exception:
+                        pass
+            except Exception as hover_err:
+                print(f"[Agent 1 Hover Note] {hover_err}")
+
+            # Extract window.__NEXT_DATA__ or embedded state if available
+            embedded_state = None
+            try:
+                embedded_state = page.evaluate("() => window.__NEXT_DATA__ || window.__INITIAL_STATE__ || null")
+                if embedded_state:
+                    captured_api_payloads.append({
+                        "url": "window.__NEXT_DATA__",
+                        "data": embedded_state
+                    })
             except Exception:
                 pass
 
             html_content = page.content()
             browser.close()
-            print(f"[Agent 1] Playwright successfully scraped live portal ({len(html_content)} bytes).")
-            return html_content
+            print(f"[Agent 1] Playwright successfully scraped portal ({len(html_content)} bytes HTML, {len(captured_api_payloads)} API payloads).")
+            return {
+                "html": html_content,
+                "json_payloads": captured_api_payloads
+            }
+
     except Exception as e:
         print(f"[Agent 1 Warning] Playwright execution failed: {e}. Falling back to requests Session auth...")
         session = requests.Session()
         try:
             session.post(target_url, data={"username": username, "email": username, "password": password}, timeout=15)
             resp = session.get(target_url, timeout=15)
-            return resp.text
+            return {
+                "html": resp.text,
+                "json_payloads": []
+            }
         except Exception as req_err:
             print(f"[Agent 1 Error] Session auth failed: {req_err}")
-            return "<html><body><h1>DigiSwasthya Live Sync</h1></body></html>"
+            return {
+                "html": "<html><body><h1>DigiSwasthya Live Sync</h1></body></html>",
+                "json_payloads": []
+            }
 
 if __name__ == "__main__":
     portal_url = os.getenv("MANAGEMENT_PORTAL_URL", "http://localhost:3000/sample-report.html")
@@ -122,7 +205,9 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         portal_url = sys.argv[1]
 
-    html = fetch_report_html(portal_url, portal_user, portal_pass)
+    result = fetch_report_html(portal_url, portal_user, portal_pass)
     with open("scraped_report_temp.html", "w", encoding="utf-8") as f:
-        f.write(html)
-    print("[Agent 1 Completed] Scraped report saved to scraped_report_temp.html")
+        f.write(result["html"])
+    with open("scraped_report_temp.json", "w", encoding="utf-8") as f:
+        json.dump(result["json_payloads"], f, indent=2)
+    print("[Agent 1 Completed] Scraped HTML and API payloads saved to temp files.")

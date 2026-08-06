@@ -1,0 +1,43 @@
+name: Automated Impact Scraper Pipeline
+
+on:
+  schedule:
+    # Runs every 6 hours automatically (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  # Allows manual one-click trigger from GitHub Actions tab anytime
+  workflow_dispatch:
+
+jobs:
+  scrape-and-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install Python Dependencies & Playwright Browsers
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright requests beautifulsoup4 gspread google-auth python-dotenv
+          playwright install chromium --with-deps
+
+      - name: Execute Live Scraper Pipeline
+        env:
+          MANAGEMENT_PORTAL_URL: ${{ secrets.MANAGEMENT_PORTAL_URL }}
+          MANAGEMENT_PORTAL_EMAIL: ${{ secrets.MANAGEMENT_PORTAL_EMAIL }}
+          MANAGEMENT_PORTAL_PASSWORD: ${{ secrets.MANAGEMENT_PORTAL_PASSWORD }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+        run: |
+          python src/scripts/agents/pipeline.py
+
+      - name: Commit & Push Updated Live Data Store to Repository
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "auto: update live impact data store from portal scraper"
+          file_pattern: "src/data/liveImpactStore.json src/data/google_sheet_backup.csv"
