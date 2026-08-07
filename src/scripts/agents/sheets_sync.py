@@ -13,6 +13,35 @@ def sync_to_google_sheet(json_data: dict, sheet_id: str):
     reach = json_data.get("reach", {})
     timestamp = json_data.get("timestamp", "")
 
+    # Extract computed values from live data for rows 7-15
+    growth = json_data.get("growth", [])
+    departments = json_data.get("departments", [])
+    top_diseases = json_data.get("top_diseases", [])
+    doctor_specialties = json_data.get("doctor_specialties", [])
+    demographics = json_data.get("demographics", {})
+    age_groups = demographics.get("age_groups", [])
+    pt = demographics.get("patient_types", {})
+    gs = demographics.get("gender_split", {})
+
+    latest_growth = growth[-1] if growth else {}
+    top_dept = f"{departments[0]['department']} ({departments[0]['count']:,})" if departments else "N/A"
+    top_disease = f"{top_diseases[0]['disease']} ({top_diseases[0]['count']:,})" if top_diseases else "N/A"
+    top_spec = f"{doctor_specialties[0]['specialty']} ({doctor_specialties[0]['count']})" if doctor_specialties else "N/A"
+
+    dom_age = max(age_groups, key=lambda x: x["count"]) if age_groups else {}
+    age_total = sum(a["count"] for a in age_groups) or 1
+    dom_age_str = f"{dom_age.get('range', 'N/A')} ({round(dom_age.get('count', 0) * 100 / age_total)}%)" if dom_age else "N/A"
+
+    pt_total = sum(pt.values()) or 1
+    new_pct = round(pt.get("new", 0) * 100 / pt_total)
+    fu_pct = round(pt.get("followUp", 0) * 100 / pt_total)
+    pt_str = f"{new_pct}% New / {fu_pct}% Follow-up"
+
+    gs_total = sum(gs.values()) or 1
+    f_pct = round(gs.get("female", 0) * 100 / gs_total)
+    m_pct = round(gs.get("male", 0) * 100 / gs_total)
+    gender_str = f"{f_pct}% Female / {m_pct}% Male"
+
     summary_rows = [
         ["Metric #", "Data Point Name", "Extracted Value", "Last Updated"],
         [1, "Total Patients Served", kpis.get("total_patients", 0), timestamp],
@@ -21,16 +50,16 @@ def sync_to_google_sheet(json_data: dict, sheet_id: str):
         [4, "Total Doctors Enrolled", kpis.get("total_doctors", 0), timestamp],
         [5, "Total Volunteers Registered", kpis.get("total_volunteers", 0), timestamp],
         [6, "Partner Hospitals Count", kpis.get("total_hospitals", 0), timestamp],
-        [7, "Patients Growth (2026)", 42850, timestamp],
-        [8, "Teleconsultation Growth (2026)", 28400, timestamp],
-        [9, "Health Camps Growth (2026)", 185, timestamp],
-        [10, "Top Department", "General Medicine (14,200)", timestamp],
-        [11, "Top Diagnosed Condition", "Hypertension (5,400)", timestamp],
-        [12, "Top Doctor Specialty", "General Physicians (45)", timestamp],
-        [13, "Dominant Age Group", "36 - 60 yrs (35%)", timestamp],
-        [14, "New vs Follow-up Ratio", "62% New / 38% Follow-up", timestamp],
-        [15, "Gender Distribution", "54% Female / 44% Male", timestamp],
-        [16, "Geographic Reach", f"{reach.get('districts', 18)} Districts / {reach.get('villages', 420)} Villages", timestamp]
+        [7, "Patients Growth (Latest Year)", latest_growth.get("patients", 0), timestamp],
+        [8, "Teleconsultation Growth (Latest Year)", latest_growth.get("teleconsultations", 0), timestamp],
+        [9, "Health Camps (Latest Year)", latest_growth.get("camps", 0), timestamp],
+        [10, "Top Department", top_dept, timestamp],
+        [11, "Top Diagnosed Condition", top_disease, timestamp],
+        [12, "Top Doctor Specialty", top_spec, timestamp],
+        [13, "Dominant Age Group", dom_age_str, timestamp],
+        [14, "New vs Follow-up Ratio", pt_str, timestamp],
+        [15, "Gender Distribution", gender_str, timestamp],
+        [16, "Geographic Reach", f"{reach.get('districts', 0)} Districts / {reach.get('villages', 0)} Villages", timestamp]
     ]
 
     # Local CSV backup

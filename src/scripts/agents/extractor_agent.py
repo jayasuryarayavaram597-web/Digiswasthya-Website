@@ -38,6 +38,9 @@ def extract_16_metrics(scraped_input) -> dict:
     camps = 5
     doctors = 125
     hospitals = 0
+    gender_split = {"female": 25022, "male": 17897, "other": 7}  # default, overwritten by live data
+    patient_types = {"followUp": 2603, "new": 14964, "notCategorised": 41302}  # default
+    villages = 633  # default
 
     dept_breakdown = [
         { "department": "General Medicine", "count": 15967 },
@@ -230,93 +233,155 @@ def extract_16_metrics(scraped_input) -> dict:
     # Track if we found real live data from the portal (not hardcoded defaults)
     live_data_found = False
 
-    # Parse Intercepted API JSON Payloads if present
+    # Comprehensive set of keys that indicate a live portal data payload
+    LIVE_DATA_KEYS = {
+        "headline", "consultations_by_department", "summary", "outreach_summary",
+        "outreach", "impact", "stats", "kpis", "kpi", "overview", "totals",
+        "total_patients", "patients_served", "patientsServed", "patientCount",
+        "departments", "by_department", "departmentBreakdown", "consultationsByDepartment",
+        "top_diseases", "diseases", "topDiseases", "diagnoses",
+        "age_distribution", "ageDistribution", "age_groups", "ageGroups",
+        "gender_distribution", "genderDistribution",
+        "districts", "district_reach", "districtReach",
+        "patients_growth", "patientsGrowth", "growth_trends", "growthTrends",
+        "doctors_by_specialty", "doctorsBySpecialty", "specialties",
+        "new_vs_followup", "newVsFollowup",
+    }
+
+    # DEBUG: Log all captured payload URLs and their top-level keys
+    print(f"[Agent 2] Processing {len(json_payloads)} captured API payloads:")
+    for i, p in enumerate(json_payloads):
+        p_data = p.get("data", {})
+        p_keys = list(p_data.keys()) if isinstance(p_data, dict) else f"[{type(p_data).__name__}]"
+        print(f"  [Payload {i}] {p.get('url', '?')[:80]} | keys: {p_keys}")
+
+    # Parse Intercepted API JSON Payloads
     for payload in json_payloads:
         data_obj = payload.get("data", {})
         if isinstance(data_obj, dict):
-            # Check for outreach-summary live portal API response
-            if "headline" in data_obj or "consultations_by_department" in data_obj:
-                print(f"[Agent 2] Intercepted live outreach-summary API from portal!")
-                live_data_found = True  # Mark that we got real live data
-                
-                # 1. Headline KPIs
-                hl = data_obj.get("headline", {})
+            if any(k in data_obj for k in LIVE_DATA_KEYS):
+                print(f"[Agent 2] Live portal API data detected! URL: {payload.get('url', '?')[:60]}")
+                print(f"[Agent 2] Payload top-level keys: {list(data_obj.keys())}")
+                live_data_found = True
+
+                # 1. KPI Headline — try all common field name variants
+                hl = {}
+                for kpi_key in ["headline", "summary", "stats", "kpis", "kpi", "overview", "totals"]:
+                    val = data_obj.get(kpi_key)
+                    if isinstance(val, dict) and val:
+                        hl = val
+                        break
+                # Also check if KPI values are at the root level
+                if not hl and any(k in data_obj for k in ["patients_served", "total_patients", "patientsServed"]):
+                    hl = data_obj
                 if isinstance(hl, dict):
-                    patients = hl.get("patients_served", patients)
-                    teleconsultations = hl.get("teleconsultations", teleconsultations)
-                    camps = hl.get("health_camps", camps)
-                    doctors = hl.get("doctors", doctors)
-                    hospitals = hl.get("partner_hospitals", hospitals)
+                    for pk in ["patients_served", "total_patients", "patients", "patientsServed", "patientCount"]:
+                        if pk in hl: patients = hl[pk]; break
+                    for tk in ["teleconsultations", "total_teleconsultations", "consultations", "totalConsultations"]:
+                        if tk in hl: teleconsultations = hl[tk]; break
+                    for ck in ["health_camps", "camps", "healthCamps", "camp_count", "total_camps"]:
+                        if ck in hl: camps = hl[ck]; break
+                    for dk in ["doctors", "total_doctors", "totalDoctors", "doctor_count", "doctorCount"]:
+                        if dk in hl: doctors = hl[dk]; break
+                    for hk in ["partner_hospitals", "hospitals", "partnerHospitals", "hospital_count"]:
+                        if hk in hl: hospitals = hl[hk]; break
 
-                # 2. Departments
-                depts = data_obj.get("consultations_by_department")
-                if isinstance(depts, list) and depts:
-                    dept_breakdown = [{ "department": d.get("label", d.get("department")), "count": d.get("count", 0) } for d in depts]
+                # 2. Departments — try all field name variants
+                for dept_key in ["consultations_by_department", "departments", "by_department",
+                                  "departmentBreakdown", "consultationsByDepartment", "department_breakdown"]:
+                    depts = data_obj.get(dept_key)
+                    if isinstance(depts, list) and depts:
+                        dept_breakdown = [{"department": d.get("label", d.get("department", d.get("name", ""))),
+                                           "count": d.get("count", d.get("value", 0))} for d in depts]
+                        break
 
-                # 3. Top Diseases
-                diseases = data_obj.get("top_diseases")
-                if isinstance(diseases, list) and diseases:
-                    top_diseases = [{ "disease": d.get("label", d.get("disease")), "count": d.get("count", 0) } for d in diseases]
+                # 3. Top Diseases — try all field name variants
+                for dis_key in ["top_diseases", "diseases", "topDiseases", "diagnoses", "top_diagnoses"]:
+                    diseases = data_obj.get(dis_key)
+                    if isinstance(diseases, list) and diseases:
+                        top_diseases = [{"disease": d.get("label", d.get("disease", d.get("name", ""))),
+                                         "count": d.get("count", d.get("value", 0))} for d in diseases]
+                        break
 
-                # 4. Doctors by Specialty
-                specs = data_obj.get("doctors_by_specialty")
-                if isinstance(specs, list) and specs:
-                    doctor_specialties = [{ "specialty": s.get("label", s.get("specialty")), "count": s.get("count", 0) } for s in specs]
+                # 4. Doctors by Specialty — try all field name variants
+                for spec_key in ["doctors_by_specialty", "specialties", "doctorsBySpecialty", "doctor_specialties"]:
+                    specs = data_obj.get(spec_key)
+                    if isinstance(specs, list) and specs:
+                        doctor_specialties = [{"specialty": s.get("label", s.get("specialty", s.get("name", ""))),
+                                               "count": s.get("count", s.get("value", 0))} for s in specs]
+                        break
 
-                # 5. Age Distribution
-                ages = data_obj.get("age_distribution")
-                if isinstance(ages, list) and ages:
-                    age_groups = [{ "range": a.get("label", a.get("range")), "count": a.get("count", 0) } for a in ages]
+                # 5. Age Distribution — try all field name variants
+                for age_key in ["age_distribution", "ageDistribution", "age_groups", "ageGroups", "ages"]:
+                    ages = data_obj.get(age_key)
+                    if isinstance(ages, list) and ages:
+                        age_groups = [{"range": a.get("label", a.get("range", a.get("name", ""))),
+                                       "count": a.get("count", a.get("value", 0))} for a in ages]
+                        break
 
-                # 6. Gender Split
-                genders = data_obj.get("gender_distribution")
-                if isinstance(genders, list) and genders:
-                    g_split = { "female": 0, "male": 0, "other": 0 }
-                    for g in genders:
-                        lbl = str(g.get("label", "")).lower()
-                        cnt = g.get("count", 0)
-                        if "female" in lbl: g_split["female"] = cnt
-                        elif "male" in lbl: g_split["male"] = cnt
-                        else: g_split["other"] = cnt
-                    gender_split = g_split
+                # 6. Gender Distribution — try all field name variants
+                for gen_key in ["gender_distribution", "genderDistribution", "gender", "genders"]:
+                    genders = data_obj.get(gen_key)
+                    if isinstance(genders, list) and genders:
+                        g_split = {"female": 0, "male": 0, "other": 0}
+                        for g in genders:
+                            lbl = str(g.get("label", g.get("gender", ""))).lower()
+                            cnt = g.get("count", g.get("value", 0))
+                            if "female" in lbl: g_split["female"] = cnt
+                            elif "male" in lbl: g_split["male"] = cnt
+                            else: g_split["other"] = cnt
+                        gender_split = g_split
+                        break
 
-                # 7. New vs Followup
-                nvf = data_obj.get("new_vs_followup")
-                if isinstance(nvf, dict):
-                    patient_types = {
-                        "followUp": nvf.get("followup_patients", 2603),
-                        "new": nvf.get("new_patients", 14964),
-                        "notCategorised": nvf.get("unknown", 41302)
-                    }
+                # 7. New vs Followup — try all field name variants
+                for nvf_key in ["new_vs_followup", "newVsFollowup", "patient_types", "patientTypes", "visit_types"]:
+                    nvf = data_obj.get(nvf_key)
+                    if isinstance(nvf, dict) and nvf:
+                        patient_types = {
+                            "followUp": nvf.get("followup_patients", nvf.get("followUp", nvf.get("follow_up", 2603))),
+                            "new": nvf.get("new_patients", nvf.get("new", 14964)),
+                            "notCategorised": nvf.get("unknown", nvf.get("notCategorised", nvf.get("other", 41302)))
+                        }
+                        break
 
-                # 8. Growth Trends
-                pg = data_obj.get("patients_growth", [])
-                cg = data_obj.get("consultations_growth", [])
-                if pg or cg:
-                    cg_map = { item.get("period"): item.get("count", 0) for item in cg }
+                # 8. Growth Trends — try all field name variants
+                pg = []
+                for pg_key in ["patients_growth", "patientsGrowth", "patient_growth", "growth_trends"]:
+                    pg = data_obj.get(pg_key, [])
+                    if pg: break
+                cg = []
+                for cg_key in ["consultations_growth", "consultationsGrowth", "consultation_growth"]:
+                    cg = data_obj.get(cg_key, [])
+                    if cg: break
+                if pg:
+                    cg_map = {item.get("period", item.get("year", "")): item.get("count", 0) for item in cg}
                     growth_trends = [
                         {
-                            "year": item.get("period"),
+                            "year": item.get("period", item.get("year", "")),
                             "patients": item.get("count", 0),
-                            "teleconsultations": cg_map.get(item.get("period"), 0),
-                            "camps": 1 if item.get("period") == "2024" else 3 if item.get("period") == "2025" else 5
+                            "teleconsultations": cg_map.get(item.get("period", item.get("year", "")), 0),
+                            "camps": 1 if item.get("period", item.get("year")) == "2024" else 3 if item.get("period", item.get("year")) == "2025" else 5
                         }
-                        for item in pg if item.get("period") != "2020" # Filter zero years if preferred
+                        for item in pg
                     ]
 
-                # 9. Districts Reach
-                dists = data_obj.get("districts")
-                if isinstance(dists, list) and dists:
-                    district_list = [
-                        { "name": d.get("label") or d.get("district") or d.get("name") or "Unknown", "count": d.get("count", 1) }
-                        for d in dists
-                    ]
+                # 9. Districts Reach — try all field name variants
+                for dist_key in ["districts", "district_reach", "districtReach", "districts_list", "district_list"]:
+                    dists = data_obj.get(dist_key)
+                    if isinstance(dists, list) and dists:
+                        district_list = [
+                            {"name": d.get("label") or d.get("district") or d.get("name") or "Unknown",
+                             "count": d.get("count", 1)}
+                            for d in dists
+                        ]
+                        break
 
-            # Fallback checks for legacy payload formats
-            elif "departments" in data_obj and isinstance(data_obj["departments"], list):
-                dept_breakdown = data_obj["departments"]
-            elif "top_diseases" in data_obj and isinstance(data_obj["top_diseases"], list):
-                top_diseases = data_obj["top_diseases"]
+                # 10. Villages count — try all field name variants
+                for v_key in ["villages", "village_count", "villageCount", "total_villages"]:
+                    v_val = data_obj.get(v_key) or hl.get(v_key, 0)
+                    if v_val:
+                        villages = v_val
+                        break
 
     # CRITICAL GUARD: If no live API data was intercepted from the portal,
     # the scraper likely failed to login or reach the dashboard.
@@ -365,12 +430,12 @@ def extract_16_metrics(scraped_input) -> dict:
         "doctor_specialties": doctor_specialties,
         "demographics": {
             "age_groups": age_groups,
-            "patient_types": { "followUp": 2603, "new": 14964, "notCategorised": 41302 },
-            "gender_split": { "female": 25022, "male": 17897, "other": 7 }
+            "patient_types": patient_types,
+            "gender_split": gender_split
         },
         "reach": {
             "districts": len(district_list),
-            "villages": 633,
+            "villages": villages,
             "district_list": district_list
         }
     }

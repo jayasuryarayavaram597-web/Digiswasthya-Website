@@ -122,27 +122,33 @@ def fetch_report_html(target_url: str, username: str = None, password: str = Non
                 raise  # Re-raise so pipeline fails loudly — no fake success
 
             # Portal lands DIRECTLY on Outreach & Impact after login — no tab navigation needed
+
             # Step 1: Wait for initial network to settle
             print("[Agent 1] Waiting for page network to settle...")
             try:
-                page.wait_for_load_state("networkidle", timeout=30000)
+                page.wait_for_load_state("networkidle", timeout=20000)
             except Exception:
-                pass  # Continue even if networkidle times out
+                pass
 
-            # Step 2: Wait for "Loading..." to disappear — means actual data has loaded
-            print("[Agent 1] Waiting for portal data to finish loading (Loading... to disappear)...")
+            # Step 2: Click Apply button — this triggers the actual data API calls
+            print("[Agent 1] Clicking Apply button to trigger data load...")
             try:
-                page.wait_for_selector(
-                    "text=Loading...",
-                    state="hidden",
-                    timeout=60000  # Wait up to 60s for data to load
-                )
-                print("[Agent 1] Loading complete — data is now visible on page.")
-            except Exception as load_err:
-                print(f"[Agent 1 Note] Loading wait: {load_err}. Continuing anyway...")
+                apply_btn = page.get_by_role("button", name="Apply").first
+                apply_btn.wait_for(state="visible", timeout=8000)
+                apply_btn.click()
+                print("[Agent 1] Apply button clicked. Waiting for data API calls to complete...")
+                try:
+                    page.wait_for_load_state("networkidle", timeout=30000)
+                except Exception:
+                    pass
+                page.wait_for_timeout(5000)  # Extra wait for data to render
+            except Exception as apply_err:
+                print(f"[Agent 1 Note] Apply button not found ({apply_err}). Waiting 12s for auto-load...")
+                page.wait_for_timeout(12000)
 
-            # Step 3: Extra 3s for charts and tooltips to fully render
+            # Step 3: Final wait for all charts and tooltips to fully render
             page.wait_for_timeout(3000)
+            print(f"[Agent 1] Page ready. Captured {len(captured_api_payloads)} API payloads so far.")
             print("[Agent 1] Dashboard fully ready for scraping.")
 
             # Save screenshot for exact visual inspection
@@ -178,6 +184,16 @@ def fetch_report_html(target_url: str, username: str = None, password: str = Non
             html_content = page.content()
             browser.close()
             print(f"[Agent 1] Playwright successfully scraped portal ({len(html_content)} bytes HTML, {len(captured_api_payloads)} API payloads).")
+            # DEBUG: Print every captured payload URL and its top-level keys so extractor can be verified
+            for idx, p in enumerate(captured_api_payloads):
+                p_data = p.get("data", {})
+                if isinstance(p_data, dict):
+                    keys = list(p_data.keys())[:15]
+                elif isinstance(p_data, list):
+                    keys = f"[list, {len(p_data)} items]"
+                else:
+                    keys = type(p_data).__name__
+                print(f"  [Payload {idx}] URL: {p.get('url','?')[:80]} | keys: {keys}")
             return {
                 "html": html_content,
                 "json_payloads": captured_api_payloads

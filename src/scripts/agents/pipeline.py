@@ -41,12 +41,14 @@ def run_agent_scraper_pipeline(report_url: str = None, username: str = None, pas
 
     print(f"\n[Pipeline Storage Sync] Successfully updated website store at: {output_path}")
 
-    # Step 4: Firebase Firestore Sync
+    # Step 4: Firebase Firestore Sync — MUST succeed (fail loudly if it doesn't)
     try:
         from firebase_sync import sync_to_firebase_firestore
-        sync_to_firebase_firestore(metrics_data)
+        success = sync_to_firebase_firestore(metrics_data)
+        if not success:
+            raise RuntimeError("Firebase sync returned failure. Data was extracted but NOT saved to Firebase.")
     except Exception as e:
-        print(f"[Firebase Sync Warning] {e}")
+        raise RuntimeError(f"[Pipeline CRITICAL] Firebase Firestore sync failed: {e}")
 
     # Step 5: Google Sheets Sync
     sheet_to_use = sheet_id or os.getenv("GOOGLE_SHEET_ID", "1zPgDYjpQXs1IcFWyPNVfaEnTk3gZ8yQWDnumi_AaqKM")
