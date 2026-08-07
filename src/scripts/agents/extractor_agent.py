@@ -2,6 +2,7 @@ import re
 import json
 import os
 import sys
+from datetime import datetime
 from bs4 import BeautifulSoup
 
 def clean_int(val_str: str) -> int:
@@ -226,6 +227,9 @@ def extract_16_metrics(scraped_input) -> dict:
         { "year": "2026", "patients": 27223, "teleconsultations": 37880, "camps": 5 }
     ]
 
+    # Track if we found real live data from the portal (not hardcoded defaults)
+    live_data_found = False
+
     # Parse Intercepted API JSON Payloads if present
     for payload in json_payloads:
         data_obj = payload.get("data", {})
@@ -233,6 +237,7 @@ def extract_16_metrics(scraped_input) -> dict:
             # Check for outreach-summary live portal API response
             if "headline" in data_obj or "consultations_by_department" in data_obj:
                 print(f"[Agent 2] Intercepted live outreach-summary API from portal!")
+                live_data_found = True  # Mark that we got real live data
                 
                 # 1. Headline KPIs
                 hl = data_obj.get("headline", {})
@@ -313,6 +318,16 @@ def extract_16_metrics(scraped_input) -> dict:
             elif "top_diseases" in data_obj and isinstance(data_obj["top_diseases"], list):
                 top_diseases = data_obj["top_diseases"]
 
+    # CRITICAL GUARD: If no live API data was intercepted from the portal,
+    # the scraper likely failed to login or reach the dashboard.
+    # Raise an error to prevent stale/hardcoded data from being written to Firebase.
+    if not live_data_found:
+        raise ValueError(
+            "[Agent 2 CRITICAL ERROR] No live API data was captured from the portal.\n"
+            "The scraper likely failed to login or the portal did not return JSON API data.\n"
+            "Pipeline aborted — Firebase will NOT be updated with stale/hardcoded data."
+        )
+
     # HTML / Regex Extraction for Portal Cards (Checking preceding & succeeding numbers)
     pat_match = re.search(r"([\d,]+)[\s\n]*PATIENTS SERVED", text_content, re.IGNORECASE) or re.search(r"PATIENTS SERVED[\s\n]*([\d,]+)", text_content, re.IGNORECASE)
     if pat_match:
@@ -335,7 +350,7 @@ def extract_16_metrics(scraped_input) -> dict:
         hospitals = clean_int(hosp_match.group(1))
 
     extracted_payload = {
-        "timestamp": "2026-08-05T12:00:00Z",
+        "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
         "metrics_count": 16,
         "kpis": {
             "total_patients": patients,

@@ -104,43 +104,33 @@ def fetch_report_html(target_url: str, username: str = None, password: str = Non
             except Exception:
                 pass
             
-            # Fill login inputs
+            # Fill login inputs and wait until login actually completes
             try:
                 email_input = page.locator("input[type='email'], input[name='email'], input[type='text'], input[name='username']").first
-                if email_input.is_visible():
-                    email_input.fill(username)
-                    page.locator("input[type='password'], input[name='password']").first.fill(password)
-                    page.locator("button[type='submit'], input[type='submit']").first.click()
-                    page.wait_for_load_state("networkidle")
-                    page.wait_for_timeout(2500)
-            except Exception:
-                pass
+                if not email_input.is_visible():
+                    raise Exception("Login form email input not found on page — may already be logged in or wrong URL.")
+                email_input.fill(username)
+                page.locator("input[type='password'], input[name='password']").first.fill(password)
+                page.locator("button[type='submit'], input[type='submit']").first.click()
+                # Wait until URL changes away from /login — this is the reliable proof login completed
+                print("[Agent 1] Credentials submitted. Waiting for login to complete...")
+                page.wait_for_url(lambda url: "/login" not in url, timeout=30000)
+                print(f"[Agent 1] Login successful! Now at: {page.url}")
+            except Exception as login_err:
+                print(f"[Agent 1 CRITICAL ERROR] Login failed: {login_err}")
+                page.screenshot(path="portal_debug.png", full_page=True)
+                raise  # Re-raise so pipeline fails loudly — no fake success
 
-            # Click Outreach & Impact tab
+            # Portal lands DIRECTLY on Outreach & Impact after login — no tab navigation needed
+            # Wait for the dashboard data to fully load and all API calls to complete
+            print("[Agent 1] Waiting for dashboard data to fully load...")
             try:
-                outreach_tab = page.get_by_text("Outreach & Impact").first
-                if outreach_tab.is_visible():
-                    outreach_tab.click()
-                    page.wait_for_load_state("networkidle")
-                    
-                    # Try clicking Apply button if present
-                    try:
-                        apply_btn = page.get_by_role("button", name="Apply").first
-                        if apply_btn.is_visible() and not apply_btn.is_disabled():
-                            apply_btn.click()
-                            page.wait_for_timeout(2000)
-                    except Exception:
-                        pass
-
-                    # Wait for Loading indicator to detach or 15s
-                    try:
-                        print("[Agent 1] Waiting for portal live database to finish loading...")
-                        page.wait_for_selector("text=Loading…", state="detached", timeout=20000)
-                    except Exception as err:
-                        print(f"[Agent 1 Note] Waiting selector timeout: {err}")
-                        page.wait_for_timeout(5000)
-            except Exception:
-                pass
+                page.wait_for_load_state("networkidle", timeout=30000)
+                page.wait_for_timeout(5000)  # Extra wait for dynamic chart/data rendering
+                print("[Agent 1] Dashboard fully loaded.")
+            except Exception as wait_err:
+                print(f"[Agent 1 Note] networkidle timeout ({wait_err}). Waiting 5s and continuing...")
+                page.wait_for_timeout(5000)
 
             # Save screenshot for exact visual inspection
             page.screenshot(path="portal_debug.png", full_page=True)
