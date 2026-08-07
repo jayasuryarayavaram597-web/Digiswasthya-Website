@@ -122,15 +122,28 @@ def fetch_report_html(target_url: str, username: str = None, password: str = Non
                 raise  # Re-raise so pipeline fails loudly — no fake success
 
             # Portal lands DIRECTLY on Outreach & Impact after login — no tab navigation needed
-            # Wait for the dashboard data to fully load and all API calls to complete
-            print("[Agent 1] Waiting for dashboard data to fully load...")
+            # Step 1: Wait for initial network to settle
+            print("[Agent 1] Waiting for page network to settle...")
             try:
                 page.wait_for_load_state("networkidle", timeout=30000)
-                page.wait_for_timeout(5000)  # Extra wait for dynamic chart/data rendering
-                print("[Agent 1] Dashboard fully loaded.")
-            except Exception as wait_err:
-                print(f"[Agent 1 Note] networkidle timeout ({wait_err}). Waiting 5s and continuing...")
-                page.wait_for_timeout(5000)
+            except Exception:
+                pass  # Continue even if networkidle times out
+
+            # Step 2: Wait for "Loading..." to disappear — means actual data has loaded
+            print("[Agent 1] Waiting for portal data to finish loading (Loading... to disappear)...")
+            try:
+                page.wait_for_selector(
+                    "text=Loading...",
+                    state="hidden",
+                    timeout=60000  # Wait up to 60s for data to load
+                )
+                print("[Agent 1] Loading complete — data is now visible on page.")
+            except Exception as load_err:
+                print(f"[Agent 1 Note] Loading wait: {load_err}. Continuing anyway...")
+
+            # Step 3: Extra 3s for charts and tooltips to fully render
+            page.wait_for_timeout(3000)
+            print("[Agent 1] Dashboard fully ready for scraping.")
 
             # Save screenshot for exact visual inspection
             page.screenshot(path="portal_debug.png", full_page=True)
