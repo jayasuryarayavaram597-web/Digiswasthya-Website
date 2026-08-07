@@ -32,6 +32,7 @@ jobs:
           playwright install chromium --with-deps
 
       - name: Execute Live Scraper Pipeline
+        id: scraper
         env:
           MANAGEMENT_PORTAL_URL: ${{ secrets.MANAGEMENT_PORTAL_URL }}
           MANAGEMENT_PORTAL_EMAIL: ${{ secrets.MANAGEMENT_PORTAL_EMAIL }}
@@ -40,3 +41,23 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
         run: |
           python src/scripts/agents/pipeline.py
+
+      # Always runs — even if the pipeline step above fails
+      # This lets us download the screenshot and see exactly what the browser saw
+      - name: Upload Portal Debug Screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portal-debug-screenshot
+          path: portal_debug.png
+          if-no-files-found: warn
+          retention-days: 7
+
+      # Always runs — shows all files created during the run for extra visibility
+      - name: List Generated Files (Debug)
+        if: always()
+        run: |
+          echo "=== Files in root directory ==="
+          ls -la *.png *.json *.html 2>/dev/null || echo "No debug files found in root"
+          echo "=== Scraper Data Store ==="
+          cat src/data/liveImpactStore.json 2>/dev/null || echo "liveImpactStore.json not found"
