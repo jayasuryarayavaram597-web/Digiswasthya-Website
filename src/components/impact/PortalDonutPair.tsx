@@ -24,11 +24,23 @@ function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitl
     const center = 80;
     const circumference = 2 * Math.PI * radius; // ~339.3
 
+    // Ensure all slices have a minimum visual length so small slices like "Other" can be seen and clicked
+    const visualSlices = slices.map((s) => {
+        let visualPct = s.percentage;
+        if (visualPct > 0 && visualPct < 3) {
+            visualPct = 3; // minimum 3% for visual rendering
+        }
+        return { ...s, visualPct };
+    });
+
+    const totalVisualPct = visualSlices.reduce((acc, curr) => acc + curr.visualPct, 0) || 100;
+
     let cumulative = 0;
-    const strokeSlices = slices.map((s) => {
-        const strokeLength = (s.percentage / 100) * circumference;
+    const strokeSlices = visualSlices.map((s) => {
+        const normalizedPct = (s.visualPct / totalVisualPct) * 100;
+        const strokeLength = (normalizedPct / 100) * circumference;
         const strokeOffset = circumference - (cumulative / 100) * circumference;
-        cumulative += s.percentage;
+        cumulative += normalizedPct;
         return { ...s, strokeLength, strokeOffset };
     });
 
@@ -67,8 +79,8 @@ function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitl
             </div>
 
             {/* SVG Donut */}
-            <div className="relative w-32 h-32 my-2 flex items-center justify-center">
-                <svg width="130" height="130" viewBox="0 0 160 160" className="transform -rotate-90 select-none overflow-visible">
+            <div className="relative w-36 h-36 my-2 flex items-center justify-center">
+                <svg width="144" height="144" viewBox="0 0 160 160" className="transform -rotate-90 select-none overflow-visible">
                     <circle
                         cx={center}
                         cy={center}
@@ -97,7 +109,7 @@ function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitl
                                 transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: idx * 0.08 }}
                                 className="cursor-pointer transition-all duration-300 origin-center"
                                 style={{
-                                    opacity: isActive ? 1 : 0.35,
+                                    opacity: isActive ? 1 : 0.4,
                                     filter: isActive ? `drop-shadow(0 0 6px ${slice.color}80)` : "none"
                                 }}
                                 onClick={() => setActiveIndex(idx)}
@@ -121,7 +133,7 @@ function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitl
                                 className="text-2xl font-black leading-none tracking-tight transition-colors duration-200" 
                                 style={{ color: activeSlice.color }}
                             >
-                                {activeSlice.percentage}%
+                                {activeSlice.percentage < 1 && activeSlice.count && activeSlice.count > 0 ? "<1%" : `${activeSlice.percentage}%`}
                             </span>
                             <span className="text-[9.5px] font-extrabold text-slate-800 uppercase tracking-wider mt-0.5 px-2 py-0.5 rounded-full bg-slate-100/80 truncate max-w-[90px]">
                                 {activeSlice.label}
@@ -136,7 +148,7 @@ function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitl
                 </div>
             </div>
 
-            {/* Interactive Legend Pills */}
+            {/* Interactive Legend Pills Below */}
             <div className="w-full space-y-1.5 mt-1">
                 {slices.map((slice, idx) => {
                     const isActive = activeIndex === idx;
@@ -178,7 +190,7 @@ function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitl
                                     className="text-[10px] font-black px-2 py-0.5 rounded-md text-white font-mono shadow-2xs"
                                     style={{ backgroundColor: slice.color }}
                                 >
-                                    {slice.percentage}%
+                                    {slice.percentage < 1 && slice.count && slice.count > 0 ? "<1%" : `${slice.percentage}%`}
                                 </span>
                             </div>
                         </div>
@@ -190,12 +202,21 @@ function SinglePortalDonut({ title, subtitle, slices }: { title: string; subtitl
 }
 
 export function PortalDonutPair({ genderData, patientTypeData }: PortalDonutPairProps) {
+    // Custom distinct colors for Gender: Male = Blue, Female = Emerald Green, Other = Purple/Violet
+    const formattedGenderData = genderData.map(g => {
+        const labelLower = g.label.toLowerCase();
+        if (labelLower === "female") return { ...g, color: "#059669" }; // Emerald Green
+        if (labelLower === "male") return { ...g, color: "#2563eb" };   // Royal Blue
+        if (labelLower === "other") return { ...g, color: "#8b5cf6" };  // Bright Purple
+        return g;
+    });
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <SinglePortalDonut
                 title="GENDER DISTRIBUTION"
                 subtitle="Patients served"
-                slices={genderData}
+                slices={formattedGenderData}
             />
             <SinglePortalDonut
                 title="NEW VS FOLLOW-UP"

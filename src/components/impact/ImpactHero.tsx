@@ -11,7 +11,7 @@ export function ImpactHero() {
     const heroContent = data.hero;
 
     return (
-        <section className="relative bg-gradient-to-b from-white via-slate-50/60 to-slate-50/30 border-b border-slate-200/60 py-16 lg:py-24 overflow-hidden">
+        <section className="relative bg-gradient-to-b from-white via-slate-50/60 to-slate-50/30 border-b border-slate-200/60 py-8 lg:py-10 overflow-hidden">
             {/* Subtle background ambient glows */}
             <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[600px] h-[250px] bg-emerald-50/80 blur-3xl pointer-events-none rounded-full" />
             <div className="absolute top-1/3 right-10 w-[300px] h-[200px] bg-amber-50/60 blur-3xl pointer-events-none rounded-full" />
