@@ -131,7 +131,7 @@ const videos = [
 
 type MediaTab = "all" | "videos" | "news" | "photos";
 
-export default function Media() {
+function MediaContent() {
     const searchParams = useSearchParams();
     const tabParam = searchParams.get("tab") as MediaTab | null;
 
@@ -450,5 +450,21 @@ export default function Media() {
 
             <Footer />
         </main>
+    );
+}
+
+export default function Media() {
+    return (
+        <Suspense fallback={
+            <main className="min-h-screen bg-gray-50 flex flex-col">
+                <Navbar />
+                <div className="flex-grow flex items-center justify-center">
+                    <div className="animate-pulse text-gray-400 text-lg">Loading Media...</div>
+                </div>
+                <Footer />
+            </main>
+        }>
+            <MediaContent />
+        </Suspense>
     );
 }
