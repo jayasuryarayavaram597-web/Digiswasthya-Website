@@ -2,29 +2,37 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { getWebsiteContext } from "@/data/botKnowledge";
 
-const getSystemPrompt = () => `You are Swasthya, the official AI assistant for DigiSwasthya Foundation. You speak like a warm, friendly, and knowledgeable human receptionist of the NGO.
+const getSystemPrompt = () => `You are Swasthya, the AI assistant for DigiSwasthya Foundation.
 
-ANSWER STYLE RULES (follow these strictly):
-1. Keep answers SHORT and CLEAR — 2 to 4 lines maximum for simple questions.
-2. NEVER write a wall of text. If a topic has many details, give a brief summary first, then ask: "Would you like more details on any specific point?"
-3. Use bullet points ONLY when listing items (max 5 items). If there are more, show 5 and say "and more..."
-4. Use 1 emoji per message to make it feel warm and human — not robotic.
-5. End answers with a soft follow-up question to keep the user engaged.
-6. For donors specifically — be extra warm, appreciative, and motivating. Make them feel their donation truly matters.
-7. ALWAYS output your response as a valid JSON object with the following structure:
-   {
-      "text": "Your short, warm answer here",
-      "suggestedLink": { "title": "Button Text", "url": "/page-url" } 
-   }
-8. CRITICAL RULE: You MUST provide a "suggestedLink" for EVERY single response. Do not ever set it to null. Pick the MOST relevant page based on their question.
-9. Allowed URLs (ONLY use these exact valid paths): /network (for Telemedicine Centres/Network), /our-team (for Team/Doctors/Advisors), /our-impact (for Impact & Statistics), /donate (for Donations & Support), /about-us (for About Us & Founder Story), /contact-us (for Contact Info), /health-tools (for Health Tools/BMI), /blogs (for Blogs/Articles). CRITICAL: For Telemedicine Centres, ALWAYS use /network (NEVER use /our-network).
-10. Never give long paragraphs. Use short sentences.
+CRITICAL OUTPUT RULE — READ FIRST:
+You MUST respond with ONLY a raw JSON object. No explanations, no thinking, no markdown, no extra text before or after. Just the JSON.
 
-RULES:
-- Answer ONLY using the knowledge base provided below.
-- NEVER say partner names, beneficiary stories, or team details are private or undisclosed. All partner organizations (e.g., Tata Memorial Hospital, Ratan Tata Trust, Homi Bhabha Cancer Hospital) and beneficiaries (e.g., Pinki Paware, Balu Katale, Manisha Kumari) in the knowledge base are public and MUST be shared proudly when asked.
-- If a question is 100% unrelated to DigiSwasthya, healthcare, or NGOs, politely decline and redirect.
-- Never say "I don't know" if the answer can be reasonably deduced from the knowledge base.
+Required JSON format:
+{"text":"Your warm 2-4 line answer with 1 emoji","suggestedLink":{"title":"Button label","url":"/page"}}
+
+ANSWER RULES:
+- SHORT and CLEAR — max 2 to 4 lines
+- 1 emoji per message
+- End with a soft follow-up question
+- For donors: be extra warm and appreciative
+
+LINK RULES (use ONLY these URLs):
+- /about-us → founder story, about the NGO
+- /our-team → doctors, advisors, team
+- /our-impact → stats, numbers, reach
+- /donate → donations, support, funding
+- /network → telemedicine centres, clinics, locations
+- /contact-us → contact info
+- /health-tools → BMI, health calculators
+- /blogs → articles, blogs
+
+KNOWLEDGE BASE RULES:
+- Answer ONLY from the knowledge base below
+- All partner names (Tata Memorial, Ratan Tata Trust etc.) and patient stories (Pinki Paware, Balu Katale etc.) are PUBLIC — share them proudly
+- If unrelated to DigiSwasthya/healthcare, politely decline
+
+EXAMPLE OUTPUT (copy this format exactly):
+{"text":"DigiSwasthya was founded by Sandeep Kumar in 2020 🌟 He started it after his own struggle to get diagnosed in rural India. Would you like to read his full story?","suggestedLink":{"title":"Read Founder's Story","url":"/about-us"}}
 
 ${getWebsiteContext()}`;
 
@@ -101,38 +109,106 @@ export async function POST(req: NextRequest) {
             } : undefined
         });
 
-        const modelToUse = process.env.OPENROUTER_API_KEY ? "openai/gpt-4o-mini" : "gpt-4o-mini";
+        const modelsToTry = process.env.OPENROUTER_API_KEY
+            ? [
+                "google/gemma-4-31b-it:free",
+                "google/gemma-4-26b-a4b-it:free",
+                "nvidia/nemotron-3.5-lightning:free",
+                "openai/gpt-oss-20b:free"
+              ]
+            : ["gpt-4o-mini"];
 
-        const response = await openai.chat.completions.create({
-            model: modelToUse,
-            messages: [
-                { role: "system", content: getSystemPrompt() },
-                ...messages.map((m: any) => ({ role: m.role, content: m.content }))
-            ],
-            stream: false,
-            temperature: 0.7,
-            max_tokens: 300,
-            response_format: { type: "json_object" }
-        });
-
-        const replyContent = response.choices[0]?.message?.content;
-        let reply = "I'm happy to help you with any questions about DigiSwasthya!";
-        let suggestedLink = null;
-
-        if (replyContent) {
+        let lastError: any = null;
+        for (const modelToUse of modelsToTry) {
             try {
-                const parsed = JSON.parse(replyContent);
-                reply = parsed.text || replyContent;
-                suggestedLink = parsed.suggestedLink || null;
-            } catch (e) {
-                reply = replyContent;
+                const response = await openai.chat.completions.create({
+                    model: modelToUse,
+                    messages: [
+                        { role: "system", content: getSystemPrompt() },
+                        ...messages.map((m: any) => ({ role: m.role, content: m.content }))
+                    ],
+                    stream: false,
+                    temperature: 0.7,
+                    max_tokens: 300,
+                });
+
+                const replyContent = response.choices[0]?.message?.content ?? "";
+                let reply = "I'm happy to help you with any questions about DigiSwasthya! 😊";
+                let suggestedLink: { title: string; url: string } | null = null;
+
+                if (replyContent) {
+                    // STEP 1: Strip <think>...</think> reasoning blocks (some models leak these)
+                    let cleaned = replyContent
+                        .replace(/<think>[\s\S]*?<\/think>/gi, "")
+                        .replace(/```json\n?|\n?```/g, "")
+                        .trim();
+
+                    // STEP 2: Try to find a JSON object anywhere in the response using regex
+                    const jsonMatch = cleaned.match(/\{[\s\S]*"text"[\s\S]*"suggestedLink"[\s\S]*\}/);
+                    if (jsonMatch) {
+                        try {
+                            const parsed = JSON.parse(jsonMatch[0]);
+                            reply = parsed.text || reply;
+                            suggestedLink = parsed.suggestedLink || null;
+                        } catch {
+                            // JSON found but malformed — fall through
+                        }
+                    }
+
+                    // STEP 3: If still no valid reply extracted, clean up the plain text
+                    // Take only lines that are NOT reasoning/thinking (don't start with "I need", "Let me", "Looking at" etc.)
+                    if (reply === "I'm happy to help you with any questions about DigiSwasthya! 😊") {
+                        const lines = cleaned.split(/\n+/).map(l => l.trim()).filter(Boolean);
+                        const thinkingPhrases = /^(i need|let me|looking at|the user|i should|i can see|i will|i must|from the knowledge|based on|i'll|i'm going to|the question|here's|here is my)/i;
+                        const cleanLines = lines.filter(l => !thinkingPhrases.test(l));
+                        
+                        if (cleanLines.length > 0) {
+                            // Use the last 1-2 clean sentences (the actual answer, not the preamble)
+                            reply = cleanLines.slice(-2).join(" ").trim();
+                        } else {
+                            reply = lines.slice(-1)[0] || reply;
+                        }
+
+                        // Auto-assign a suggestedLink based on keywords in the original message
+                        const userMsg = messages[messages.length - 1]?.content?.toLowerCase() || "";
+                        if (userMsg.includes("founder") || userMsg.includes("sandeep") || userMsg.includes("about")) {
+                            suggestedLink = { title: "Read Founder's Story", url: "/about-us" };
+                        } else if (userMsg.includes("doctor") || userMsg.includes("team")) {
+                            suggestedLink = { title: "Meet Our Team", url: "/our-team" };
+                        } else if (userMsg.includes("impact") || userMsg.includes("stats") || userMsg.includes("patient")) {
+                            suggestedLink = { title: "View Our Impact", url: "/our-impact" };
+                        } else if (userMsg.includes("donat") || userMsg.includes("fund") || userMsg.includes("support")) {
+                            suggestedLink = { title: "Donate Now", url: "/donate" };
+                        } else if (userMsg.includes("centre") || userMsg.includes("clinic") || userMsg.includes("network") || userMsg.includes("location")) {
+                            suggestedLink = { title: "Find a Centre", url: "/network" };
+                        } else {
+                            suggestedLink = { title: "About DigiSwasthya", url: "/about-us" };
+                        }
+                    }
+                }
+
+                return NextResponse.json({
+                    content: reply,
+                    suggestedLink: suggestedLink
+                });
+            } catch (err: any) {
+                const status = err?.status || err?.response?.status;
+                console.error(`Model ${modelToUse} failed (${status}):`, err?.message);
+                lastError = err;
+                // If rate limited or model unavailable, try next model
+                if (status === 429 || status === 503 || status === 404) {
+                    continue;
+                }
+                // For other errors, break early
+                break;
             }
         }
 
-        return NextResponse.json({
-            content: reply,
-            suggestedLink: suggestedLink
-        });
+        // All models failed — use local fallback
+        console.warn("All AI models failed, using local fallback. Last error:", lastError?.message);
+        const lastUserMsg = messages && messages.length > 0 ? messages[messages.length - 1].content : "";
+        const fallback = getLocalSmartAnswer(lastUserMsg);
+        return NextResponse.json(fallback);
 
     } catch (error: any) {
         console.error("Chat API error details:", error?.response?.data || error?.message || error);

@@ -14,9 +14,13 @@ import {
 
 function Section({ title, members }: { title: string, members: { name: string, role: string, image?: string }[] }) {
     return (
-        <section className="py-16">
-            <h2 className="text-3xl font-bold text-center mb-12 text-gray-900 border-b pb-4 inline-block mx-auto">{title}</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <section className="py-6 sm:py-8 border-b border-gray-200/60 last:border-b-0">
+            <div className="text-center mb-5 sm:mb-6">
+                <h2 className="text-xl sm:text-2xl font-serif font-bold text-gray-900 border-b-2 border-primary-600/40 pb-2 inline-block mx-auto">
+                    {title}
+                </h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5">
                 {members.map((m, i) => (
                     <TeamCard key={i} name={m.name} role={m.role} image={m.image} />
                 ))}
@@ -30,11 +34,28 @@ export default function OurTeam() {
         <main className="min-h-screen bg-gray-50">
             <Navbar />
 
-            <section className="bg-primary-900 text-white py-20 text-center">
-                <h1 className="text-4xl font-bold mb-4">Our Team</h1>
-                <p className="text-primary-100 max-w-2xl mx-auto">
-                    The compassionate minds behind DigiSwasthya.
-                </p>
+            {/* Hero Header (Luminous & Professional Light Design) */}
+            <section className="relative bg-gradient-to-b from-[#f4f9f6] via-[#ebf6f0] to-[#f8fcf9] border-b border-emerald-100/80 py-8 sm:py-10 lg:py-12 overflow-hidden text-center">
+                {/* Subtle background ambient mesh & glows */}
+                <div className="absolute inset-0 opacity-[0.035] [background-image:radial-gradient(#059669_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
+                <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-[600px] h-[220px] bg-emerald-200/35 blur-3xl pointer-events-none rounded-full" />
+                <div className="absolute top-1/3 right-10 w-[260px] h-[160px] bg-teal-200/25 blur-3xl pointer-events-none rounded-full" />
+
+                <div className="container max-w-3xl relative z-10 px-4 mx-auto space-y-2.5">
+                    {/* Decorative Badge */}
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/95 text-emerald-800 text-[11px] font-extrabold uppercase tracking-wider shadow-xs border border-emerald-200/80 backdrop-blur-sm mx-auto">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                        Dedicated Leadership & Caregivers
+                    </div>
+
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-black text-slate-900 tracking-tight leading-tight">
+                        Our <span className="bg-gradient-to-r from-emerald-700 via-primary-700 to-teal-700 bg-clip-text text-transparent">Team</span>
+                    </h1>
+
+                    <p className="text-slate-600 text-sm sm:text-base max-w-xl mx-auto leading-relaxed font-normal">
+                        The compassionate minds, specialist doctors, and grassroots leaders behind DigiSwasthya.
+                    </p>
+                </div>
             </section>
 
             {/* Certification Banner */}

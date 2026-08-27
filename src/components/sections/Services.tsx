@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import {
     Stethoscope,
     Video,
@@ -11,7 +12,10 @@ import {
     Ambulance,
     Coins,
     ShieldCheck,
-    Sparkles
+    Sparkles,
+    MapPin,
+    CheckCircle2,
+    ArrowRight
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -239,7 +243,7 @@ export function Services() {
     const row2 = services.slice(4, 7);
 
     return (
-        <section className="relative py-24 bg-gradient-to-b from-white via-slate-50/70 to-white overflow-hidden" id="services">
+        <section className="relative pt-4 pb-8 sm:pb-12 bg-gradient-to-b from-white via-slate-50/70 to-white overflow-hidden" id="services">
             {/* Decorative ambient blobs for depth */}
             <div className="pointer-events-none absolute -top-32 -right-32 w-[28rem] h-[28rem] bg-primary-100/40 rounded-full blur-3xl" />
             <div className="pointer-events-none absolute top-1/2 -left-40 w-96 h-96 bg-secondary-100/30 rounded-full blur-3xl" />
@@ -247,7 +251,7 @@ export function Services() {
             <div className="container max-w-7xl relative z-10">
 
                 {/* Header */}
-                <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
+                <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-3 sm:space-y-4">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -261,7 +265,7 @@ export function Services() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.1 }}
-                        className="font-serif text-4xl md:text-5xl font-bold text-gray-900 leading-tight"
+                        className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight"
                     >
                         {t("services.titlePart1")}{" "}
                         <span className="text-primary-600">
@@ -274,14 +278,14 @@ export function Services() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.2 }}
-                        className="text-lg text-slate-500"
+                        className="text-sm sm:text-base text-slate-500 max-w-2xl mx-auto"
                     >
                         {t("services.description")}
                     </motion.p>
                 </div>
 
-                {/* Service Cards: Row 1 (4 items) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 items-stretch">
+                {/* Row 1: 4 Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 mb-5 sm:mb-6 items-stretch">
                     {row1.map((service, idx) => (
                         <motion.div
                             key={idx}
@@ -291,74 +295,125 @@ export function Services() {
                             transition={{ delay: service.delay, duration: 0.4 }}
                             className="h-full"
                         >
-                            <ServiceCard
-                                service={service}
-                            />
+                            <ServiceCard service={service} />
                         </motion.div>
                     ))}
                 </div>
 
-                {/* Service Cards: Row 2 (3 items centered on desktop) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20 lg:w-3/4 mx-auto items-stretch">
-                    {row2.map((service, idx) => {
-                        return (
-                            <motion.div
-                                key={idx + 4}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: service.delay, duration: 0.4 }}
-                                className={idx === 2 ? "h-full sm:col-span-2 sm:max-w-md sm:mx-auto sm:w-full lg:col-span-1" : "h-full"}
-                            >
-                                <ServiceCard
-                                    service={service}
-                                />
-                            </motion.div>
-                        );
-                    })}
+                {/* Row 2: 3 Cards Centered */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:w-[75%] lg:mx-auto mb-16 sm:mb-20 items-stretch">
+                    {row2.map((service, idx) => (
+                        <motion.div
+                            key={idx + 4}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: service.delay, duration: 0.4 }}
+                            className={idx === 2 ? "h-full sm:col-span-2 sm:max-w-md sm:mx-auto sm:w-full lg:col-span-1" : "h-full"}
+                        >
+                            <ServiceCard service={service} />
+                        </motion.div>
+                    ))}
                 </div>
 
-                {/* Impact Band */}
-                <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#f0f7ff] via-[#f8fafc] to-[#e0f2fe] border border-blue-100/80 shadow-xl shadow-primary-900/5">
-                    <div className="grid lg:grid-cols-2 gap-0 items-stretch">
-                        {/* Photo side */}
-                        <div className="relative min-h-[340px] overflow-hidden group">
-                            <Image
-                                src="/images/ds-medical-camp.jpg"
-                                alt="DigiSwasthya Community Impact"
-                                fill
-                                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#f8fafc]/20" />
+                {/* Impact Band — Balanced 1:1 Height & Refined Proportions */}
+                <motion.div
+                    initial={{ opacity: 0, y: 25 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="relative rounded-3xl lg:rounded-[2rem] bg-gradient-to-br from-white via-emerald-50/20 to-blue-50/30 border border-slate-200/80 shadow-[0_15px_40px_rgba(15,23,42,0.05)] p-5 sm:p-6 lg:p-8 overflow-hidden"
+                >
+                    {/* Background subtle ambient glows */}
+                    <div className="absolute top-0 right-0 w-80 h-80 bg-primary-100/40 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+                    <div className="absolute bottom-0 left-0 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
+
+                    <div className="relative z-10 grid lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+                        
+                        {/* Left Side: Image with 4-Sided Uniform Rounded Curves */}
+                        <div className="lg:col-span-6 relative">
+                            <div className="relative rounded-2xl overflow-hidden shadow-md ring-1 ring-slate-900/10 aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] group bg-slate-950">
+                                <Image
+                                    src="/images/ds-medical-camp.jpg"
+                                    alt="DigiSwasthya Community Health Camp"
+                                    fill
+                                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/20 to-transparent" />
+                                
+                                {/* Top Floating Live Badge */}
+                                <div className="absolute top-3.5 left-3.5">
+                                    <span className="inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-md text-emerald-800 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm border border-white/50">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        On-Ground Health Camp
+                                    </span>
+                                </div>
+
+                                {/* Bottom Caption Overlay */}
+                                <div className="absolute bottom-3 left-3 right-3 text-white">
+                                    <p className="text-[11px] font-medium text-slate-100 flex items-center gap-1.5 drop-shadow">
+                                        <MapPin className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                                        Village screening and doctor teleconsultation at Sant Kabir Nagar
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        {/* Content side */}
-                        <div className="p-10 md:p-14 flex flex-col justify-center space-y-6">
-                            <h3 className="font-serif text-3xl md:text-4xl font-bold text-slate-950 leading-snug">
-                                {t("impact.title")}{" "}
-                                <span className="text-primary-600">{t("impact.highlight")}</span>
-                            </h3>
-                            <p className="text-slate-600 text-base leading-relaxed">
-                                {t("impact.description")}
-                            </p>
+
+                        {/* Right Side: Compact, Balanced Content & Sleek Checklist */}
+                        <div className="lg:col-span-6 flex flex-col justify-center space-y-4">
                             
-                            {/* Campaign Details List */}
-                            <ul className="space-y-4 pt-4 border-t border-slate-200 text-sm text-slate-700">
-                                <li className="flex items-start gap-3">
-                                    <ShieldCheck className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
-                                    <span>{t("impact.campaignDetail1")}</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <ShieldCheck className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
-                                    <span>{t("impact.campaignDetail2")}</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <ShieldCheck className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
-                                    <span>{t("impact.campaignDetail3")}</span>
-                                </li>
-                            </ul>
+                            <div>
+                                <div className="inline-flex items-center gap-1.5 text-primary-700 bg-primary-50 border border-primary-200/60 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2">
+                                    <Sparkles className="w-3 h-3 text-primary-600" />
+                                    Community Outreach
+                                </div>
+                                <h3 className="font-serif text-xl sm:text-2xl lg:text-[1.75rem] font-bold text-slate-950 leading-tight">
+                                    {t("impact.title")}{" "}
+                                    <span className="text-primary-600">{t("impact.highlight")}</span>
+                                </h3>
+                                <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mt-2">
+                                    {t("impact.description")}
+                                </p>
+                            </div>
+
+                            {/* Sleek, Compact Campaign Details */}
+                            <div className="space-y-2 pt-1 border-t border-slate-200/60">
+                                {[
+                                    t("impact.campaignDetail1"),
+                                    t("impact.campaignDetail2"),
+                                    t("impact.campaignDetail3")
+                                ].map((detail, i) => (
+                                    <div
+                                        key={i}
+                                        className="flex items-start gap-2.5 text-xs sm:text-[13px] text-slate-700 font-medium leading-normal"
+                                    >
+                                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                                        <span>{detail}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Balanced CTA Buttons */}
+                            <div className="pt-1 flex flex-wrap items-center gap-3">
+                                <Link
+                                    href="/our-impact"
+                                    className="inline-flex items-center gap-1.5 bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs px-5 py-2.5 rounded-full shadow-md shadow-primary-600/20 hover:shadow-primary-600/30 transition-all hover:-translate-y-0.5"
+                                >
+                                    Explore Our Live Impact
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                </Link>
+                                <Link
+                                    href="/network"
+                                    className="inline-flex items-center gap-1 text-xs font-bold text-slate-700 hover:text-primary-700 transition-colors"
+                                >
+                                    View 18 Telemedicine Clinics →
+                                </Link>
+                            </div>
+
                         </div>
+
                     </div>
-                </div>
+                </motion.div>
 
             </div>
         </section>

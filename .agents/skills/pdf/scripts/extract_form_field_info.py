@@ -3,9 +3,6 @@ import sys
 
 from pypdf import PdfReader
 
-
-
-
 def get_full_annotation_field_id(annotation):
     components = []
     while annotation:

@@ -89,6 +89,29 @@ Care Model Principles:
 - Scaling Quality Healthcare: Every improvement rolls out to all centres, ensuring consistent care.
 
 ══════════════════════════════════════
+PAGE: OUR TEAM
+══════════════════════════════════════
+Total Team Size: ${totalTeam} members
+
+Founding Team & Leadership:
+${foundingTeam.map(t => `- ${t.name} (${t.role})`).join("\n")}
+
+Board of Directors:
+${board.map(t => `- ${t.name} (${t.role})`).join("\n")}
+
+Core Team:
+${coreTeam.map(t => `- ${t.name} (${t.role})`).join("\n")}
+
+Advisory Board:
+${advisoryBoard.map(t => `- ${t.name} (${t.role})`).join("\n")}
+
+Specialist Doctors:
+${doctors.map(t => `- ${t.name} (${t.role})`).join("\n")}
+
+On-Ground Operations Team:
+${onGroundTeam.map(t => `- ${t.name} (${t.role})`).join("\n")}
+
+══════════════════════════════════════
 PAGE: OUR NETWORK (Telemedicine Centres)
 ══════════════════════════════════════
 States Covered: Uttar Pradesh, Bihar, Maharashtra
@@ -149,10 +172,10 @@ Tax Benefit: Donations are 80G tax exempt.
 Minimum Donation: ₹100
 
 Donation Tiers & Impact:
-- ₹500 — Provides essential medicines for a patient.
-- ₹1,000 — Funds a full health checkup and diagnostics for two children. Sponsors teleconsultations for four patients.
-- ₹2,500 — Supports a telemedicine clinic for a day.
-- ₹5,000 — Sponsors a complete health camp for a rural village.
+- ₹1500 — Provides essential medicines for a patient.
+- ₹5,000 — Funds a full health checkup and diagnostics for two children. Sponsors teleconsultations for four patients.
+- ₹10,000 — Supports a telemedicine clinic for a day.
+- ₹25,000 — Sponsors a complete health camp for a rural village.
 
 Donation Types: One-time or Monthly recurring.
 Payment Methods: UPI QR Code, Razorpay (Credit/Debit Card, NetBanking, UPI).

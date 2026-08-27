@@ -14,7 +14,9 @@ interface PortalDepartmentBarChartProps {
 
 export function PortalDepartmentBarChart({ data }: PortalDepartmentBarChartProps) {
     // Show Top 8 Departments
-    const displayData = data.slice(0, 8);
+    const displayData = data
+        .filter(d => d.department.toLowerCase() !== "not specified")
+        .slice(0, 8);
 
     const [hoveredIdx, setHoveredIdx] = useState<number | null>(5); // Default highlight General Physician
 

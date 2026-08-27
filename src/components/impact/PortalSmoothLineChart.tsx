@@ -228,22 +228,28 @@ export function PortalSmoothLineChart({
                 </svg>
 
                 {/* Compact Tooltip */}
-                {hoveredIdx !== null && points[hoveredIdx] && (
+                {hoveredIdx !== null && points[hoveredIdx] && (() => {
+                    const pctX = (points[hoveredIdx].x / svgWidth) * 100;
+                    const isNearRight = pctX > 70;
+                    return (
                     <motion.div
                         initial={{ opacity: 0, y: 4, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         className="absolute bg-slate-900 text-white rounded-lg shadow-md px-2.5 py-1 text-[10px] z-20 pointer-events-none"
                         style={{
-                            left: `${(points[hoveredIdx].x / svgWidth) * 100}%`,
+                            left: isNearRight ? "auto" : `${pctX}%`,
+                            right: isNearRight ? "4px" : "auto",
                             top: `${(points[hoveredIdx].y / svgHeight) * 100 - 18}%`,
-                            transform: "translate(-50%, -100%)"
+                            transform: isNearRight ? "translateY(-100%)" : "translate(-50%, -100%)"
                         }}
                     >
-                        <div className="font-bold text-slate-200">
-                            {points[hoveredIdx].year}: <span style={{ color: "#60a5fa" }}>{points[hoveredIdx].value.toLocaleString("en-IN")}</span>
+                        <div className="flex flex-col items-center gap-1">
+                            <span className="font-bold text-slate-200">{points[hoveredIdx].year}</span>
+                            <span className="font-bold" style={{ color: "#60a5fa" }}>{points[hoveredIdx].value.toLocaleString("en-IN")}</span>
                         </div>
                     </motion.div>
-                )}
+                    );
+                })()}
             </div>
 
             {/* Footer dots */}

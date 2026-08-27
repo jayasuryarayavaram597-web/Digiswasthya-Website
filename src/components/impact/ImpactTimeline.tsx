@@ -44,7 +44,7 @@ export function ImpactTimeline() {
     };
 
     return (
-        <section className="relative py-20 md:py-28 bg-slate-50/30 border-t border-b border-slate-200/50 overflow-hidden">
+        <section className="relative pt-8 pb-20 md:pt-10 md:pb-28 bg-slate-50/30 border-t border-b border-slate-200/50 overflow-hidden">
             <div className="container max-w-7xl mx-auto px-4 relative z-10">
                 
                 {/* Section Header */}

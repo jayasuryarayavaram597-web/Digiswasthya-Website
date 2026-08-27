@@ -19,7 +19,7 @@ export function PartnersStrip() {
     const isHindi = language === "hi";
 
     return (
-        <section className="py-14 bg-white border-t border-b border-gray-100">
+        <section className="pt-6 sm:pt-8 pb-12 sm:pb-14 bg-white border-t border-b border-gray-100">
             <div className="container max-w-6xl mx-auto px-4">
 
                 {/* Header */}

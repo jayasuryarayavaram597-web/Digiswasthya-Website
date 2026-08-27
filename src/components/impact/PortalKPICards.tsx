@@ -10,7 +10,7 @@ interface PortalKPICardsProps {
         teleconsultations: number;
         healthCamps: number;
         doctors: number;
-        partnerHospitals: number;
+        partnerHospitals?: number;
     };
 }
 
@@ -70,18 +70,10 @@ export function PortalKPICards({ data }: PortalKPICardsProps) {
             iconColor: "text-purple-600",
             borderColor: "border-purple-100",
         },
-        {
-            label: "PARTNER HOSPITALS",
-            value: data.partnerHospitals,
-            icon: Building2,
-            bgColor: "bg-cyan-50",
-            iconColor: "text-cyan-600",
-            borderColor: "border-cyan-100",
-        },
     ];
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {cards.map((card, idx) => {
                 const IconComponent = card.icon;
                 return (

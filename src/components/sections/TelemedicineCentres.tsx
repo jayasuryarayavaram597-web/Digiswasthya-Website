@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { MapPin, ExternalLink, Phone, MessageCircle, Stethoscope, ClipboardCheck } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -7,7 +8,7 @@ import type { LiveCentre } from "@/data/centreData";
 import { STATIC_CENTRES, CENTRE_PHONE } from "@/data/centreData";
 
 
-const STATE_ORDER = ["Uttar Pradesh", "Bihar", "Maharashtra"];
+const STATE_ORDER = ["Uttar Pradesh", "Maharashtra", "Bihar"];
 
 function mapHref(centre: LiveCentre): string {
     if (centre.mapLink) return centre.mapLink;
@@ -80,13 +81,30 @@ export function TelemedicineCentres() {
                             </div>
                         </div>
                         <div className="lg:col-span-5 flex justify-center">
-                            <div className="relative w-full max-w-[360px] aspect-square rounded-full overflow-hidden border-4 border-white shadow-lg">
+                            <div className="relative w-full max-w-[420px] aspect-[4/3] sm:aspect-[16/12] rounded-3xl overflow-hidden shadow-xl ring-1 ring-slate-900/10 group bg-slate-950">
                                 <Image
-                                    src="/images/telemedicine-model.jpg"
-                                    alt="DigiSwasthya Telemedicine Care Model"
+                                    src="/images/about/who-we-are.jpg"
+                                    alt="DigiSwasthya Telemedicine Clinic Consultation in Action"
                                     fill
-                                    className="object-cover"
+                                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                 />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/15 to-transparent" />
+                                
+                                {/* Floating Live Badge */}
+                                <div className="absolute top-3.5 left-3.5">
+                                    <span className="inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-md text-emerald-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm border border-white/50">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        Live Clinic Desk
+                                    </span>
+                                </div>
+
+                                {/* Bottom Caption Overlay */}
+                                <div className="absolute bottom-3.5 left-3.5 right-3.5 text-white">
+                                    <p className="text-xs font-medium text-slate-100 flex items-center gap-1.5 drop-shadow">
+                                        <MapPin className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                                        Nurse-assisted consultation with specialist doctors
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -104,35 +122,37 @@ export function TelemedicineCentres() {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {group.centres.map((centre) => (
-                                    <div
+                                    <motion.div
                                         key={centre.code}
-                                        className="bg-white border border-gray-100 hover:border-primary-200 hover:shadow-md transition-all duration-300 p-7 rounded-xl flex flex-col"
+                                        whileHover={{ y: -4 }}
+                                        whileTap={{ scale: 0.99 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="group bg-white border border-slate-200/90 hover:border-primary-500 hover:ring-2 hover:ring-primary-500/15 shadow-sm hover:shadow-xl hover:shadow-slate-900/5 p-6 sm:p-7 rounded-2xl flex flex-col justify-between transition-all duration-300 cursor-pointer"
                                     >
-                                        <div className="flex items-start justify-between mb-4">
-                                            <div>
-                                                <span className="text-xs font-semibold text-primary-600 uppercase tracking-wider">
-                                                    {centre.code}
-                                                </span>
-                                                <h4 className="text-lg font-semibold text-gray-900 mt-1">
-                                                    {centre.name}
-                                                </h4>
+                                        <div>
+                                            <div className="flex items-start justify-between mb-3">
+                                                <div>
+                                                    <span className="inline-block text-[11px] font-bold text-primary-700 bg-primary-50 border border-primary-100/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                                        {centre.code}
+                                                    </span>
+                                                    <h4 className="text-xl font-bold text-slate-900 group-hover:text-primary-800 transition-colors mt-2">
+                                                        {centre.name}
+                                                    </h4>
+                                                </div>
+                                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 group-hover:scale-125 transition-transform duration-200 mt-2 flex-shrink-0" />
                                             </div>
-                                            <span className="flex h-2 w-2 mt-2 flex-shrink-0">
-                                                <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75"></span>
-                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                                            </span>
-                                        </div>
 
-                                        <div className="space-y-2.5 mb-6 flex-grow">
-                                            <div className="flex items-start gap-2.5">
-                                                <MapPin className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                                                <p className="text-gray-500 text-sm leading-relaxed">
-                                                    {centre.district}, {centre.state} &ndash; {centre.pincode}
-                                                </p>
-                                            </div>
-                                            <div className="flex items-center gap-2.5">
-                                                <Phone className="h-4 w-4 text-gray-400 flex-shrink-0" />
-                                                <a href={`tel:${CENTRE_PHONE.replace(/\s/g, "")}`} className="text-sm text-gray-500 hover:text-primary-600">{CENTRE_PHONE}</a>
+                                            <div className="space-y-2.5 my-5">
+                                                <div className="flex items-start gap-2.5">
+                                                    <MapPin className="h-4 w-4 text-slate-400 group-hover:text-primary-600 transition-colors mt-0.5 flex-shrink-0" />
+                                                    <p className="text-slate-600 text-sm leading-relaxed">
+                                                        {centre.district}, {centre.state} &ndash; {centre.pincode}
+                                                    </p>
+                                                </div>
+                                                <div className="flex items-center gap-2.5">
+                                                    <Phone className="h-4 w-4 text-slate-400 group-hover:text-primary-600 transition-colors flex-shrink-0" />
+                                                    <a href={`tel:${CENTRE_PHONE.replace(/\s/g, "")}`} className="text-sm text-slate-600 hover:text-primary-600 font-medium">{CENTRE_PHONE}</a>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -140,11 +160,12 @@ export function TelemedicineCentres() {
                                             href={mapHref(centre)}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 text-sm font-semibold border-t border-gray-100 pt-4 transition-colors"
+                                            className="inline-flex items-center gap-2 text-primary-600 group-hover:text-primary-700 text-sm font-bold border-t border-slate-100 pt-4 transition-colors"
                                         >
-                                            {t("centres.viewOnMap")} <ExternalLink className="h-3.5 w-3.5" />
+                                            {t("centres.viewOnMap")}{" "}
+                                            <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                                         </a>
-                                    </div>
+                                    </motion.div>
                                 ))}
                             </div>
                         </div>

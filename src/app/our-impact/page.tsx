@@ -85,23 +85,63 @@ export default function OurImpact() {
         { department: "Pediatric Hemato Oncology", count: 2 }
     ];
 
-    const diseaseData = rawLiveStore?.top_diseases ?? [
-        { disease: "Upper Respiratory Infection (URTI)", count: 2599 },
-        { disease: "Hypertension (High BP)", count: 2376 },
-        { disease: "Eczema (Skin Condition)", count: 1431 },
-        { disease: "Tinea (Fungal Infection)", count: 1318 },
-        { disease: "Xerosis (Severe Dry Skin)", count: 795 },
-        { disease: "Acute Febrile Illness", count: 778 },
-        { disease: "Lower Respiratory Infection (LRTI)", count: 774 },
-        { disease: "Gastritis (Stomach Inflammation)", count: 675 },
+    const DISEASE_NAME_MAP: Record<string, string> = {
+        "urti": "Common Cold & Throat Infection (URTI)",
+        "upper respiratory tract inf": "Common Cold & Throat Infection (URTI)",
+        "upper respiratory infection (urti)": "Common Cold & Throat Infection (URTI)",
+        "htn": "High Blood Pressure (Hypertension)",
+        "hypertension (high bp)": "High Blood Pressure (Hypertension)",
+        "eczema": "Skin Rash & Irritation (Eczema)",
+        "eczema (skin condition)": "Skin Rash & Irritation (Eczema)",
+        "tinea": "Fungal Skin Infection (Ringworm)",
+        "tinea (fungal infection)": "Fungal Skin Infection (Ringworm)",
+        "xerosis": "Severe Dry Skin (Xerosis)",
+        "xerosis (severe dry skin)": "Severe Dry Skin (Xerosis)",
+        "acute febrile illness": "Sudden Fever Illness",
+        "lrti": "Chest & Lung Infection (LRTI)",
+        "lower respiratory infection (lrti)": "Chest & Lung Infection (LRTI)",
+        "gastritis": "Stomach Inflammation (Gastritis)",
+        "gastritis (stomach inflammation)": "Stomach Inflammation (Gastritis)",
+        "gen weakness": "General Weakness & Fatigue",
+        "general weakness & fatigue": "General Weakness & Fatigue",
+        "t2dm": "Type 2 Diabetes (Sugar Disease)",
+        "type 2 diabetes mellitus (t2dm)": "Type 2 Diabetes (Sugar Disease)",
+        "joint pain": "Joint Pain & Inflammation",
+        "joint pain & inflammation": "Joint Pain & Inflammation",
+        "age": "Age-Related Health Decline",
+        "age-related health degeneration": "Age-Related Health Decline",
+        "acne": "Acne & Skin Irritation",
+        "acne & dermatitis": "Acne & Skin Irritation",
+        "knee pain": "Knee Pain & Joint Wear (Osteoarthritis)",
+        "knee pain & osteoarthritis": "Knee Pain & Joint Wear (Osteoarthritis)"
+    };
+
+    const rawDiseaseData: { disease: string; count: number }[] = rawLiveStore?.top_diseases ?? [
+        { disease: "Common Cold & Throat Infection (URTI)", count: 2599 },
+        { disease: "High Blood Pressure (Hypertension)", count: 2376 },
+        { disease: "Skin Rash & Irritation (Eczema)", count: 1431 },
+        { disease: "Fungal Skin Infection (Ringworm)", count: 1318 },
+        { disease: "Severe Dry Skin (Xerosis)", count: 795 },
+        { disease: "Sudden Fever Illness", count: 778 },
+        { disease: "Chest & Lung Infection (LRTI)", count: 774 },
+        { disease: "Stomach Inflammation (Gastritis)", count: 675 },
         { disease: "Upper Respiratory Tract Inf", count: 648 },
         { disease: "General Weakness & Fatigue", count: 624 },
-        { disease: "Type 2 Diabetes Mellitus (T2DM)", count: 602 },
+        { disease: "Type 2 Diabetes (Sugar Disease)", count: 602 },
         { disease: "Joint Pain & Inflammation", count: 587 },
-        { disease: "Age-Related Health Degeneration", count: 524 },
-        { disease: "Acne & Dermatitis", count: 504 },
-        { disease: "Knee Pain & Osteoarthritis", count: 499 }
+        { disease: "Age-Related Health Decline", count: 524 },
+        { disease: "Acne & Skin Irritation", count: 504 },
+        { disease: "Knee Pain & Joint Wear (Osteoarthritis)", count: 499 }
     ];
+
+    const diseaseData = (() => {
+        const merged = new Map<string, number>();
+        for (const d of rawDiseaseData) {
+            const friendlyName = DISEASE_NAME_MAP[d.disease.trim().toLowerCase()] ?? d.disease;
+            merged.set(friendlyName, (merged.get(friendlyName) ?? 0) + d.count);
+        }
+        return Array.from(merged.entries()).map(([disease, count]) => ({ disease, count }));
+    })();
 
     const ageDistributionData = rawLiveStore?.demographics?.age_groups ? rawLiveStore.demographics.age_groups.map((a: any) => ({
         range: a.range,
@@ -120,14 +160,14 @@ export default function OurImpact() {
     const genderSlices = genderSplit ? (() => {
         const total = (genderSplit.female || 0) + (genderSplit.male || 0) + (genderSplit.other || 0);
         return [
-            { label: "Female", percentage: total ? Math.round((genderSplit.female / total) * 100) : 0, count: genderSplit.female || 0, color: "#059669" },
-            { label: "Male", percentage: total ? Math.round((genderSplit.male / total) * 100) : 0, count: genderSplit.male || 0, color: "#1e3a8a" },
-            { label: "Other", percentage: total ? Math.round((genderSplit.other / total) * 100) : 0, count: genderSplit.other || 0, color: "#38bdf8" }
+            { label: "Female", percentage: total ? Math.round((genderSplit.female / total) * 100) : 0, count: genderSplit.female || 0, color: "#d81b60" },
+            { label: "Male", percentage: total ? Math.round((genderSplit.male / total) * 100) : 0, count: genderSplit.male || 0, color: "#1d63ed" },
+            { label: "Other", percentage: total ? Math.round((genderSplit.other / total) * 100) : 0, count: genderSplit.other || 0, color: "#8b5cf6" }
         ];
     })() : [
-        { label: "Female", percentage: 58, count: 25022, color: "#059669" },
-        { label: "Male", percentage: 42, count: 17897, color: "#1e3a8a" },
-        { label: "Other", percentage: 0, count: 7, color: "#38bdf8" }
+        { label: "Female", percentage: 58, count: 25022, color: "#d81b60" },
+        { label: "Male", percentage: 42, count: 17897, color: "#1d63ed" },
+        { label: "Other", percentage: 0, count: 7, color: "#8b5cf6" }
     ];
 
     const ptTypes = rawLiveStore?.demographics?.patient_types;

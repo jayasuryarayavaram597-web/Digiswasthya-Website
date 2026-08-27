@@ -23,8 +23,8 @@ export function Navbar() {
     ];
 
     const resourcesLinks = [
-        { name: t("nav.healthTools"), href: "/health-tools" },
         { name: t("nav.media"), href: "/media" },
+        { name: t("nav.healthTools"), href: "/health-tools" },
         { name: t("nav.privacy"), href: "/privacy-policy" },
         { name: t("nav.terms"), href: "/terms-and-conditions" },
     ];
@@ -98,11 +98,15 @@ export function Navbar() {
 
                 {/* Mobile Menu Button */}
                 <button
-                    className="md:hidden p-2"
+                    className="md:hidden p-2.5 mr-3 rounded-xl bg-primary-50 text-primary-950 hover:bg-primary-100 active:bg-primary-200 border-2 border-primary-300 shadow-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
                     onClick={() => setIsOpen(!isOpen)}
                     aria-label="Toggle menu"
                 >
-                    {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                    {isOpen ? (
+                        <X className="h-6 w-6 text-primary-950 stroke-[2.5]" />
+                    ) : (
+                        <Menu className="h-6 w-6 text-primary-950 stroke-[2.5]" />
+                    )}
                 </button>
             </div>
 

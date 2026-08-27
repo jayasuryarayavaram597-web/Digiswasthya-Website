@@ -34,7 +34,7 @@ export function Collaboration() {
     ];
 
     return (
-        <section className="relative py-24 bg-gradient-to-b from-white to-slate-50 overflow-hidden">
+        <section className="relative pt-16 md:pt-20 pb-8 md:pb-10 bg-gradient-to-b from-white to-slate-50 overflow-hidden">
             {/* Decorative ambient blobs */}
             <div className="pointer-events-none absolute -top-24 -right-24 w-[26rem] h-[26rem] bg-primary-100/40 rounded-full blur-3xl" />
             <div className="pointer-events-none absolute bottom-0 -left-24 w-80 h-80 bg-secondary-100/40 rounded-full blur-3xl" />
@@ -94,7 +94,7 @@ export function Collaboration() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.15, duration: 0.5 }}
-                    className="mt-14 relative rounded-3xl overflow-hidden bg-gradient-to-br from-primary-700 via-primary-600 to-primary-700 px-8 py-10 md:px-14 md:py-12 shadow-xl shadow-primary-900/20"
+                    className="mt-10 md:mt-12 relative rounded-3xl overflow-hidden bg-gradient-to-br from-primary-700 via-primary-600 to-primary-700 px-8 py-10 md:px-14 md:py-12 shadow-xl shadow-primary-900/20"
                 >
                     {/* texture + glow */}
                     <div className="absolute inset-0 opacity-[0.12] [background-image:radial-gradient(circle_at_1px_1px,#ffffff_1px,transparent_0)] [background-size:22px_22px]" />

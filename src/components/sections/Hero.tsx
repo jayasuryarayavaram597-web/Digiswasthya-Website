@@ -40,11 +40,11 @@ export function Hero() {
     };
 
     const stats = [
-        { label: "Patients Served", value: getVal("patients-served", 117644), suffix: "+" },
-        { label: "Total Consultations", value: getVal("total-consultations", 97104), suffix: "" },
-        { label: "Health & Awareness Camps", value: getVal("health-camps", 2146), suffix: "" },
-        { label: "Health Camps at CHCs/PHC", value: getVal("chc-phc-camps", 133), suffix: "" },
-        { label: "Expert Doctors Onboard", value: getVal("expert-doctors", 213), suffix: "" },
+        { label: "Patients Served", value: getVal("patients-served", 43418), suffix: "+" },
+        { label: "Teleconsultations", value: getVal("total-consultations", 59674), suffix: "+" },
+        { label: "Expert Doctors Onboard", value: getVal("expert-doctors", 125), suffix: "+" },
+        { label: "Health Camps", value: getVal("health-camps", 5), suffix: "+" },
+        { label: "Districts Covered", value: 60, suffix: "+" },
         { label: "Lives Impacted", value: getVal("lives-impacted", 2850000), suffix: "+" },
     ];
 
@@ -77,22 +77,25 @@ export function Hero() {
 
     const slideVariants = {
         enter: (dir: number) => ({
-            x: dir > 0 ? "100%" : "-100%",
-            opacity: 0
+            x: dir > 0 ? "8%" : "-8%",
+            opacity: 0,
+            scale: 1.03
         }),
         center: {
             x: 0,
-            opacity: 1
+            opacity: 1,
+            scale: 1
         },
         exit: (dir: number) => ({
-            x: dir < 0 ? "100%" : "-100%",
-            opacity: 0
+            x: dir < 0 ? "8%" : "-8%",
+            opacity: 0,
+            scale: 0.98
         })
     };
 
     return (
         <section className="relative min-h-[780px] w-full flex items-center overflow-hidden bg-gray-950 group/hero pb-24">
-            {/* Background Photo Slideshow with Sliding Animations */}
+            {/* Background Photo Slideshow with Smooth Medium Glide & Fade */}
             <div className="absolute inset-0 overflow-hidden">
                 <AnimatePresence initial={false} custom={direction}>
                     <motion.div
@@ -103,8 +106,9 @@ export function Hero() {
                         animate="center"
                         exit="exit"
                         transition={{
-                            x: { type: "tween", ease: "easeInOut", duration: 0.8 },
-                            opacity: { duration: 0.6 }
+                            x: { type: "tween", ease: [0.25, 0.1, 0.25, 1.0], duration: 1.0 },
+                            opacity: { duration: 0.85, ease: "easeInOut" },
+                            scale: { duration: 1.0, ease: "easeOut" }
                         }}
                         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                         style={{

@@ -104,8 +104,8 @@ export const impactData: ImpactPageData = {
             hi: "हमारा मापने योग्य स्वास्थ्य प्रभाव"
         },
         subtitle: {
-            en: "Live aggregate figures from the DigiSwasthya Management Portal. Explore our healthcare reach, teleconsultations, and demographic distribution.",
-            hi: "डिजीस्वास्थ्य प्रबंधन पोर्टल से लाइव कुल आंकड़े। हमारी स्वास्थ्य पहुंच, टेलीमेडिसिन परामर्श और जनसांख्यिकीय वितरण का अन्वेषण करें।"
+            en: "Live aggregate figures updated weekly from the DigiSwasthya Management Portal. Explore our healthcare reach, teleconsultations, and demographic distribution.",
+            hi: "डिजीस्वास्थ्य प्रबंधन पोर्टल से साप्ताहिक रूप से अपडेट किए गए लाइव आंकड़े। हमारी स्वास्थ्य पहुंच, टेलीमेडिसिन परामर्श और जनसांख्यिकीय वितरण का अन्वेषण करें।"
         }
     },
 
@@ -150,16 +150,6 @@ export const impactData: ImpactPageData = {
                 en: "Empanelled doctors and healthcare specialists.",
                 hi: "पैनल में शामिल डॉक्टर और स्वास्थ्य विशेषज्ञ।"
             }
-        },
-        {
-            id: "partner-hospitals",
-            value: 0,
-            label: { en: "Partner Hospitals", hi: "भागीदार अस्पताल" },
-            icon: "Building2",
-            description: {
-                en: "Empanelled tertiary care hospitals.",
-                hi: "सूचीबद्ध तृतीयक देखरेख अस्पताल।"
-            }
         }
     ],
 
@@ -178,21 +168,20 @@ export const impactData: ImpactPageData = {
 
     // ─── TOP DISEASES (Horizontal Bar Chart) ────────────────────────────────────
     diseaseDistribution: [
-        { name: { en: "Upper Respiratory Infection (URTI)", hi: "ऊपरी श्वसन पथ संक्रमण (URTI)" }, value: 2599, color: "#8b5cf6" },
-        { name: { en: "Hypertension (High BP)", hi: "उच्च रक्तचाप (हाइपरटेंशन)" }, value: 2376, color: "#8b5cf6" },
-        { name: { en: "Eczema (Skin Condition)", hi: "एक्जिमा (त्वचा की स्थिति)" }, value: 1431, color: "#8b5cf6" },
-        { name: { en: "Tinea (Fungal Infection)", hi: "टीनिया (फंगल संक्रमण)" }, value: 1318, color: "#8b5cf6" },
-        { name: { en: "Xerosis (Severe Dry Skin)", hi: "जेरोसिस (गंभीर सूखी त्वचा)" }, value: 795, color: "#8b5cf6" },
-        { name: { en: "Acute Febrile Illness", hi: "तीव्र ज्वर बीमारी" }, value: 778, color: "#8b5cf6" },
-        { name: { en: "Lower Respiratory Infection (LRTI)", hi: "निचला श्वसन संक्रमण (LRTI)" }, value: 774, color: "#8b5cf6" },
-        { name: { en: "Gastritis (Stomach Inflammation)", hi: "गैस्ट्राइटिस (पेट की सूजन)" }, value: 675, color: "#8b5cf6" },
-        { name: { en: "Upper Respiratory Tract Inf", hi: "ऊपरी श्वसन पथ संक्रमण" }, value: 648, color: "#8b5cf6" },
+        { name: { en: "Common Cold & Throat Infection (URTI)", hi: "ऊपरी श्वसन पथ संक्रमण (URTI)" }, value: 3247, color: "#8b5cf6" },
+        { name: { en: "High Blood Pressure (Hypertension)", hi: "उच्च रक्तचाप (हाइपरटेंशन)" }, value: 2376, color: "#8b5cf6" },
+        { name: { en: "Skin Rash & Irritation (Eczema)", hi: "एक्जिमा (त्वचा की स्थिति)" }, value: 1431, color: "#8b5cf6" },
+        { name: { en: "Fungal Skin Infection (Ringworm)", hi: "टीनिया (फंगल संक्रमण)" }, value: 1318, color: "#8b5cf6" },
+        { name: { en: "Severe Dry Skin (Xerosis)", hi: "जेरोसिस (गंभीर सूखी त्वचा)" }, value: 795, color: "#8b5cf6" },
+        { name: { en: "Sudden Fever Illness", hi: "तीव्र ज्वर बीमारी" }, value: 778, color: "#8b5cf6" },
+        { name: { en: "Chest & Lung Infection (LRTI)", hi: "निचला श्वसन संक्रमण (LRTI)" }, value: 774, color: "#8b5cf6" },
+        { name: { en: "Stomach Inflammation (Gastritis)", hi: "गैस्ट्राइटिस (पेट की सूजन)" }, value: 675, color: "#8b5cf6" },
         { name: { en: "General Weakness & Fatigue", hi: "सामान्य कमजोरी और थकान" }, value: 624, color: "#8b5cf6" },
-        { name: { en: "Type 2 Diabetes Mellitus (T2DM)", hi: "टाइप 2 मधुमेह (T2DM)" }, value: 602, color: "#8b5cf6" },
+        { name: { en: "Type 2 Diabetes (Sugar Disease)", hi: "टाइप 2 मधुमेह (T2DM)" }, value: 602, color: "#8b5cf6" },
         { name: { en: "Joint Pain & Inflammation", hi: "जोड़ों का दर्द और सूजन" }, value: 587, color: "#8b5cf6" },
-        { name: { en: "Age-Related Health Degeneration", hi: "उम्र संबंधी स्वास्थ्य ह्रास" }, value: 524, color: "#8b5cf6" },
-        { name: { en: "Acne & Dermatitis", hi: "मुहासे और त्वचा रोग" }, value: 504, color: "#8b5cf6" },
-        { name: { en: "Knee Pain & Osteoarthritis", hi: "घुटने का दर्द और ऑस्टियोआर्थराइटिस" }, value: 499, color: "#8b5cf6" }
+        { name: { en: "Age-Related Health Decline", hi: "उम्र संबंधी स्वास्थ्य ह्रास" }, value: 524, color: "#8b5cf6" },
+        { name: { en: "Acne & Skin Irritation", hi: "मुहासे और त्वचा रोग" }, value: 504, color: "#8b5cf6" },
+        { name: { en: "Knee Pain & Joint Wear (Osteoarthritis)", hi: "घुटने का दर्द और ऑस्टियोआर्थराइटिस" }, value: 499, color: "#8b5cf6" }
     ],
 
     // ─── CONSULTATION BY DEPARTMENT ─────────────────────────────────────────────

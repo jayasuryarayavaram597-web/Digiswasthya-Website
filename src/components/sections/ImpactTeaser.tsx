@@ -9,7 +9,7 @@ export function ImpactTeaser() {
     const currentLang = (language === "en" || language === "hi") ? language : "en";
 
     return (
-        <section className="py-8 bg-[#f4f7f5]">
+        <section className="py-3 sm:py-5 bg-[#f8fafc]">
             <div className="container px-4">
                 <div className="relative bg-gradient-to-r from-gray-900 via-slate-800 to-gray-950 rounded-3xl p-8 md:p-12 shadow-xl border border-slate-800 overflow-hidden">
                     {/* Architectural Mesh grid overlay */}

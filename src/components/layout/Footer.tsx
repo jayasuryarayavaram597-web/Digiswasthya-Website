@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Facebook, Twitter, Instagram, Linkedin, Youtube, Mail, Phone, MapPin, CheckCircle2 } from "lucide-react";
+import { Mail, Phone, MapPin, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { ContactActions } from "@/components/features/ContactActions";
 import { useLanguage } from "@/context/LanguageContext";
@@ -39,7 +39,7 @@ export function Footer() {
     return (
         <footer className="bg-gray-900 text-gray-300">
             <div className="container py-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
 
                     {/* Brand & Address */}
                     <div className="space-y-4">
@@ -75,18 +75,6 @@ export function Footer() {
                             <li><Link href="/our-team" className="hover:text-primary-400">{t("nav.team")}</Link></li>
                             <li><Link href="/media" className="hover:text-primary-400">{t("nav.media")}</Link></li>
                         </ul>
-                    </div>
-
-                    {/* Social */}
-                    <div>
-                        <h4 className="text-lg font-semibold text-white mb-4">{t("footer.connect")}</h4>
-                        <div className="flex gap-4">
-                            <a href="https://www.facebook.com/DigiSwasthya/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-400"><Facebook className="h-5 w-5" /></a>
-                            <a href="https://x.com/DigiSwasthya" target="_blank" rel="noopener noreferrer" className="hover:text-primary-400"><Twitter className="h-5 w-5" /></a>
-                            <a href="https://www.instagram.com/digiswasthya/" target="_blank" rel="noopener noreferrer" className="hover:text-primary-400"><Instagram className="h-5 w-5" /></a>
-                            <a href="https://www.linkedin.com/company/digiswasthya" target="_blank" rel="noopener noreferrer" className="hover:text-primary-400"><Linkedin className="h-5 w-5" /></a>
-                            <a href="https://www.youtube.com/channel/UC52n8c8U4jAtHsIzq7-wKvQ" target="_blank" rel="noopener noreferrer" className="hover:text-primary-400"><Youtube className="h-5 w-5" /></a>
-                        </div>
                     </div>
 
                     {/* Contact Form */}

@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { useState } from "react";
+import { motion, Variants, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -10,10 +11,8 @@ import {
     Activity,
     HeartHandshake,
     ShieldCheck,
-    CheckCircle,
     FileText,
     ExternalLink,
-    Quote,
     Megaphone,
     Info,
     Database,
@@ -25,29 +24,33 @@ import {
     Smartphone,
     TrendingUp,
     AlertTriangle,
-    ArrowDown
+    Sparkles,
+    Compass,
+    Target,
+    ChevronDown,
+    ChevronUp,
+    Heart
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import Link from "next/link";
 
 const fadeIn = {
-    initial: { opacity: 0, y: 20 },
+    initial: { opacity: 0, y: 15 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true },
-    transition: { duration: 0.6 }
+    transition: { duration: 0.5 }
 };
 
-/* Fade-in-up for cards with stagger support */
 const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 14 },
+    hidden: { opacity: 0, y: 12 },
     visible: (delay: number) => ({
         opacity: 1,
         y: 0,
-        transition: { duration: 0.5, delay, ease: "easeOut" as const }
+        transition: { duration: 0.4, delay, ease: "easeOut" as const }
     })
 };
 
-// Local translation dictionary for the new/redesigned content
+// 100% UNCHANGED ORIGINAL TRANSLATION CONTENT
 const contentDict = {
     section1: {
         title: { en: "Who We Are", hi: "हम कौन हैं" },
@@ -121,234 +124,339 @@ const contentDict = {
 export default function AboutUs() {
     const { t, language } = useLanguage();
     const currentLang = (language === "en" || language === "hi") ? language : "en";
+    const [isStoryExpanded, setIsStoryExpanded] = useState(false);
 
     return (
-        <main className="min-h-screen bg-white">
+        <main className="min-h-screen bg-slate-50 selection:bg-primary-500 selection:text-white font-sans text-slate-800">
             <Navbar />
 
-            {/* SECTION 1 — WHO WE ARE (Hero Section) */}
-            <section className="relative bg-gradient-to-br from-slate-900 via-primary-950 to-slate-900 border-b border-white/10 py-16 lg:py-20 overflow-hidden">
-                <div className="absolute inset-0 opacity-[0.08] pointer-events-none">
-                    <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:28px_28px]" />
-                </div>
-                <div className="absolute -top-32 -right-32 w-[36rem] h-[36rem] bg-primary-500/20 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-secondary-400/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="container max-w-7xl relative z-10 px-4">
-                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                        <div className="space-y-6 text-center lg:text-left">
-                            <motion.span
-                                initial={{ opacity: 0, y: -10 }}
+            {/* SECTION 1 — WHO WE ARE (Hero Section: Compact & Fitted) */}
+            <section className="relative bg-gradient-to-br from-[#f8fafc] via-[#edf7f0] to-[#fef9ee] border-b border-slate-200/80 py-8 sm:py-10 lg:py-12 overflow-hidden text-slate-900">
+                {/* Soft ambient aura lighting */}
+                <div className="absolute top-0 right-1/4 w-80 h-80 bg-emerald-200/30 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute bottom-0 left-10 w-72 h-72 bg-amber-200/30 rounded-full blur-[90px] pointer-events-none" />
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#059669_1.5px,transparent_1.5px)] [background-size:24px_24px]" />
+
+                <div className="container max-w-7xl relative z-10 px-4 sm:px-6">
+                    <div className="grid lg:grid-cols-12 gap-6 lg:gap-10 items-center">
+                        
+                        {/* Left Column: Heading & Text */}
+                        <div className="lg:col-span-7 space-y-3.5 sm:space-y-4 text-center lg:text-left">
+                            <motion.div
+                                initial={{ opacity: 0, y: -8 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="inline-block bg-white/10 border border-white/20 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full backdrop-blur-sm"
+                                className="inline-flex items-center gap-2 bg-white/95 border border-emerald-200/80 px-3.5 py-1 rounded-full shadow-sm backdrop-blur-sm"
                             >
-                                {contentDict.section1.title[currentLang]}
-                            </motion.span>
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                <span className="text-emerald-800 text-[11px] font-bold uppercase tracking-wider">
+                                    {contentDict.section1.title[currentLang]}
+                                </span>
+                            </motion.div>
+
                             <motion.h1
-                                initial={{ opacity: 0, y: 20 }}
+                                initial={{ opacity: 0, y: 12 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-white leading-tight drop-shadow-lg"
+                                className="text-2xl sm:text-3xl lg:text-4xl font-serif font-black tracking-tight leading-tight text-slate-900"
                             >
                                 {currentLang === "hi" ? (
                                     <>
                                         गुणवत्तापूर्ण स्वास्थ्य सेवा <br />
-                                        <span className="text-secondary-400 font-extrabold">सभी के लिए</span>
+                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 via-teal-700 to-amber-700">
+                                            सभी के लिए सुलभ
+                                        </span>
                                     </>
                                 ) : (
                                     <>
                                         Quality Healthcare <br />
-                                        <span className="text-secondary-400 font-extrabold drop-shadow-[0_0_30px_rgba(251,191,36,0.4)]">For Everyone</span>
+                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 via-teal-700 to-amber-700">
+                                            For Every Rural Family
+                                        </span>
                                     </>
                                 )}
                             </motion.h1>
+
                             <motion.p
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                transition={{ delay: 0.2 }}
-                                className="text-slate-300 text-base md:text-lg font-normal leading-relaxed text-justify"
+                                transition={{ delay: 0.12 }}
+                                className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-xl mx-auto lg:mx-0 font-normal"
                             >
                                 {contentDict.section1.text[currentLang]}
                             </motion.p>
+
+                            <motion.div
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                                className="pt-2 flex flex-wrap gap-3 justify-center lg:justify-start"
+                            >
+                                <a
+                                    href="#sandeeps-story"
+                                    className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-900 via-primary-800 to-emerald-800 hover:from-primary-950 hover:to-emerald-900 text-white font-bold px-5.5 py-2.5 rounded-full text-xs sm:text-sm transition-all shadow-md shadow-primary-950/20 hover:shadow-lg hover:-translate-y-0.5"
+                                >
+                                    <span>{currentLang === "hi" ? "संस्थापक की कहानी पढ़ें" : "Read Founder's Story"}</span>
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                </a>
+                                <Link
+                                    href="/donate"
+                                    className="inline-flex items-center gap-2 bg-gradient-to-r from-secondary-500 to-amber-500 hover:from-secondary-600 hover:to-amber-600 text-white font-bold px-5.5 py-2.5 rounded-full text-xs sm:text-sm transition-all shadow-md shadow-amber-500/25 hover:shadow-lg hover:-translate-y-0.5"
+                                >
+                                    <Heart className="w-3.5 h-3.5 fill-white text-white" />
+                                    <span>{currentLang === "hi" ? "हमारे मिशन का समर्थन करें" : "Support Our Mission"}</span>
+                                </Link>
+                            </motion.div>
                         </div>
-                        
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.25, duration: 0.5 }}
-                            className="relative h-[240px] md:h-[340px] lg:h-[380px] rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/10 group"
-                        >
-                            <Image
-                                src="/images/about/who-we-are.jpg"
-                                alt="DigiSwasthya Health Camp - Serving rural communities"
-                                fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                priority
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                        </motion.div>
+
+                        {/* Right Column: Balanced Photo with Floating Stat */}
+                        <div className="lg:col-span-5 relative">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.96 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.15, duration: 0.4 }}
+                                className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl ring-1 ring-slate-900/10 aspect-[16/10] sm:aspect-[4/3] group bg-white p-1.5 max-w-lg mx-auto lg:max-w-none"
+                            >
+                                <div className="relative w-full h-full rounded-xl sm:rounded-2xl overflow-hidden">
+                                    <Image
+                                        src="/images/about/who-we-are.jpg"
+                                        alt="DigiSwasthya Health Camp - Serving rural communities"
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                        priority
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/25 via-transparent to-transparent" />
+                                </div>
+                            </motion.div>
+                        </div>
+
                     </div>
                 </div>
             </section>
 
-            {/* SECTION 2 — THE HEALTHCARE CHALLENGE IN INDIA */}
-            <section className="py-24 bg-gradient-to-b from-slate-50 to-white border-b border-gray-100">
-                <div className="container max-w-7xl px-4">
-                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* SECTION 2 — THE HEALTHCARE CHALLENGE (Compact 2-Col Height-Balanced) */}
+            <section className="relative py-12 sm:py-16 bg-gradient-to-b from-[#f8fafc] via-[#f1f7f4] to-[#f8fafc] border-b border-slate-200/80 overflow-hidden">
+                {/* Soft decorative aura glows */}
+                <div className="absolute -top-20 left-1/4 w-80 h-80 bg-emerald-100/35 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute bottom-0 right-10 w-80 h-80 bg-teal-100/35 rounded-full blur-[90px] pointer-events-none" />
+                <div className="absolute inset-0 opacity-[0.025] pointer-events-none bg-[radial-gradient(#059669_1px,transparent_1px)] [background-size:24px_24px]" />
+
+                <div className="container max-w-7xl relative z-10 px-4 sm:px-6">
+                    <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                        
+                        {/* Left Side: Photo */}
                         <motion.div
-                            initial={{ opacity: 0, x: -20 }}
+                            initial={{ opacity: 0, x: -15 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.5 }}
-                            className="relative h-[240px] sm:h-[320px] md:h-[360px] rounded-3xl overflow-hidden shadow-xl ring-1 ring-gray-200/60 group order-2 lg:order-1"
+                            className="lg:col-span-5 relative"
                         >
-                            <Image
-                                src="/images/about/healthcare-challenge.jpg"
-                                alt="DigiSwasthya Health Awareness Camp at rural school"
-                                fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                            <div className="relative rounded-3xl overflow-hidden shadow-xl ring-1 ring-slate-900/10 aspect-[16/10] sm:aspect-[4/3] group bg-white p-2">
+                                <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                                    <Image
+                                        src="/images/about/healthcare-challenge.jpg"
+                                        alt="DigiSwasthya Health Awareness Camp at rural school"
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/25 via-transparent to-transparent" />
+                                </div>
+                            </div>
                         </motion.div>
 
-                        <div className="space-y-8 order-1 lg:order-2">
-                            <div className="space-y-4 text-center lg:text-left">
-                                <span className="inline-block text-[10px] font-black uppercase tracking-widest text-red-600 bg-red-50 border border-red-100 px-3.5 py-1 rounded-full">
+                        {/* Right Side: Challenges Compact 2x2 */}
+                        <div className="lg:col-span-7 space-y-5">
+                            <div className="space-y-2 text-center lg:text-left">
+                                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 border border-amber-200 px-3.5 py-1 rounded-full shadow-sm">
+                                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
                                     {currentLang === "hi" ? "भारत में चुनौती" : "The Gap In India"}
                                 </span>
-                                <h2 className="text-2xl md:text-3xl font-serif font-bold text-gray-900 leading-tight">
+                                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-black text-slate-900 leading-tight">
                                     {contentDict.section2.title[currentLang]}
                                 </h2>
-                                <p className="text-gray-600 text-sm md:text-base leading-relaxed text-justify">
+                                <p className="text-slate-600 text-sm leading-relaxed max-w-xl">
                                     {contentDict.section2.text[currentLang]}
                                 </p>
                             </div>
 
-                            <div className="grid sm:grid-cols-2 gap-6">
+                            {/* 4 Elevated Challenge Cards */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                 {contentDict.section2.challenges.map((challenge, index) => {
                                     const Icon = challenge.icon;
+                                    const iconStyles = [
+                                        "bg-emerald-50 border-emerald-200 text-emerald-700",
+                                        "bg-amber-50 border-amber-200 text-amber-700",
+                                        "bg-teal-50 border-teal-200 text-teal-700",
+                                        "bg-primary-50 border-primary-200 text-primary-700"
+                                    ];
+                                    const iconStyle = iconStyles[index % iconStyles.length];
+
                                     return (
-                                        <div key={index} className="group relative flex flex-col gap-4 p-6 rounded-3xl bg-white border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-1.5 transition-all duration-300 overflow-hidden">
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-50 to-red-100/50 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 shadow-sm ring-4 ring-white">
-                                                <Icon className="w-6 h-6 text-red-600" />
+                                        <div 
+                                            key={index} 
+                                            className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-[0_2px_12px_rgba(15,23,42,0.04)] hover:shadow-md hover:border-emerald-300 hover:-translate-y-0.5 transition-all duration-200 flex items-start gap-3.5"
+                                        >
+                                            <div className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${iconStyle}`}>
+                                                <Icon className="w-4 h-4" />
                                             </div>
-                                            <div className="space-y-2 relative z-10">
-                                                <h4 className="text-base font-black text-gray-900 group-hover:text-red-700 transition-colors duration-300">{challenge.title[currentLang]}</h4>
-                                                <p className="text-sm font-medium text-gray-500 leading-relaxed">{challenge.desc[currentLang]}</p>
+                                            <div>
+                                                <h4 className="text-sm font-bold text-slate-900 leading-tight mb-1">
+                                                    {challenge.title[currentLang]}
+                                                </h4>
+                                                <p className="text-xs text-slate-600 leading-relaxed">
+                                                    {challenge.desc[currentLang]}
+                                                </p>
                                             </div>
                                         </div>
                                     );
                                 })}
                             </div>
                         </div>
+
                     </div>
                 </div>
             </section>
 
             {/* SECTION 3 — WHY DIGISWASTHYA EXISTS & OUR MISSION/VISION */}
-            <section className="py-24 bg-gradient-to-br from-primary-50/40 via-white to-slate-50 border-b border-gray-100">
-                <div className="container max-w-7xl px-4">
-                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center mb-20">
-                        <div className="space-y-6">
-                            <span className="inline-block text-[10px] font-black uppercase tracking-widest text-primary-800 bg-primary-100/70 border border-primary-200/50 px-3.5 py-1 rounded-full text-center lg:text-left">
+            <section className="py-12 sm:py-16 bg-gradient-to-br from-emerald-50/30 via-white to-slate-50 border-b border-slate-200/60">
+                <div className="container max-w-7xl px-4 sm:px-6">
+                    
+                    {/* Top: Why We Exist */}
+                    <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-12">
+                        <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
+                            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/70 border border-emerald-200/80 px-3 py-0.5 rounded-full">
+                                <Compass className="w-3 h-3 text-emerald-700" />
                                 {contentDict.section3.title[currentLang]}
                             </span>
-                            <h2 className="text-2xl md:text-3xl font-serif font-bold text-gray-900 leading-tight text-center lg:text-left">
-                                {currentLang === "hi" ? "हमारा दृष्टिकोण" : "Bridging the Distance"}
+                            <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-black text-slate-900 leading-tight">
+                                {currentLang === "hi" ? "हमारा दृष्टिकोण" : "Bridging the Distance to Specialist Healthcare"}
                             </h2>
-                            <p className="text-gray-600 text-sm md:text-base leading-relaxed text-justify">
+                            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
                                 {contentDict.section3.text[currentLang]}
                             </p>
                         </div>
 
                         <motion.div
-                            initial={{ opacity: 0, x: 20 }}
+                            initial={{ opacity: 0, x: 15 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.5 }}
-                            className="relative h-[240px] sm:h-[320px] md:h-[360px] rounded-3xl overflow-hidden shadow-xl ring-1 ring-gray-200/60 group"
+                            className="lg:col-span-5 relative"
                         >
-                            <Image
-                                src="/images/about/why-digiswasthya-exists.jpg"
-                                alt="DigiSwasthya Telemedicine Consultation"
-                                fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-                        </motion.div>
-                    </div>
-
-                    {/* OUR MISSION & VISION */}
-                    <div className="mt-20 pt-16 border-t border-gray-200/70">
-                        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.5 }}
-                                className="relative h-[280px] sm:h-[360px] lg:h-[400px] rounded-3xl overflow-hidden shadow-xl ring-1 ring-gray-200/60 group order-2 lg:order-1"
-                            >
+                            <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-md ring-1 ring-slate-200 aspect-[16/10] sm:aspect-[4/3] group">
                                 <Image
-                                    src="/images/about/healthy-communities.jpg"
-                                    alt="DigiSwasthya Foundation community health camp"
+                                    src="/images/about/why-digiswasthya-exists.jpg"
+                                    alt="DigiSwasthya Telemedicine Consultation"
                                     fill
                                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent" />
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    {/* Bottom: Mission & Vision (Dual Cards Compact) */}
+                    <div className="pt-8 border-t border-slate-200/70">
+                        <div className="grid lg:grid-cols-12 gap-8 items-center">
+                            
+                            <motion.div
+                                initial={{ opacity: 0, x: -15 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                className="lg:col-span-5 relative"
+                            >
+                                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-md ring-1 ring-slate-200 aspect-[16/10] sm:aspect-[4/3] group">
+                                    <Image
+                                        src="/images/about/healthy-communities.jpg"
+                                        alt="DigiSwasthya Foundation community health camp"
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent" />
+                                </div>
                             </motion.div>
 
-                            <div className="space-y-12 order-1 lg:order-2">
+                            <div className="lg:col-span-7 space-y-4">
+                                
+                                {/* Mission Card */}
                                 <motion.div
-                                    initial={{ opacity: 0, y: 15 }}
+                                    initial={{ opacity: 0, y: 10 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    className="space-y-4"
+                                    className="p-4 sm:p-5 rounded-2xl bg-white border border-emerald-200 shadow-sm relative overflow-hidden"
                                 >
-                                    <span className="inline-block text-[10px] font-black uppercase tracking-widest text-primary-800 bg-primary-100/70 border border-primary-200/50 px-3.5 py-1 rounded-full">
-                                        {contentDict.section5_6.mission.title[currentLang]}
-                                    </span>
-                                    <h3 className="text-3xl font-serif font-bold text-gray-900 leading-tight">
+                                    <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500" />
+                                    <div className="flex items-center gap-2 mb-1.5">
+                                        <Target className="w-4 h-4 text-emerald-600" />
+                                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">
+                                            {contentDict.section5_6.mission.title[currentLang]}
+                                        </span>
+                                    </div>
+                                    <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 mb-1">
                                         {currentLang === "hi" ? "गुणवत्ता और समावेशी स्वास्थ्य सेवा" : "Accessible Quality Healthcare"}
                                     </h3>
-                                    <p className="text-gray-600 text-sm md:text-base leading-relaxed text-justify">
+                                    <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
                                         {contentDict.section5_6.mission.text[currentLang]}
                                     </p>
                                 </motion.div>
+
+                                {/* Vision Card */}
                                 <motion.div
-                                    initial={{ opacity: 0, y: 15 }}
+                                    initial={{ opacity: 0, y: 10 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    className="space-y-4"
+                                    className="p-4 sm:p-5 rounded-2xl bg-white border border-amber-200 shadow-sm relative overflow-hidden"
                                 >
-                                    <span className="inline-block text-[10px] font-black uppercase tracking-widest text-secondary-800 bg-secondary-100/70 border border-secondary-200/50 px-3.5 py-1 rounded-full">
-                                        {contentDict.section5_6.vision.title[currentLang]}
-                                    </span>
-                                    <h3 className="text-3xl font-serif font-bold text-gray-900 leading-tight">
+                                    <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-500" />
+                                    <div className="flex items-center gap-2 mb-1.5">
+                                        <Sparkles className="w-4 h-4 text-amber-600" />
+                                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 px-2 py-0.5 rounded">
+                                            {contentDict.section5_6.vision.title[currentLang]}
+                                        </span>
+                                    </div>
+                                    <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 mb-1">
                                         {currentLang === "hi" ? "स्वस्थ एवं खुशहाल ग्रामीण भारत" : "Healthy & Happy Rural India"}
                                     </h3>
-                                    <p className="text-gray-600 text-sm md:text-base leading-relaxed text-justify">
+                                    <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
                                         {contentDict.section5_6.vision.text[currentLang]}
                                     </p>
                                 </motion.div>
+
                             </div>
+
                         </div>
                     </div>
+
                 </div>
             </section>
 
-            {/* SECTION 4 — SANDEEP'S STORY */}
-            <section className="py-24 bg-white border-b border-gray-100 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-[0.025] [background-image:radial-gradient(circle_at_1px_1px,#16a34a_1px,transparent_0)] [background-size:32px_32px] pointer-events-none" />
-                <div className="container max-w-7xl px-4 relative z-10">
-                    <div id="sandeeps-story" className="max-w-6xl mx-auto scroll-mt-24">
-                        <div className="grid lg:grid-cols-[1.6fr_1.1fr] gap-12 items-start">
+            {/* SECTION 4 — SANDEEP'S STORY (Balanced 50/50 Layout with Larger Video & Lower Top Margin) */}
+            <section id="sandeeps-story" className="relative py-14 sm:py-18 bg-gradient-to-br from-[#fafcf8] via-[#f3f8f5] to-[#fdfaf5] border-b border-slate-200/80 scroll-mt-20 overflow-hidden">
+                {/* Soft ambient light glows */}
+                <div className="absolute -top-24 -left-20 w-80 h-80 bg-emerald-100/40 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute -bottom-20 right-1/4 w-80 h-80 bg-amber-100/40 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute inset-0 opacity-[0.025] pointer-events-none bg-[radial-gradient(#059669_1px,transparent_1px)] [background-size:24px_24px]" />
+
+                <div className="container max-w-7xl relative z-10 px-4 sm:px-6">
+                    <div className="max-w-6xl mx-auto">
+                        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+                            
+                            {/* Narrative Text Column */}
                             <motion.div
-                                initial={{ opacity: 0, x: -20 }}
+                                initial={{ opacity: 0, x: -15 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
-                                className="space-y-6"
+                                className="lg:col-span-7 space-y-4"
                             >
-                                <h3 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight pb-3 border-b-4 border-primary-500 inline-block">Sandeep's Story</h3>
-                                <div className="space-y-4 text-gray-600 leading-relaxed text-sm font-medium text-justify">
+                                <div>
+                                    <div className="inline-flex items-center gap-2 bg-white/95 border border-emerald-200/90 text-emerald-800 text-[11px] font-bold uppercase tracking-wider px-3.5 py-1 rounded-full shadow-sm backdrop-blur-sm mb-2.5">
+                                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span>Founder Journey</span>
+                                    </div>
+                                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-black text-slate-900 tracking-tight">
+                                        Sandeep's Story
+                                    </h3>
+                                </div>
+
+                                {/* Core Inspiring Opening (Always Visible) */}
+                                <div className="space-y-3.5 text-slate-700 leading-relaxed text-sm sm:text-[15px] font-normal border-l-2 border-emerald-500/40 pl-4">
                                     <p>
                                         In 2007, Sandeep was unwell. He wandered from one hospital to another but did not get the right diagnosis due to lack of qualified doctors and under-equipped hospitals in Sant-Kabir-Nagar, a small district in Uttar Pradesh. Lack of access to guidance of what needed to be done added to the worries.
                                     </p>
@@ -356,214 +464,289 @@ export default function AboutUs() {
                                         After 6-months, he got a biopsy done and was diagnosed with Ewing-Sarcoma (a type of bone-cancer). His whole right-humerus-bone was replaced. Doctors later proclaimed that Sandeep would have become immobilized if diagnosis would have been delayed.
                                     </p>
                                     <p>
-                                        Over the next few months, he recovered slowly at Tata Memorial Hospital, Mumbai. However, the journey from being clueless as to what was the cause of his ailment to being detected with cancer, to gradually recovering, was nothing less than a miracle for him and his family. Sandeep was determined to give back to the society and started working with social-sector organizations (health) from 2015 to 2020. He devoted himself to work for thousands of cancer patients, cancer-survivors, and their families, providing them guidance, emotional support, financial support for their diagnostics, treatment, care and education.
+                                        Over the next few months, he recovered slowly at Tata Memorial Hospital, Mumbai. However, the journey from being clueless as to what was the cause of his ailment to being detected with cancer, to gradually recovering, was nothing less than a miracle for him and his family.
                                     </p>
-                                    <p>
-                                        While his work created a positive impact on the lives of several patients, he realized that his ultimate calling was to go back to the grassroots and address the challenges from where they initiate – villages where there is lack of awareness of health issues and lack of access to healthcare infrastructure. Sandeep took a break from his job, and started conceiving an idea around how by leveraging technology, he can address the challenges he had earlier identified and make primary healthcare affordable and accessible in rural areas, where more than 65% of India's 1.4 Billion population live. After numerous interviews with people living in these areas, discussions with senior administrators of India's biggest hospitals, professors and government officials and evaluation of how other developing nations are handling the problem, Sandeep conceived the idea of DigiSwasthya (Digi=Digital, Swasthya = Health). He invested most of his savings till then to establish DigiSwasthya's 1st telemedicine clinic in July 2020 in his home district, Sant-Kabir-Nagar.
-                                    </p>
-                                    <p>
-                                        By creating a full stack primary healthcare platform, from creating a safe and hygienic physical space for patients to come, hiring trained nursing staff, creating tie-ups with doctors from prominent city hospitals, onboarding a tele-medicine software and hardware, to getting prescriptions fulfilled from adjoining pharmacies, Sandeep created one of the state's 1st hybrid medical consultation facility.
-                                    </p>
-                                    <p>
-                                        By creating a network of such standardized clinics across India, Sandeep and his motivated team is on a mission "to transform the country's primary healthcare system and make healthcare services affordable and accessible for rural communities by leveraging technology".
-                                    </p>
+                                </div>
+
+                                {/* Expandable Additional Narrative (Preserves 100% Text) */}
+                                <AnimatePresence>
+                                    {isStoryExpanded && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: "auto" }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="space-y-3.5 text-slate-700 leading-relaxed text-sm sm:text-[15px] font-normal pt-2 border-l-2 border-emerald-500/40 pl-4"
+                                        >
+                                            <p>
+                                                Sandeep was determined to give back to the society and started working with social-sector organizations (health) from 2015 to 2020. He devoted himself to work for thousands of cancer patients, cancer-survivors, and their families, providing them guidance, emotional support, financial support for their diagnostics, treatment, care and education.
+                                            </p>
+                                            <p>
+                                                While his work created a positive impact on the lives of several patients, he realized that his ultimate calling was to go back to the grassroots and address the challenges from where they initiate – villages where there is lack of awareness of health issues and lack of access to healthcare infrastructure. Sandeep took a break from his job, and started conceiving an idea around how by leveraging technology, he can address the challenges he had earlier identified and make primary healthcare affordable and accessible in rural areas, where more than 65% of India's 1.4 Billion population live. After numerous interviews with people living in these areas, discussions with senior administrators of India's biggest hospitals, professors and government officials and evaluation of how other developing nations are handling the problem, Sandeep conceived the idea of DigiSwasthya (Digi=Digital, Swasthya = Health). He invested most of his savings till then to establish DigiSwasthya's 1st telemedicine clinic in July 2020 in his home district, Sant-Kabir-Nagar.
+                                            </p>
+                                            <p>
+                                                By creating a full stack primary healthcare platform, from creating a safe and hygienic physical space for patients to come, hiring trained nursing staff, creating tie-ups with doctors from prominent city hospitals, onboarding a tele-medicine software and hardware, to getting prescriptions fulfilled from adjoining pharmacies, Sandeep created one of the state's 1st hybrid medical consultation facility.
+                                            </p>
+                                            <p>
+                                                By creating a network of such standardized clinics across India, Sandeep and his motivated team is on a mission "to transform the country's primary healthcare system and make healthcare services affordable and accessible for rural communities by leveraging technology".
+                                            </p>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
+                                {/* Toggle Button */}
+                                <div className="pt-2">
+                                    <button
+                                        onClick={() => setIsStoryExpanded(!isStoryExpanded)}
+                                        className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-900 bg-white hover:bg-emerald-50 border border-emerald-200/90 px-5 py-2.5 rounded-full transition-all shadow-sm hover:-translate-y-0.5"
+                                    >
+                                        {isStoryExpanded ? (
+                                            <>Show Less <ChevronUp className="w-4 h-4" /></>
+                                        ) : (
+                                            <>Read Full Story <ChevronDown className="w-4 h-4" /></>
+                                        )}
+                                    </button>
                                 </div>
                             </motion.div>
 
+                            {/* Balanced Video Column */}
                             <motion.div
-                                initial={{ opacity: 0, x: 20 }}
+                                initial={{ opacity: 0, x: 15 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
-                                className="relative lg:sticky lg:top-24 mt-8 lg:mt-0"
+                                className="lg:col-span-5 relative mt-4 sm:mt-6 lg:mt-2 flex flex-col justify-start"
                             >
-                                <div className="rounded-3xl overflow-hidden bg-black shadow-[0_24px_60px_-12px_rgba(0,0,0,0.3)] ring-1 ring-gray-200">
+                                <div className="w-full max-w-lg mx-auto rounded-3xl overflow-hidden bg-white shadow-xl ring-1 ring-slate-900/10 p-2 sm:p-2.5 border border-slate-200/80">
                                     <video
                                         controls
-                                        className="w-full h-auto"
+                                        className="w-full h-auto rounded-2xl aspect-[4/3] object-contain bg-black"
                                         preload="metadata"
                                     >
                                         <source src="/Videos/Motive (Digiswasthya).mp4" type="video/mp4" />
                                         Your browser does not support the video tag.
                                     </video>
                                 </div>
-                                <div className="mt-3 text-center">
-                                    <p className="text-sm font-semibold text-primary-600">🎥 Why Sandeep Started DigiSwasthya</p>
+                                <div className="mt-3.5 text-center">
+                                    <span className="inline-flex items-center gap-2 bg-white/95 border border-emerald-200/70 rounded-full px-3.5 py-1 text-xs font-semibold text-emerald-800 shadow-sm">
+                                        <span>🎥</span> Why Sandeep Started DigiSwasthya
+                                    </span>
                                 </div>
                             </motion.div>
+
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* SECTION 5 — HOW WE WORK & OUR CARE MODEL */}
-            <section className="py-24 bg-gradient-to-b from-slate-50 via-white to-slate-50/50 border-b border-gray-100">
-                <div className="container max-w-7xl px-4">
-                    {/* KEEP ORIGINAL "How We Work" (8 Pillars) & "Our Care Model" (7 Cards) AS REQUESTED */}
-                    <div>
-                        <div className="text-center max-w-3xl mx-auto mb-16">
-                            <h3 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight">How We Work</h3>
-                            <p className="text-gray-600 text-lg font-medium mt-2">DigiSwasthya bridges the healthcare gap in underserved communities through a structured and technology-enabled support system.</p>
-                        </div>
+            {/* SECTION 5 — HOW WE WORK (Mobile Horizontal Swipe / Desktop Grid) */}
+            <section className="relative py-12 sm:py-16 bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9] to-[#f8fafc] border-b border-slate-200/80 overflow-hidden">
+                {/* Soft ambient lighting */}
+                <div className="absolute -top-24 right-1/4 w-80 h-80 bg-emerald-100/35 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute bottom-10 left-10 w-80 h-80 bg-blue-100/30 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute inset-0 opacity-[0.025] pointer-events-none bg-[radial-gradient(#059669_1px,transparent_1px)] [background-size:24px_24px]" />
 
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-                            {[
-                                { title: "Awareness Campaigns", icon: Megaphone, color: "text-blue-600", bg: "bg-blue-50", arrowColor: "text-blue-400", desc: "We conduct community outreach and health awareness initiatives to educate rural populations about preventive care and early detection." },
-                                { title: "Accurate Information", icon: Info, color: "text-indigo-600", bg: "bg-indigo-50", arrowColor: "text-indigo-400", desc: "Our trained coordinators provide reliable health information and guidance, reducing misinformation and promoting informed decisions." },
-                                { title: "Electronic Medical Records", icon: Database, color: "text-purple-600", bg: "bg-purple-50", arrowColor: "text-purple-400", desc: "We assist in digitally recording patient health information to ensure continuity of care and better coordination with specialists." },
-                                { title: "Primary Health Checkups", icon: ClipboardList, color: "text-emerald-600", bg: "bg-emerald-50", arrowColor: "text-emerald-400", desc: "Basic health assessments are conducted at village centers to identify early symptoms and determine the need for further consultation." },
-                                { title: "Expert Opinion", icon: Stethoscope, color: "text-cyan-600", bg: "bg-cyan-50", arrowColor: "text-cyan-400", desc: "Through teleconsultation support, beneficiaries are connected with qualified medical professionals for specialist advice." },
-                                { title: "Timely Diagnosis", icon: Clock, color: "text-amber-600", bg: "bg-amber-50", arrowColor: "text-amber-400", desc: "By facilitating quicker access to professional consultation, we help reduce delays in identifying health conditions." },
-                                { title: "Referral Pathways", icon: ExternalLink, color: "text-orange-600", bg: "bg-orange-50", arrowColor: "text-orange-400", desc: "When necessary, we guide patients toward appropriate healthcare facilities or partner hospitals for advanced treatment." },
-                                { title: "Follow-Ups", icon: RefreshCcw, color: "text-rose-600", bg: "bg-rose-50", arrowColor: "text-rose-400", desc: "We support follow-up coordination to encourage adherence to prescribed treatment plans and monitor recovery progress." }
-                            ].map((item, i) => (
-                                <motion.div
-                                    key={i}
-                                    custom={i * 0.05}
-                                    variants={cardVariants}
-                                    initial="hidden"
-                                    whileInView="visible"
-                                    viewport={{ once: true }}
-                                    className="relative bg-white p-8 rounded-3xl border border-gray-100 shadow-[0_4px_16px_-4px_rgba(0,0,0,0.04)] group cursor-default hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.1)] hover:-translate-y-1.5 transition-all duration-300 overflow-hidden"
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-br from-slate-50/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-400 to-secondary-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                    
-                                    <div className={`relative w-14 h-14 ${item.bg} rounded-2xl flex items-center justify-center mb-6 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md ring-4 ring-white`}>
-                                        <item.icon className={`${item.color} w-7 h-7`} />
-                                    </div>
-                                    <h4 className="relative text-lg font-black text-gray-900 mb-3 leading-tight group-hover:text-primary-700 transition-colors duration-300">{item.title}</h4>
-                                    <p className="relative text-gray-500 leading-relaxed text-sm font-medium">
-                                        {item.desc}
-                                    </p>
-                                    <div className={`relative flex items-center gap-1 mt-5 ${item.arrowColor} opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-0 group-hover:translate-x-1`}>
-                                        <ArrowRight className="w-4 h-4 font-bold" />
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
+                <div className="container max-w-7xl relative z-10 px-4 sm:px-6">
+                    
+                    <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10 space-y-2">
+                        <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 border border-emerald-200 px-3.5 py-1 rounded-full shadow-sm">
+                            Process & Delivery
+                        </span>
+                        <h3 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-black text-slate-900 tracking-tight">
+                            How We Work
+                        </h3>
+                        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                            DigiSwasthya bridges the healthcare gap in underserved communities through a structured and technology-enabled support system.
+                        </p>
+                        <p className="text-[10px] text-slate-400 sm:hidden italic">👉 Swipe left to explore all 8 pillars</p>
                     </div>
 
-                    <div className="border-t border-gray-200/60 pt-20 mt-20">
-                        <div className="text-center max-w-3xl mx-auto mb-16">
-                            <h3 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight">Our Care Model</h3>
-                            <p className="text-gray-600 text-lg font-medium mt-2">How every DigiSwasthya centre delivers safe, continuous, and trusted care — designed for the realities of rural India.</p>
+                    {/* Horizontal Scroll on Mobile, 4-Col Grid on Desktop (Compact, Fitted Design) */}
+                    <div className="flex overflow-x-auto pb-4 gap-3.5 snap-x sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible sm:pb-0">
+                        {[
+                            { num: "01", title: "Awareness Campaigns", icon: Megaphone, color: "text-blue-600", bg: "bg-blue-50", desc: "We conduct community outreach and health awareness initiatives to educate rural populations about preventive care and early detection." },
+                            { num: "02", title: "Accurate Information", icon: Info, color: "text-indigo-600", bg: "bg-indigo-50", desc: "Our trained coordinators provide reliable health information and guidance, reducing misinformation and promoting informed decisions." },
+                            { num: "03", title: "Electronic Medical Records", icon: Database, color: "text-purple-600", bg: "bg-purple-50", desc: "We assist in digitally recording patient health information to ensure continuity of care and better coordination with specialists." },
+                            { num: "04", title: "Primary Health Checkups", icon: ClipboardList, color: "text-emerald-600", bg: "bg-emerald-50", desc: "Basic health assessments are conducted at village centers to identify early symptoms and determine the need for further consultation." },
+                            { num: "05", title: "Expert Opinion", icon: Stethoscope, color: "text-cyan-600", bg: "bg-cyan-50", desc: "Through teleconsultation support, beneficiaries are connected with qualified medical professionals for specialist advice." },
+                            { num: "06", title: "Timely Diagnosis", icon: Clock, color: "text-amber-600", bg: "bg-amber-50", desc: "By facilitating quicker access to professional consultation, we help reduce delays in identifying health conditions." },
+                            { num: "07", title: "Referral Pathways", icon: ExternalLink, color: "text-orange-600", bg: "bg-orange-50", desc: "When necessary, we guide patients toward appropriate healthcare facilities or partner hospitals for advanced treatment." },
+                            { num: "08", title: "Follow-Ups", icon: RefreshCcw, color: "text-rose-600", bg: "bg-rose-50", desc: "We support follow-up coordination to encourage adherence to prescribed treatment plans and monitor recovery progress." }
+                        ].map((item, i) => (
+                            <div
+                                key={i}
+                                className="group min-w-[260px] sm:min-w-0 snap-center bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-[0_2px_12px_rgba(15,23,42,0.04)] hover:shadow-lg hover:-translate-y-1 hover:border-emerald-300 transition-all duration-300 flex flex-col justify-between cursor-pointer"
+                            >
+                                <div>
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className={`w-9 h-9 sm:w-10 sm:h-10 ${item.bg} rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6`}>
+                                            <item.icon className={`${item.color} w-4 h-4 sm:w-5 sm:h-5`} />
+                                        </div>
+                                        <span className="text-xs font-mono font-bold text-slate-300 group-hover:text-emerald-500 transition-colors">
+                                            {item.num}
+                                        </span>
+                                    </div>
+                                    <h4 className="text-sm font-bold text-slate-900 mb-1.5 leading-snug group-hover:text-emerald-700 transition-colors">
+                                        {item.title}
+                                    </h4>
+                                    <p className="text-xs text-slate-500 leading-relaxed font-normal">
+                                        {item.desc}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Our Care Model (Compact & Fit 4 Cards in Row 1 + 3 Centered Cards in Row 2) */}
+                    <div className="border-t border-slate-200/70 pt-10 mt-10">
+                        <div className="text-center max-w-2xl mx-auto mb-7 space-y-2">
+                            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 border border-emerald-200 px-3.5 py-1 rounded-full shadow-sm">
+                                Rural Care Architecture
+                            </span>
+                            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-black text-slate-900 tracking-tight">
+                                Our Care Model
+                            </h3>
+                            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                How every DigiSwasthya centre delivers safe, continuous, and trusted care — designed for the realities of rural India.
+                            </p>
                         </div>
 
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                        {/* Row 1: 4 Cards */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5 mb-3 sm:mb-3.5">
                             {[
                                 { title: "Bringing Healthcare Closer to Communities", lead: "Trusted care, within your community.", icon: Users, color: "text-blue-600", bg: "bg-blue-50", desc: "A trained coordinator welcomes each patient, records their history and vital signs, and connects them with a qualified doctor over live video — followed by a digital prescription, counselling, and a clear follow-up plan, all without travelling long distances." },
                                 { title: "Delivering Better Care Through Technology", lead: "Technology strengthens care — it never replaces it.", icon: Cpu, color: "text-indigo-600", bg: "bg-indigo-50", desc: "Doctors instantly review a patient's past consultations, diagnoses, and medications, while AI summarises histories, highlights key clinical information, and checks prescriptions for interactions before they are issued — so clinicians can focus on the patient. AI enhances clinical judgement; it never replaces it." },
                                 { title: "Caring Beyond a Single Consultation", lead: "Continuity, not isolated visits.", icon: Activity, color: "text-emerald-600", bg: "bg-emerald-50", desc: "Chronic conditions like diabetes and hypertension need ongoing care. Patients receive regular follow-ups and a complete longitudinal health record, and coordinators reach out to those who miss appointments — turning episodic visits into lasting care relationships." },
-                                { title: "Understanding the Whole Person", lead: "Health is shaped by more than symptoms.", icon: HeartHandshake, color: "text-rose-600", bg: "bg-rose-50", desc: "Our model considers family health history, household conditions, water and sanitation, and nutrition — giving clinicians a fuller picture, helping identify risks earlier within families, and supporting healthier communities." },
+                                { title: "Understanding the Whole Person", lead: "Health is shaped by more than symptoms.", icon: HeartHandshake, color: "text-teal-600", bg: "bg-teal-50", desc: "Our model considers family health history, household conditions, water and sanitation, and nutrition — giving clinicians a fuller picture, helping identify risks earlier within families, and supporting healthier communities." }
+                            ].map((item, i) => (
+                                <div
+                                    key={i}
+                                    className="group bg-white p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-[0_2px_10px_rgba(15,23,42,0.03)] hover:shadow-md hover:-translate-y-0.5 hover:border-emerald-300 transition-all duration-200 flex flex-col justify-between cursor-pointer"
+                                >
+                                    <div>
+                                        <div className={`w-8 h-8 sm:w-8.5 sm:h-8.5 ${item.bg} rounded-lg sm:rounded-xl flex items-center justify-center mb-2.5 transition-transform duration-200 group-hover:scale-105 shadow-2xs`}>
+                                            <item.icon className={`${item.color} w-4 h-4`} />
+                                        </div>
+                                        <h4 className="text-xs sm:text-[13.5px] font-bold text-slate-900 mb-0.5 leading-snug group-hover:text-emerald-700 transition-colors">
+                                            {item.title}
+                                        </h4>
+                                        <p className={`text-[9.5px] sm:text-[10px] font-bold mb-1.5 ${item.color} tracking-wide uppercase`}>
+                                            {item.lead}
+                                        </p>
+                                        <p className="text-[11px] sm:text-[11.5px] text-slate-600 leading-relaxed font-normal">
+                                            {item.desc}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Row 2: 3 Cards Centered */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3.5 lg:w-[75%] lg:mx-auto">
+                            {[
                                 { title: "Built for Rural India", lead: "Designed for real-world conditions.", icon: Smartphone, color: "text-cyan-600", bg: "bg-cyan-50", desc: "Our systems work reliably even where connectivity is limited — coordinators keep registering patients and recording information offline, with data securely synced once back online. The platform runs in English and Hindi on affordable Android devices." },
                                 { title: "Protecting Every Patient's Trust", lead: "Privacy is fundamental to how we work.", icon: ShieldCheck, color: "text-amber-600", bg: "bg-amber-50", desc: "Patient information is encrypted, securely stored, and accessible only to authorised healthcare professionals involved in a patient's care. Strong security and controlled access keep confidentiality and dignity central to every consultation." },
                                 { title: "Scaling Quality Healthcare", lead: "Every improvement reaches every community.", icon: TrendingUp, color: "text-purple-600", bg: "bg-purple-50", desc: "As our network grows, new clinical guidance, enhanced safety features, improved AI capabilities, and better workflows roll out across all centres — so patients receive a consistent standard of care wherever they seek treatment." }
                             ].map((item, i) => (
-                                <motion.div
-                                    key={i}
-                                    variants={cardVariants}
-                                    initial="hidden"
-                                    whileInView="visible"
-                                    viewport={{ once: true }}
-                                    className={`relative bg-white p-8 sm:p-10 rounded-3xl border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] group cursor-default hover:shadow-[0_24px_50px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-1.5 transition-all duration-300 overflow-hidden ${i === 6 ? "lg:col-start-2" : ""}`}
+                                <div
+                                    key={i + 4}
+                                    className={`group bg-white p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-[0_2px_10px_rgba(15,23,42,0.03)] hover:shadow-md hover:-translate-y-0.5 hover:border-emerald-300 transition-all duration-200 flex flex-col justify-between cursor-pointer ${i === 2 ? "sm:col-span-2 sm:max-w-md sm:mx-auto sm:w-full lg:col-span-1" : ""}`}
                                 >
-                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-[0.02] [background-image:radial-gradient(circle_at_1px_1px,#000_1px,transparent_0)] [background-size:16px_16px] transition-opacity duration-300 pointer-events-none" />
-                                    <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-gray-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-tl-full pointer-events-none" />
-
-                                    <div className={`relative w-16 h-16 ${item.bg} rounded-3xl flex items-center justify-center mb-8 transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3 group-hover:shadow-lg`}>
-                                        <item.icon className={`${item.color} w-8 h-8`} />
+                                    <div>
+                                        <div className={`w-8 h-8 sm:w-8.5 sm:h-8.5 ${item.bg} rounded-lg sm:rounded-xl flex items-center justify-center mb-2.5 transition-transform duration-200 group-hover:scale-105 shadow-2xs`}>
+                                            <item.icon className={`${item.color} w-4 h-4`} />
+                                        </div>
+                                        <h4 className="text-xs sm:text-[13.5px] font-bold text-slate-900 mb-0.5 leading-snug group-hover:text-emerald-700 transition-colors">
+                                            {item.title}
+                                        </h4>
+                                        <p className={`text-[9.5px] sm:text-[10px] font-bold mb-1.5 ${item.color} tracking-wide uppercase`}>
+                                            {item.lead}
+                                        </p>
+                                        <p className="text-[11px] sm:text-[11.5px] text-slate-600 leading-relaxed font-normal">
+                                            {item.desc}
+                                        </p>
                                     </div>
-                                    <h4 className="relative text-xl font-black text-gray-900 mb-3 leading-tight group-hover:text-gray-800 transition-colors duration-300">{item.title}</h4>
-                                    <p className={`relative text-[11px] font-bold mb-4 ${item.color} tracking-wide uppercase`}>{item.lead}</p>
-                                    <p className="relative text-gray-600 leading-relaxed text-sm font-medium">
-                                        {item.desc}
-                                    </p>
-                                </motion.div>
+                                </div>
                             ))}
                         </div>
                     </div>
+
                 </div>
             </section>
 
             {/* SECTION 6 — WHY OUR WORK MATTERS */}
-            <section className="py-24 bg-white border-b border-gray-100 relative overflow-hidden">
-                <div className="absolute -top-24 -right-24 w-96 h-96 bg-amber-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
-                <div className="container max-w-7xl px-4 relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 12 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="text-center max-w-3xl mx-auto mb-16"
-                    >
-                        <span className="inline-block text-[10px] font-black uppercase tracking-widest text-amber-800 bg-amber-50 border border-amber-100 px-3.5 py-1 rounded-full mb-3">
+            <section className="py-12 sm:py-16 bg-white border-b border-slate-200/60">
+                <div className="container max-w-7xl px-4 sm:px-6">
+                    <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
+                        <span className="inline-block text-[11px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 border border-amber-200 px-3 py-0.5 rounded-full">
                             {contentDict.section7.title[currentLang]}
                         </span>
-                        <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 leading-tight">
+                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-black text-slate-900 leading-tight">
                             {currentLang === "hi" ? "हमारा काम क्यों मायने रखता है" : "The Core of Our Mission"}
                         </h2>
-                        <p className="text-gray-600 text-sm md:text-base leading-relaxed mt-4 max-w-2xl mx-auto text-center">
+                        <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
                             {contentDict.section7.text[currentLang]}
                         </p>
-                    </motion.div>
+                    </div>
 
-                    {/* 4 Value Cards */}
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+                    {/* 4 Value Cards Compact with Matching Hover Animations */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
                         {contentDict.section7.cards.map((card, index) => {
-                            // Assign unique icons
                             const icons = [TrendingUp, ShieldCheck, Users, Cpu];
                             const Icon = icons[index];
                             return (
-                                <motion.div
+                                <div
                                     key={index}
-                                    custom={index * 0.08}
-                                    variants={cardVariants}
-                                    initial="hidden"
-                                    whileInView="visible"
-                                    viewport={{ once: true }}
-                                    className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col group cursor-default hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300"
+                                    className="group bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-emerald-300 hover:bg-white transition-all duration-300 flex flex-col justify-between cursor-pointer"
                                 >
-                                    <div className="w-14 h-14 bg-primary-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary-100 transition-colors">
-                                        <Icon className="text-primary-600 w-6 h-6" />
+                                    <div>
+                                        <div className="w-9 h-9 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-center mb-3 text-emerald-700 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 shadow-sm">
+                                            <Icon className="w-4 h-4" />
+                                        </div>
+                                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 mb-1 leading-tight group-hover:text-emerald-700 transition-colors">
+                                            {card.title[currentLang]}
+                                        </h3>
+                                        <p className="text-slate-500 text-[11px] sm:text-xs leading-normal font-normal">
+                                            {card.desc[currentLang]}
+                                        </p>
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 mb-3 leading-tight group-hover:text-primary-600 transition-colors">
-                                        {card.title[currentLang]}
-                                    </h3>
-                                    <p className="text-gray-500 leading-relaxed text-sm font-medium flex-grow">
-                                        {card.desc[currentLang]}
-                                    </p>
-                                </motion.div>
+                                </div>
                             );
                         })}
                     </div>
                 </div>
             </section>
 
-            {/* SECTION 8 — CREDENTIALS, PARTNERS & TRANSPARENCY (Existing Sections) */}
-            <section id="our-partners" className="py-24 bg-gradient-to-b from-slate-50 to-white scroll-mt-24">
-                <div className="container max-w-6xl px-4">
-                    <div className="grid lg:grid-cols-2 gap-16 items-start border-b border-gray-200/50 pb-24">
+            {/* SECTION 7 — CREDENTIALS, PARTNERS & TRANSPARENCY */}
+            <section id="our-partners" className="py-12 sm:py-16 bg-gradient-to-b from-slate-50 to-white scroll-mt-24">
+                <div className="container max-w-6xl px-4 sm:px-6">
+                    <div className="grid lg:grid-cols-2 gap-10 items-start border-b border-slate-200/60 pb-12">
                         <div>
-                            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-6">Transparency & Legitimacy</h2>
-                            <p className="text-gray-600 text-lg mb-8">
+                            <span className="inline-block text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-0.5 rounded-full mb-2.5">
+                                Trust & Governance
+                            </span>
+                            <h2 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 mb-3">
+                                Transparency & Legitimacy
+                            </h2>
+                            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4">
                                 DigiSwasthya is a registered non-profit committed to the highest standards of accountability and regulatory compliance.
                             </p>
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-3 text-gray-700 bg-white p-5 rounded-2xl border border-primary-100 shadow-sm hover:shadow-md transition-shadow">
-                                    <FileText className="text-primary-600 w-5 h-5 shrink-0" />
-                                    <span><strong>NGO Registration:</strong> U85300UP2020NPL130635</span>
+                            <div className="space-y-2.5">
+                                <div className="flex items-center gap-3 text-slate-800 bg-white p-4 rounded-xl border border-emerald-100 shadow-sm">
+                                    <FileText className="text-emerald-600 w-4 h-4 shrink-0" />
+                                    <span className="text-xs sm:text-sm font-medium"><strong>NGO Registration:</strong> U85300UP2020NPL130635</span>
                                 </div>
-                                <p className="text-xs text-gray-400 mt-4 italic underline decoration-gray-200">
-                                    Registered and compliant with applicable healthcare regulations in India.
+                                <p className="text-[11px] text-slate-400 italic">
+                                    Registered Section 8 NGO, compliant with applicable healthcare regulations in India.
                                 </p>
                             </div>
                         </div>
 
                         <div>
-                            <div className="flex items-center gap-3 mb-6 text-gray-900 border-b border-gray-100 pb-4">
-                                <HeartHandshake className="text-primary-600 w-6 h-6" />
-                                <h3 className="text-xl font-black uppercase tracking-tight">Our Partners</h3>
+                            <div className="flex items-center gap-2 mb-4 text-slate-900 border-b border-slate-200 pb-2.5">
+                                <HeartHandshake className="text-emerald-600 w-5 h-5" />
+                                <h3 className="text-base font-black uppercase tracking-tight">Our Partners</h3>
                             </div>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
                                 {[
                                     { id: "01", image: "/images/partner-1.png" },
                                     { id: "02", image: "/images/partner-2.png" },
@@ -583,9 +766,7 @@ export default function AboutUs() {
                                     { id: "16", image: "/images/partner-16.png" }
                                 ].map((p, i) => {
                                     const CardContent = (
-                                        <div
-                                            className="h-24 bg-white rounded-2xl border border-gray-100 flex items-center justify-center p-4 shadow-sm hover:shadow-md hover:border-primary-100 transition-all duration-200"
-                                        >
+                                        <div className="h-16 bg-white rounded-xl border border-slate-200 flex items-center justify-center p-2.5 shadow-sm hover:border-emerald-200 transition-all">
                                             {p.image ? (
                                                 <div className="relative w-full h-full">
                                                     <Image
@@ -597,8 +778,8 @@ export default function AboutUs() {
                                                 </div>
                                             ) : (
                                                 <div className="text-center opacity-40">
-                                                    <div className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1 text-[8px]">Partner</div>
-                                                    <div className="text-xs font-black text-gray-500">ORG-{p.id}</div>
+                                                    <div className="text-[7px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">Partner</div>
+                                                    <div className="text-[10px] font-black text-slate-500">ORG-{p.id}</div>
                                                 </div>
                                             )}
                                         </div>
@@ -626,37 +807,36 @@ export default function AboutUs() {
                 </div>
             </section>
 
-            {/* Transparency Micro-Section */}
-            <section className="py-24 bg-gradient-to-br from-slate-900 via-primary-950 to-slate-900 relative overflow-hidden">
-                <div className="container px-4">
-                <div className="absolute inset-0 opacity-[0.07] [background-image:radial-gradient(circle_at_1px_1px,#ffffff_1px,transparent_0)] [background-size:24px_24px] pointer-events-none" />
-                <div className="absolute -top-20 right-0 w-96 h-96 bg-primary-500/15 rounded-full blur-3xl pointer-events-none" />
+            {/* SECTION 8 — TRANSPARENCY & ANNUAL REPORT */}
+            <section className="py-12 sm:py-16 bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-950 text-white relative overflow-hidden">
+                <div className="container px-4 sm:px-6">
                     <motion.div
                         {...fadeIn}
-                        className="max-w-4xl mx-auto bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-10 md:p-16 text-center text-white relative overflow-hidden shadow-2xl"
+                        className="max-w-3xl mx-auto bg-white/5 backdrop-blur-md border border-white/15 rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden shadow-2xl"
                     >
-                        <div className="absolute top-0 right-0 p-8 opacity-10">
-                            <ShieldCheck className="w-32 h-32" />
+                        <div className="w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-4 text-emerald-300">
+                            <ShieldCheck className="w-6 h-6" />
                         </div>
-                        <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6">Our Promise of Accountability</h2>
-                        <p className="text-primary-100 text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
+                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-serif font-black mb-3">
+                            Our Promise of Accountability
+                        </h2>
+                        <p className="text-slate-300 text-xs sm:text-sm mb-6 max-w-xl mx-auto leading-relaxed">
                             We are committed to ethical healthcare delivery and transparent use of funds. Every contribution is tracked to ensure maximum impact in our rural communities.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                             <a
                                 href="/annual-report.pdf"
-                                className="flex items-center gap-2 text-white font-bold hover:text-secondary-400 transition-colors border border-white/20 hover:border-secondary-400 rounded-full px-6 py-2.5 hover:bg-white/5"
+                                className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-full px-5 py-2.5 text-xs sm:text-sm transition-colors shadow-md shadow-emerald-500/25"
                             >
-                                <FileText className="w-5 h-5" />
+                                <FileText className="w-3.5 h-3.5" />
                                 Download Annual Report 2021-22
                             </a>
-                            <span className="hidden sm:inline w-1 h-8 bg-white/20" />
                             <a
                                 href="/contact-us"
-                                className="flex items-center gap-2 group text-white font-bold hover:text-secondary-400 transition-colors border border-white/20 hover:border-secondary-400 rounded-full px-6 py-2.5 hover:bg-white/5"
+                                className="inline-flex items-center gap-2 text-white font-bold hover:text-emerald-300 transition-colors border border-white/20 hover:border-emerald-300 rounded-full px-5 py-2.5 text-xs sm:text-sm hover:bg-white/5"
                             >
                                 Contact Our Ethics Office
-                                <ExternalLink className="w-4 h-4 opacity-50 group-hover:opacity-100" />
+                                <ExternalLink className="w-3.5 h-3.5" />
                             </a>
                         </div>
                     </motion.div>
