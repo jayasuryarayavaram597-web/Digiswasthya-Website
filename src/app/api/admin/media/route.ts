@@ -78,7 +78,8 @@ export async function POST(req: NextRequest) {
                 id: videoId,
                 title,
                 category: category || "Documentary",
-                duration: (formData.get("duration") as string || "3 min").trim()
+                duration: (formData.get("duration") as string || "3 min").trim(),
+                createdAt: new Date().toISOString()
             };
 
             // Prevent exact duplicates
@@ -111,7 +112,8 @@ export async function POST(req: NextRequest) {
                 fs.mkdirSync(targetFolder, { recursive: true });
             }
 
-            const newItems: Array<{ title: string; description: string; image: string; category: string }> = [];
+            const newItems: Array<{ title: string; description: string; image: string; category: string; createdAt: string }> = [];
+            const timestampNow = new Date().toISOString();
 
             if (files.length > 0) {
                 for (let i = 0; i < files.length; i++) {
@@ -129,7 +131,8 @@ export async function POST(req: NextRequest) {
                         title: itemTitle,
                         description: description || title,
                         image: imagePath,
-                        category: category || (type === "news" ? "News" : "Field Work")
+                        category: category || (type === "news" ? "News" : "Field Work"),
+                        createdAt: timestampNow
                     });
                 }
             }
