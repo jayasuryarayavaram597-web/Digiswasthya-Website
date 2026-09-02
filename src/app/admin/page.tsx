@@ -7,9 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
     Lock, Video, Newspaper, Tent, PlusCircle, Trash2, 
     CheckCircle2, AlertCircle, Eye, RefreshCw, Upload, LogOut, ArrowRight, 
-    ShieldCheck, Edit3, X, Sparkles, Image as ImageIcon, Layers, FileText
+    ShieldCheck, Edit3, X, Tag, Sparkles, AlertTriangle, Check
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 type ContentType = "video" | "news" | "field_work";
@@ -20,42 +19,28 @@ interface MediaData {
     videos: Array<{ id: string; title: string; category: string; duration?: string }>;
 }
 
-interface EditModalState {
-    type: "video" | "news" | "field_work";
-    originalKey: {
-        id?: string;
-        title?: string;
-        image?: string;
-    };
+interface EditingItem {
+    type: ContentType;
+    originalIdOrTitle: string;
     title: string;
     category: string;
     description: string;
+    videoUrl?: string;
     duration?: string;
+    image?: string;
+    id?: string;
 }
 
-// Preset Category Pills and Starter Templates
-const CATEGORY_PRESETS: Record<ContentType, Array<{ label: string; template: string }>> = {
-    video: [
-        { label: "Documentary", template: "Documentary showcasing DigiSwasthya Foundation's telemedicine impact in rural India." },
-        { label: "Patient Story", template: "A real inspiring story of rural patient treatment and recovery through DigiSwasthya." },
-        { label: "Founder Interview", template: "Founder Sandeep Kumar shares the mission and vision of accessible rural healthcare." },
-        { label: "Health Awareness", template: "Doctor guidance and health awareness for rural families and village communities." },
-        { label: "Ground Impact", template: "Real-time look at ground operations, patient consultations, and village outreach." }
-    ],
-    news: [
-        { label: "National News", template: "DigiSwasthya Foundation featured in national media for revolutionizing rural telemedicine." },
-        { label: "TV / Broadcast", template: "Television coverage highlighting DigiSwasthya's zero-cost healthcare model for villagers." },
-        { label: "Award & Recognition", template: "DigiSwasthya honored for excellence in social entrepreneurship and healthcare innovation." },
-        { label: "Govt & Partner", template: "Strategic partnership and government recognition expanding tele-health reach." },
-        { label: "Online Press", template: "Digital press feature highlighting rural health accessibility milestones." }
-    ],
-    field_work: [
-        { label: "Rural Health Camp", template: "Free doctor consultation and health screening camp organized by DigiSwasthya." },
-        { label: "Telemedicine Center", template: "Patients receiving expert super-specialist consultations at DigiSwasthya center." },
-        { label: "Patient Consultation", template: "Doctors diagnosing and advising village patients with care and free medicines." },
-        { label: "Community Outreach", template: "Field volunteers creating health awareness across remote rural households." },
-        { label: "Specialist Visit", template: "Senior medical specialists conducting direct patient evaluations at the village center." }
-    ]
+interface DeleteConfirmItem {
+    type: ContentType;
+    idOrTitle: string;
+    title: string;
+}
+
+const CATEGORY_PRESETS: Record<ContentType, string[]> = {
+    video: ["Documentary", "Patient Story", "Founder Story", "Health Awareness", "Ground Impact"],
+    news: ["National News", "TV / Broadcast", "Award & Recognition", "Govt Feature", "Online Article"],
+    field_work: ["Rural Health Camp", "Telemedicine Center", "Patient Consultation", "Community Outreach", "Medical Team"]
 };
 
 export default function AdminPage() {
@@ -64,21 +49,26 @@ export default function AdminPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [authError, setAuthError] = useState("");
 
-    // Form State
+    // Form State (New Item)
     const [contentType, setContentType] = useState<ContentType>("video");
     const [title, setTitle] = useState("");
-    const [category, setCategory] = useState("Documentary");
-    const [isCustomCategory, setIsCustomCategory] = useState(false);
-    const [customCategoryText, setCustomCategoryText] = useState("");
+    const [category, setCategory] = useState(CATEGORY_PRESETS.video[0]);
     const [description, setDescription] = useState("");
     const [videoUrl, setVideoUrl] = useState("");
     const [duration, setDuration] = useState("3 min");
-    
-    // Multi-File Upload State
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-    const [isFetchingYouTubeTitle, setIsFetchingYouTubeTitle] = useState(false);
-    const [youTubeAutoTitleNote, setYouTubeAutoTitleNote] = useState<string | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [isFetchingYoutubeTitle, setIsFetchingYoutubeTitle] = useState(false);
+
+    // Editing State (Feature 4)
+    const [editingItem, setEditingItem] = useState<EditingItem | null>(null);
+    const [editSelectedFile, setEditSelectedFile] = useState<File | null>(null);
+    const [editPreviewUrl, setEditPreviewUrl] = useState<string | null>(null);
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    // Delete Confirmation State (Safe Delete)
+    const [deleteConfirmItem, setDeleteConfirmItem] = useState<DeleteConfirmItem | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Submission & Data State
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -86,10 +76,7 @@ export default function AdminPage() {
     const [mediaData, setMediaData] = useState<MediaData | null>(null);
     const [isLoadingData, setIsLoadingData] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-
-    // Edit Modal State
-    const [editingItem, setEditingItem] = useState<EditModalState | null>(null);
-    const [isUpdating, setIsUpdating] = useState(false);
+    const editFileInputRef = useRef<HTMLInputElement>(null);
 
     // Check existing session
     useEffect(() => {
@@ -100,13 +87,16 @@ export default function AdminPage() {
         }
     }, []);
 
-    // Sync default category when switching content type
-    useEffect(() => {
-        const presets = CATEGORY_PRESETS[contentType];
-        if (presets && presets.length > 0 && !isCustomCategory) {
-            setCategory(presets[0].label);
+    // Update default category when switching content type
+    const handleTypeChange = (newType: ContentType) => {
+        setContentType(newType);
+        setCategory(CATEGORY_PRESETS[newType][0]);
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        if (newType === "video") {
+            setVideoUrl("");
         }
-    }, [contentType]);
+    };
 
     const verifyPin = async (pinToTest: string) => {
         setAuthError("");
@@ -137,6 +127,8 @@ export default function AdminPage() {
         sessionStorage.removeItem("digiswasthya_admin_pin");
         setIsAuthenticated(false);
         setPin("");
+        setEditingItem(null);
+        setDeleteConfirmItem(null);
     };
 
     const fetchCurrentData = async () => {
@@ -154,110 +146,76 @@ export default function AdminPage() {
         }
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setSelectedFile(file);
+            const url = URL.createObjectURL(file);
+            setPreviewUrl(url);
+        }
+    };
+
+    const handleEditFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setEditSelectedFile(file);
+            const url = URL.createObjectURL(file);
+            setEditPreviewUrl(url);
+        }
+    };
+
     const extractYouTubeId = (url: string) => {
         if (!url) return null;
         const clean = url.trim();
+        if (/^[a-zA-Z0-9_-]{11}$/.test(clean)) return clean;
         const match = clean.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/\s]{11})/i);
-        return match ? match[1] : clean.length === 11 ? clean : null;
+        return match ? match[1] : null;
     };
 
-    // Auto-fetch YouTube Video Title via free public oEmbed
-    const handleYouTubeUrlChange = async (newUrl: string) => {
-        setVideoUrl(newUrl);
-        setYouTubeAutoTitleNote(null);
-
-        const videoId = extractYouTubeId(newUrl);
-        if (videoId) {
-            setIsFetchingYouTubeTitle(true);
+    // Auto-fetch YouTube Title from free public oEmbed
+    const handleVideoUrlChange = async (url: string) => {
+        setVideoUrl(url);
+        const videoId = extractYouTubeId(url);
+        if (videoId && !title) {
+            setIsFetchingYoutubeTitle(true);
             try {
-                // Free public YouTube oEmbed endpoint (zero API key needed)
                 const res = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.title) {
                         setTitle(data.title);
-                        setYouTubeAutoTitleNote(data.title);
                     }
                 }
-            } catch (err) {
-                // Silently fallback without disrupting the user
+            } catch {
+                // Silently ignore if network fails
             } finally {
-                setIsFetchingYouTubeTitle(false);
+                setIsFetchingYoutubeTitle(false);
             }
         }
     };
 
-    // Multi-File selection & Smart Filename Extraction
-    const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = Array.from(e.target.files || []);
-        if (files.length === 0) return;
-
-        // Revoke old preview URLs to prevent memory leaks
-        previewUrls.forEach(url => URL.revokeObjectURL(url));
-
-        setSelectedFiles(files);
-        const newPreviews = files.map(file => URL.createObjectURL(file));
-        setPreviewUrls(newPreviews);
-
-        // Smart Filename Auto-Suggest for Title
-        if (!title.trim() && files.length > 0) {
-            const rawName = files[0].name.replace(/\.[^/.]+$/, ""); // strip extension
-            const cleanedTitle = rawName
-                .replace(/[-_]+/g, " ")
-                .replace(/\s+/g, " ")
-                .trim()
-                .replace(/\b\w/g, c => c.toUpperCase()); // Capitalize words
-            
-            setTitle(cleanedTitle);
-        }
-    };
-
-    // Remove single photo from batch before uploading
-    const handleRemoveFile = (indexToRemove: number) => {
-        URL.revokeObjectURL(previewUrls[indexToRemove]);
-        const updatedFiles = selectedFiles.filter((_, idx) => idx !== indexToRemove);
-        const updatedPreviews = previewUrls.filter((_, idx) => idx !== indexToRemove);
-        setSelectedFiles(updatedFiles);
-        setPreviewUrls(updatedPreviews);
-    };
-
-    // Category Pill Click Handler with Starter Template Auto-Fill
-    const handleSelectCategoryPill = (preset: { label: string; template: string }) => {
-        setIsCustomCategory(false);
-        setCategory(preset.label);
-
-        // If description is empty or matches a preset template, insert clean starter template
-        if (!description.trim() || Object.values(CATEGORY_PRESETS).flat().some(p => p.template === description)) {
-            setDescription(preset.template);
-        }
-    };
-
+    // Handle Create New Content
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setFeedbackMessage(null);
         setIsSubmitting(true);
-
-        const effectiveCategory = isCustomCategory ? customCategoryText.trim() || "General" : category;
 
         try {
             const formData = new FormData();
             formData.append("pin", pin || sessionStorage.getItem("digiswasthya_admin_pin") || "");
             formData.append("type", contentType);
             formData.append("title", title);
-            formData.append("category", effectiveCategory);
+            formData.append("category", category || CATEGORY_PRESETS[contentType][0]);
             formData.append("description", description);
 
             if (contentType === "video") {
                 formData.append("videoUrl", videoUrl);
                 formData.append("duration", duration);
             } else {
-                if (selectedFiles.length === 0) {
-                    throw new Error("Please select at least one photo to upload.");
+                if (!selectedFile) {
+                    throw new Error("Please select an image file to upload.");
                 }
-                // Append all selected files for batch processing
-                selectedFiles.forEach(file => {
-                    formData.append("images", file);
-                });
+                formData.append("image", selectedFile);
             }
 
             const res = await fetch("/api/admin/media", {
@@ -277,9 +235,9 @@ export default function AdminPage() {
             setTitle("");
             setDescription("");
             setVideoUrl("");
-            setSelectedFiles([]);
-            setPreviewUrls([]);
-            setYouTubeAutoTitleNote(null);
+            setCategory(CATEGORY_PRESETS[contentType][0]);
+            setSelectedFile(null);
+            setPreviewUrl(null);
             if (fileInputRef.current) fileInputRef.current.value = "";
 
             // Refresh data list
@@ -292,77 +250,91 @@ export default function AdminPage() {
         }
     };
 
-    const handleDelete = async (type: "video" | "news" | "field_work", idOrTitle: string) => {
-        if (!confirm(`Are you sure you want to delete this item?`)) return;
-
-        try {
-            const currentPin = pin || sessionStorage.getItem("digiswasthya_admin_pin") || "";
-            const res = await fetch(`/api/admin/media?pin=${encodeURIComponent(currentPin)}&type=${type}&idOrTitle=${encodeURIComponent(idOrTitle)}`, {
-                method: "DELETE"
-            });
-
-            if (res.ok) {
-                fetchCurrentData();
-            } else {
-                const err = await res.json();
-                alert(err.error || "Failed to delete item.");
-            }
-        } catch (err) {
-            alert("Error connecting to server.");
-        }
-    };
-
-    // Open Edit Modal for existing item
-    const handleOpenEdit = (type: "video" | "news" | "field_work", item: any) => {
+    // Open Edit Modal (Feature 4)
+    const handleStartEdit = (type: ContentType, item: any) => {
         setEditingItem({
             type,
-            originalKey: {
-                id: item.id,
-                title: item.title,
-                image: item.image
-            },
-            title: item.title || "",
-            category: item.category || "",
+            originalIdOrTitle: type === "video" ? item.id : item.title,
+            title: item.title,
+            category: item.category || CATEGORY_PRESETS[type][0],
             description: item.description || "",
-            duration: item.duration || "3 min"
+            videoUrl: type === "video" ? `https://www.youtube.com/watch?v=${item.id}` : undefined,
+            duration: item.duration || "3 min",
+            image: item.image,
+            id: item.id
         });
+        setEditSelectedFile(null);
+        setEditPreviewUrl(null);
     };
 
-    // Save Edit Modal changes via PUT
+    // Save Edited Item (Feature 4)
     const handleSaveEdit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!editingItem) return;
 
         setIsUpdating(true);
         try {
-            const currentPin = pin || sessionStorage.getItem("digiswasthya_admin_pin") || "";
+            const formData = new FormData();
+            formData.append("pin", pin || sessionStorage.getItem("digiswasthya_admin_pin") || "");
+            formData.append("type", editingItem.type);
+            formData.append("originalIdOrTitle", editingItem.originalIdOrTitle);
+            formData.append("title", editingItem.title);
+            formData.append("category", editingItem.category);
+            formData.append("description", editingItem.description || "");
+
+            if (editingItem.type === "video") {
+                formData.append("videoUrl", editingItem.videoUrl || "");
+                formData.append("duration", editingItem.duration || "3 min");
+            } else {
+                if (editSelectedFile) {
+                    formData.append("image", editSelectedFile);
+                }
+            }
+
             const res = await fetch("/api/admin/media", {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    pin: currentPin,
-                    type: editingItem.type,
-                    originalId: editingItem.originalKey.id,
-                    originalTitle: editingItem.originalKey.title,
-                    originalImage: editingItem.originalKey.image,
-                    updatedTitle: editingItem.title,
-                    updatedCategory: editingItem.category,
-                    updatedDescription: editingItem.description,
-                    updatedDuration: editingItem.duration
-                })
+                body: formData,
             });
 
             const result = await res.json();
             if (!res.ok) {
-                alert(result.error || "Failed to update item.");
-            } else {
-                setEditingItem(null);
-                fetchCurrentData();
+                throw new Error(result.error || "Failed to update item.");
             }
-        } catch (err) {
-            alert("Failed to connect to server.");
+
+            setEditingItem(null);
+            setFeedbackMessage({ type: "success", text: "Item updated successfully!" });
+            fetchCurrentData();
+        } catch (err: any) {
+            alert(err.message || "Failed to save edits.");
         } finally {
             setIsUpdating(false);
+        }
+    };
+
+    // Safe Delete Handler
+    const handleConfirmDelete = async () => {
+        if (!deleteConfirmItem) return;
+        setIsDeleting(true);
+
+        try {
+            const currentPin = pin || sessionStorage.getItem("digiswasthya_admin_pin") || "";
+            const res = await fetch(
+                `/api/admin/media?pin=${encodeURIComponent(currentPin)}&type=${deleteConfirmItem.type}&idOrTitle=${encodeURIComponent(deleteConfirmItem.idOrTitle)}`, 
+                { method: "DELETE" }
+            );
+
+            if (res.ok) {
+                setDeleteConfirmItem(null);
+                setFeedbackMessage({ type: "success", text: "Item deleted successfully." });
+                fetchCurrentData();
+            } else {
+                const err = await res.json();
+                alert(err.error || "Failed to delete item.");
+            }
+        } catch {
+            alert("Error connecting to server.");
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -445,7 +417,7 @@ export default function AdminPage() {
                             </div>
                         </div>
 
-                        {/* ─── ADD NEW CONTENT FORM ─── */}
+                        {/* ─── OPTION 1: SINGLE CLEAN FORM WITH 3-WAY SELECTOR ─── */}
                         <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
                             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-600" />
                             
@@ -463,10 +435,10 @@ export default function AdminPage() {
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                         <button
                                             type="button"
-                                            onClick={() => { setContentType("video"); setSelectedFiles([]); setPreviewUrls([]); }}
+                                            onClick={() => handleTypeChange("video")}
                                             className={`p-4 rounded-2xl border-2 font-bold text-sm flex items-center gap-3 transition-all cursor-pointer ${
                                                 contentType === "video"
-                                                    ? "bg-orange-500/15 border-orange-500 text-orange-300 shadow-md ring-2 ring-orange-500/20"
+                                                    ? "bg-orange-500/15 border-orange-500 text-orange-300 shadow-md"
                                                     : "bg-slate-800/60 border-slate-700/80 text-slate-400 hover:border-slate-600"
                                             }`}
                                         >
@@ -479,10 +451,10 @@ export default function AdminPage() {
 
                                         <button
                                             type="button"
-                                            onClick={() => { setContentType("news"); setVideoUrl(""); }}
+                                            onClick={() => handleTypeChange("news")}
                                             className={`p-4 rounded-2xl border-2 font-bold text-sm flex items-center gap-3 transition-all cursor-pointer ${
                                                 contentType === "news"
-                                                    ? "bg-orange-500/15 border-orange-500 text-orange-300 shadow-md ring-2 ring-orange-500/20"
+                                                    ? "bg-orange-500/15 border-orange-500 text-orange-300 shadow-md"
                                                     : "bg-slate-800/60 border-slate-700/80 text-slate-400 hover:border-slate-600"
                                             }`}
                                         >
@@ -495,10 +467,10 @@ export default function AdminPage() {
 
                                         <button
                                             type="button"
-                                            onClick={() => { setContentType("field_work"); setVideoUrl(""); }}
+                                            onClick={() => handleTypeChange("field_work")}
                                             className={`p-4 rounded-2xl border-2 font-bold text-sm flex items-center gap-3 transition-all cursor-pointer ${
                                                 contentType === "field_work"
-                                                    ? "bg-orange-500/15 border-orange-500 text-orange-300 shadow-md ring-2 ring-orange-500/20"
+                                                    ? "bg-orange-500/15 border-orange-500 text-orange-300 shadow-md"
                                                     : "bg-slate-800/60 border-slate-700/80 text-slate-400 hover:border-slate-600"
                                             }`}
                                         >
@@ -511,89 +483,72 @@ export default function AdminPage() {
                                     </div>
                                 </div>
 
-                                {/* 2. Smart Category Quick-Select Pills */}
-                                <div>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                                            Category Tag (1-Click Selection)
-                                        </label>
-                                        <span className="text-[11px] text-orange-400 font-medium flex items-center gap-1">
-                                            <Sparkles className="w-3 h-3" /> Auto-suggests description template
-                                        </span>
-                                    </div>
-                                    
-                                    <div className="flex flex-wrap gap-2 mb-3">
-                                        {CATEGORY_PRESETS[contentType]?.map((preset, idx) => (
-                                            <button
-                                                key={idx}
-                                                type="button"
-                                                onClick={() => handleSelectCategoryPill(preset)}
-                                                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                                                    !isCustomCategory && category === preset.label
-                                                        ? "bg-orange-500 text-white shadow-md shadow-orange-500/30 scale-105"
-                                                        : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700"
-                                                }`}
-                                            >
-                                                <span>✓</span> {preset.label}
-                                            </button>
-                                        ))}
-
-                                        {/* Custom Tag Option */}
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsCustomCategory(true)}
-                                            className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                                                isCustomCategory
-                                                    ? "bg-amber-500 text-slate-950 font-black shadow-md"
-                                                    : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 border border-dashed border-slate-600"
-                                            }`}
-                                        >
-                                            + Custom Tag...
-                                        </button>
-                                    </div>
-
-                                    {/* Custom Tag Input (if active) */}
-                                    {isCustomCategory && (
+                                {/* 2. Title & Smart Category Presets (Feature 3) */}
+                                <div className="space-y-4">
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block">
+                                                Title / Headline *
+                                            </label>
+                                            {isFetchingYoutubeTitle && (
+                                                <span className="text-xs text-orange-400 flex items-center gap-1">
+                                                    <Sparkles className="w-3 h-3 animate-spin" /> Auto-fetching title from YouTube...
+                                                </span>
+                                            )}
+                                        </div>
                                         <input
                                             type="text"
-                                            autoFocus
-                                            value={customCategoryText}
-                                            onChange={(e) => setCustomCategoryText(e.target.value)}
-                                            placeholder="Type custom category name (e.g. Dental Health Camp)"
-                                            className="w-full bg-slate-800/90 border-2 border-amber-500/80 rounded-xl p-3 text-white font-semibold text-xs outline-none transition-all placeholder:text-slate-500"
+                                            required
+                                            value={title}
+                                            onChange={(e) => setTitle(e.target.value)}
+                                            placeholder={
+                                                contentType === "video" 
+                                                    ? "e.g. Telemedicine Camp in Basti Village" 
+                                                    : contentType === "news" 
+                                                    ? "e.g. DD News Coverage of DigiSwasthya" 
+                                                    : "e.g. Medical Team Consulting Patients at DS1"
+                                            }
+                                            className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-2xl p-4 text-white font-semibold text-sm outline-none transition-all placeholder:text-slate-500"
                                         />
-                                    )}
-                                </div>
-
-                                {/* 3. Title Field with Filename/YouTube Auto-Suggest */}
-                                <div>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                                            Title / Headline *
-                                        </label>
-                                        {youTubeAutoTitleNote && (
-                                            <span className="text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
-                                                <Sparkles className="w-3 h-3" /> Auto-fetched from YouTube!
-                                            </span>
-                                        )}
                                     </div>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={title}
-                                        onChange={(e) => setTitle(e.target.value)}
-                                        placeholder={
-                                            contentType === "video" 
-                                                ? "e.g. Telemedicine Camp in Basti Village" 
-                                                : contentType === "news" 
-                                                ? "e.g. DD News Coverage of DigiSwasthya" 
-                                                : "e.g. Medical Team Consulting Patients at DS1"
-                                        }
-                                        className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-2xl p-4 text-white font-semibold text-sm outline-none transition-all placeholder:text-slate-500"
-                                    />
+
+                                    {/* Smart Category Quick Pills (Feature 3) */}
+                                    <div>
+                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2 flex items-center gap-1.5">
+                                            <Tag className="w-3.5 h-3.5 text-orange-400" /> Category Tag (1-Click Presets or Custom)
+                                        </label>
+                                        
+                                        {/* Preset Pills */}
+                                        <div className="flex flex-wrap gap-2 mb-3">
+                                            {CATEGORY_PRESETS[contentType].map((preset) => (
+                                                <button
+                                                    key={preset}
+                                                    type="button"
+                                                    onClick={() => setCategory(preset)}
+                                                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border ${
+                                                        category === preset
+                                                            ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/20"
+                                                            : "bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500"
+                                                    }`}
+                                                >
+                                                    {category === preset && <Check className="w-3 h-3" />}
+                                                    {preset}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        {/* Editable Category text box */}
+                                        <input
+                                            type="text"
+                                            value={category}
+                                            onChange={(e) => setCategory(e.target.value)}
+                                            placeholder="Or type a custom category..."
+                                            className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-2xl p-3 text-white font-semibold text-xs outline-none transition-all placeholder:text-slate-500"
+                                        />
+                                    </div>
                                 </div>
 
-                                {/* 4A. Specific Fields for YouTube Video */}
+                                {/* 3A. Specific Fields for YouTube Video */}
                                 {contentType === "video" ? (
                                     <div className="space-y-4 bg-slate-800/40 p-5 rounded-2xl border border-slate-800">
                                         <div className="grid sm:grid-cols-3 gap-4">
@@ -605,7 +560,7 @@ export default function AdminPage() {
                                                     type="text"
                                                     required
                                                     value={videoUrl}
-                                                    onChange={(e) => handleYouTubeUrlChange(e.target.value)}
+                                                    onChange={(e) => handleVideoUrlChange(e.target.value)}
                                                     placeholder="https://www.youtube.com/watch?v=..."
                                                     className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-2xl p-4 text-white font-mono text-sm outline-none transition-all placeholder:text-slate-500"
                                                 />
@@ -624,26 +579,25 @@ export default function AdminPage() {
                                             </div>
                                         </div>
 
-                                        {/* Live YouTube Preview Thumbnail & Auto-fetch status */}
+                                        {/* Live YouTube Preview Thumbnail */}
                                         {videoUrl && extractYouTubeId(videoUrl) && (
                                             <div className="flex items-center gap-4 bg-slate-800/80 p-3 rounded-xl border border-slate-700">
                                                 <img 
                                                     src={`https://img.youtube.com/vi/${extractYouTubeId(videoUrl)}/mqdefault.jpg`} 
                                                     alt="YouTube Preview" 
-                                                    className="w-24 h-14 object-cover rounded-lg border border-slate-600 flex-shrink-0"
+                                                    className="w-24 h-14 object-cover rounded-lg border border-slate-600"
                                                 />
-                                                <div className="overflow-hidden">
+                                                <div>
                                                     <span className="text-xs font-bold text-green-400 flex items-center gap-1">
-                                                        ✓ Valid YouTube Video Detected
-                                                        {isFetchingYouTubeTitle && <span className="text-slate-400 text-[10px] animate-pulse">(fetching title...)</span>}
+                                                        <CheckCircle2 className="w-3.5 h-3.5" /> Valid YouTube Video Detected
                                                     </span>
-                                                    <p className="text-xs text-slate-400 font-mono truncate">ID: {extractYouTubeId(videoUrl)}</p>
+                                                    <p className="text-xs text-slate-400 font-mono">ID: {extractYouTubeId(videoUrl)}</p>
                                                 </div>
                                             </div>
                                         )}
                                     </div>
                                 ) : (
-                                    /* 4B. Specific Fields for News & Field Work Photos (with Multi-Upload) */
+                                    /* 3B. Specific Fields for News & Field Work Photos */
                                     <div className="space-y-4 bg-slate-800/40 p-5 rounded-2xl border border-slate-800">
                                         <div>
                                             <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2">
@@ -653,29 +607,24 @@ export default function AdminPage() {
                                                 rows={2}
                                                 value={description}
                                                 onChange={(e) => setDescription(e.target.value)}
-                                                placeholder="Brief explanation of this news coverage or camp..."
+                                                placeholder={
+                                                    contentType === "news" 
+                                                        ? "Brief summary of the news coverage..." 
+                                                        : "Brief summary of the health camp location or activity..."
+                                                }
                                                 className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-2xl p-4 text-white font-semibold text-sm outline-none transition-all placeholder:text-slate-500 resize-none"
                                             />
                                         </div>
 
                                         <div>
-                                            <div className="flex items-center justify-between mb-2">
-                                                <label className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                                                    Upload Photos (Single or Batch Multi-Select) *
-                                                </label>
-                                                {selectedFiles.length > 1 && (
-                                                    <span className="text-xs font-bold text-amber-400 flex items-center gap-1">
-                                                        <Layers className="w-3.5 h-3.5" /> {selectedFiles.length} Photos Selected for Batch Upload
-                                                    </span>
-                                                )}
-                                            </div>
-                                            
+                                            <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2">
+                                                Upload Photo (From Camera or Gallery) *
+                                            </label>
                                             <input
                                                 ref={fileInputRef}
                                                 type="file"
-                                                multiple
                                                 accept="image/*"
-                                                onChange={handleFilesChange}
+                                                onChange={handleFileChange}
                                                 className="hidden"
                                                 id="file-upload-input"
                                             />
@@ -683,48 +632,31 @@ export default function AdminPage() {
                                                 htmlFor="file-upload-input"
                                                 className="flex flex-col sm:flex-row items-center justify-center gap-3 p-6 rounded-2xl border-2 border-dashed border-slate-700 hover:border-orange-500 bg-slate-800/60 hover:bg-slate-800 cursor-pointer transition-all text-center sm:text-left"
                                             >
-                                                <Upload className="w-7 h-7 text-orange-400 flex-shrink-0" />
+                                                <Upload className="w-7 h-7 text-orange-400" />
                                                 <div>
                                                     <span className="text-sm font-bold text-white block">
-                                                        {selectedFiles.length > 0 
-                                                            ? `${selectedFiles.length} photo(s) selected - Tap to change` 
-                                                            : "Tap to choose one or multiple photos from phone/computer"}
+                                                        {selectedFile ? selectedFile.name : "Tap to choose photo from mobile or computer"}
                                                     </span>
                                                     <span className="text-xs text-slate-400">
-                                                        Supports multiple JPG, PNG, WebP (Automatically organizes into {contentType === "news" ? "public/images/media/" : "public/images/resources/"})
+                                                        Supports JPG, PNG, WebP (Saved directly to {contentType === "news" ? "public/images/media/" : "public/images/resources/"})
                                                     </span>
                                                 </div>
                                             </label>
                                         </div>
 
-                                        {/* Multi-Photo Thumbnail Grid Preview */}
-                                        {previewUrls.length > 0 && (
-                                            <div className="space-y-2 bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
-                                                <div className="text-xs font-bold text-slate-300 flex items-center justify-between">
-                                                    <span>📸 Image Preview ({previewUrls.length} file{previewUrls.length > 1 ? "s" : ""})</span>
-                                                    <span className="text-slate-400 text-[11px]">Click ✕ to remove any photo</span>
-                                                </div>
-                                                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3 pt-2">
-                                                    {previewUrls.map((url, idx) => (
-                                                        <div key={idx} className="relative group rounded-xl overflow-hidden border border-slate-700 bg-slate-900 aspect-video">
-                                                            <img 
-                                                                src={url} 
-                                                                alt={`Preview ${idx + 1}`} 
-                                                                className="w-full h-full object-cover"
-                                                            />
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => handleRemoveFile(idx)}
-                                                                className="absolute top-1 right-1 p-1 rounded-full bg-red-600 text-white hover:bg-red-700 shadow-md transition-transform hover:scale-110 cursor-pointer"
-                                                                title="Remove Photo"
-                                                            >
-                                                                <X className="w-3 h-3" />
-                                                            </button>
-                                                            <span className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-mono text-white">
-                                                                #{idx + 1}
-                                                            </span>
-                                                        </div>
-                                                    ))}
+                                        {/* Image Preview */}
+                                        {previewUrl && (
+                                            <div className="flex items-center gap-4 bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                                <img 
+                                                    src={previewUrl} 
+                                                    alt="Upload Preview" 
+                                                    className="w-20 h-14 object-cover rounded-lg border border-slate-600"
+                                                />
+                                                <div>
+                                                    <span className="text-xs font-bold text-green-400 flex items-center gap-1">
+                                                        <CheckCircle2 className="w-3.5 h-3.5" /> Image Ready to Upload
+                                                    </span>
+                                                    <p className="text-xs text-slate-400">{selectedFile?.name}</p>
                                                 </div>
                                             </div>
                                         )}
@@ -757,21 +689,24 @@ export default function AdminPage() {
                                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                                     ) : (
                                         <>
-                                            {selectedFiles.length > 1 
-                                                ? `Batch Publish ${selectedFiles.length} Photos Live 🚀` 
-                                                : "Publish Live to Website"} <ArrowRight className="w-5 h-5" />
+                                            Publish Live to Website <ArrowRight className="w-5 h-5" />
                                         </>
                                     )}
                                 </button>
                             </form>
                         </div>
 
-                        {/* ─── LIVE CONTENT INVENTORY, EDIT & DELETE MANAGER ─── */}
+                        {/* ─── LIVE CONTENT INVENTORY WITH EDIT & DELETE (Feature 4) ─── */}
                         <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
-                                    <Eye className="w-5 h-5 text-orange-400" /> Current Published Items
-                                </h2>
+                                <div>
+                                    <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
+                                        <Eye className="w-5 h-5 text-orange-400" /> Current Published Items
+                                    </h2>
+                                    <p className="text-xs text-slate-400 mt-1">
+                                        Click <span className="text-orange-400 font-bold">Edit ✏️</span> to modify titles/details, or <span className="text-red-400 font-bold">Delete 🗑️</span> to remove.
+                                    </p>
+                                </div>
                                 <button
                                     onClick={fetchCurrentData}
                                     className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
@@ -791,28 +726,30 @@ export default function AdminPage() {
                                         </h3>
                                         <div className="grid sm:grid-cols-2 gap-3">
                                             {mediaData.videos?.map((v, i) => (
-                                                <div key={i} className="bg-slate-800/60 border border-slate-700/60 p-3 rounded-2xl flex items-center justify-between gap-3 hover:border-slate-600 transition-all">
+                                                <div key={i} className="bg-slate-800/60 border border-slate-700/60 p-3.5 rounded-2xl flex items-center justify-between gap-3 hover:border-slate-600 transition-all">
                                                     <div className="flex items-center gap-3 overflow-hidden">
                                                         <img 
                                                             src={`https://img.youtube.com/vi/${v.id}/default.jpg`} 
                                                             alt={v.title}
-                                                            className="w-12 h-9 object-cover rounded-lg flex-shrink-0"
+                                                            className="w-14 h-10 object-cover rounded-lg flex-shrink-0"
                                                         />
                                                         <div className="truncate">
                                                             <p className="font-bold text-xs text-white truncate">{v.title}</p>
-                                                            <p className="text-[10px] text-slate-400 font-mono">ID: {v.id} • {v.category}</p>
+                                                            <p className="text-[10px] text-slate-400 font-mono">
+                                                                <span className="text-orange-400 font-semibold">{v.category}</span> • ID: {v.id} {v.duration && `• ${v.duration}`}
+                                                            </p>
                                                         </div>
                                                     </div>
-                                                    <div className="flex items-center gap-1 flex-shrink-0">
+                                                    <div className="flex items-center gap-1.5 flex-shrink-0">
                                                         <button
-                                                            onClick={() => handleOpenEdit("video", v)}
-                                                            className="p-2 rounded-xl text-slate-300 hover:text-orange-400 hover:bg-slate-700/60 transition-colors cursor-pointer"
-                                                            title="Edit Video"
+                                                            onClick={() => handleStartEdit("video", v)}
+                                                            className="p-2 rounded-xl text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/30 border border-transparent transition-colors cursor-pointer"
+                                                            title="Edit Video Details"
                                                         >
                                                             <Edit3 className="w-4 h-4" />
                                                         </button>
                                                         <button
-                                                            onClick={() => handleDelete("video", v.id)}
+                                                            onClick={() => setDeleteConfirmItem({ type: "video", idOrTitle: v.id, title: v.title })}
                                                             className="p-2 rounded-xl text-red-400 hover:bg-red-950/60 transition-colors cursor-pointer"
                                                             title="Delete Video"
                                                         >
@@ -831,21 +768,32 @@ export default function AdminPage() {
                                         </h3>
                                         <div className="grid sm:grid-cols-2 gap-3">
                                             {mediaData.mediaCoverage?.map((n, i) => (
-                                                <div key={i} className="bg-slate-800/60 border border-slate-700/60 p-3 rounded-2xl flex items-center justify-between gap-3 hover:border-slate-600 transition-all">
-                                                    <div className="truncate">
-                                                        <p className="font-bold text-xs text-white truncate">{n.title}</p>
-                                                        <p className="text-[10px] text-slate-400 truncate">{n.category} • {n.image}</p>
+                                                <div key={i} className="bg-slate-800/60 border border-slate-700/60 p-3.5 rounded-2xl flex items-center justify-between gap-3 hover:border-slate-600 transition-all">
+                                                    <div className="flex items-center gap-3 overflow-hidden">
+                                                        {n.image && (
+                                                            <img 
+                                                                src={n.image} 
+                                                                alt={n.title}
+                                                                className="w-14 h-10 object-cover rounded-lg flex-shrink-0 border border-slate-700"
+                                                            />
+                                                        )}
+                                                        <div className="truncate">
+                                                            <p className="font-bold text-xs text-white truncate">{n.title}</p>
+                                                            <p className="text-[10px] text-slate-400 truncate">
+                                                                <span className="text-amber-400 font-semibold">{n.category}</span> • {n.description || n.image}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div className="flex items-center gap-1 flex-shrink-0">
+                                                    <div className="flex items-center gap-1.5 flex-shrink-0">
                                                         <button
-                                                            onClick={() => handleOpenEdit("news", n)}
-                                                            className="p-2 rounded-xl text-slate-300 hover:text-amber-400 hover:bg-slate-700/60 transition-colors cursor-pointer"
-                                                            title="Edit News"
+                                                            onClick={() => handleStartEdit("news", n)}
+                                                            className="p-2 rounded-xl text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/30 border border-transparent transition-colors cursor-pointer"
+                                                            title="Edit News Details"
                                                         >
                                                             <Edit3 className="w-4 h-4" />
                                                         </button>
                                                         <button
-                                                            onClick={() => handleDelete("news", n.title)}
+                                                            onClick={() => setDeleteConfirmItem({ type: "news", idOrTitle: n.title, title: n.title })}
                                                             className="p-2 rounded-xl text-red-400 hover:bg-red-950/60 transition-colors cursor-pointer"
                                                             title="Delete News Item"
                                                         >
@@ -864,21 +812,32 @@ export default function AdminPage() {
                                         </h3>
                                         <div className="grid sm:grid-cols-2 gap-3">
                                             {mediaData.projectImages?.map((p, i) => (
-                                                <div key={i} className="bg-slate-800/60 border border-slate-700/60 p-3 rounded-2xl flex items-center justify-between gap-3 hover:border-slate-600 transition-all">
-                                                    <div className="truncate">
-                                                        <p className="font-bold text-xs text-white truncate">{p.title}</p>
-                                                        <p className="text-[10px] text-slate-400 truncate">{p.category} • {p.image}</p>
+                                                <div key={i} className="bg-slate-800/60 border border-slate-700/60 p-3.5 rounded-2xl flex items-center justify-between gap-3 hover:border-slate-600 transition-all">
+                                                    <div className="flex items-center gap-3 overflow-hidden">
+                                                        {p.image && (
+                                                            <img 
+                                                                src={p.image} 
+                                                                alt={p.title}
+                                                                className="w-14 h-10 object-cover rounded-lg flex-shrink-0 border border-slate-700"
+                                                            />
+                                                        )}
+                                                        <div className="truncate">
+                                                            <p className="font-bold text-xs text-white truncate">{p.title}</p>
+                                                            <p className="text-[10px] text-slate-400 truncate">
+                                                                <span className="text-emerald-400 font-semibold">{p.category}</span> • {p.description || p.image}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div className="flex items-center gap-1 flex-shrink-0">
+                                                    <div className="flex items-center gap-1.5 flex-shrink-0">
                                                         <button
-                                                            onClick={() => handleOpenEdit("field_work", p)}
-                                                            className="p-2 rounded-xl text-slate-300 hover:text-emerald-400 hover:bg-slate-700/60 transition-colors cursor-pointer"
-                                                            title="Edit Photo"
+                                                            onClick={() => handleStartEdit("field_work", p)}
+                                                            className="p-2 rounded-xl text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/30 border border-transparent transition-colors cursor-pointer"
+                                                            title="Edit Photo Details"
                                                         >
                                                             <Edit3 className="w-4 h-4" />
                                                         </button>
                                                         <button
-                                                            onClick={() => handleDelete("field_work", p.title)}
+                                                            onClick={() => setDeleteConfirmItem({ type: "field_work", idOrTitle: p.title, title: p.title })}
                                                             className="p-2 rounded-xl text-red-400 hover:bg-red-950/60 transition-colors cursor-pointer"
                                                             title="Delete Photo"
                                                         >
@@ -900,23 +859,23 @@ export default function AdminPage() {
                 )}
             </div>
 
-            {/* ─── EDIT MODAL POPUP ─── */}
+            {/* ─── EDIT MODAL (Feature 4) ─── */}
             <AnimatePresence>
                 {editingItem && (
-                    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
                         <motion.div 
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative"
+                            className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto"
                         >
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-orange-400 font-bold text-sm uppercase tracking-wider">
-                                    <Edit3 className="w-4 h-4" /> Edit {editingItem.type.replace("_", " ")}
+                            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                                <div className="flex items-center gap-2 text-orange-400 font-bold text-lg">
+                                    <Edit3 className="w-5 h-5" /> Edit {editingItem.type === "video" ? "Video" : editingItem.type === "news" ? "News" : "Photo"}
                                 </div>
                                 <button 
                                     onClick={() => setEditingItem(null)}
-                                    className="p-1 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                                    className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
                                 >
                                     <X className="w-5 h-5" />
                                 </button>
@@ -924,73 +883,184 @@ export default function AdminPage() {
 
                             <form onSubmit={handleSaveEdit} className="space-y-4">
                                 <div>
-                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2">
-                                        Title / Headline
+                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-1.5">
+                                        Title / Headline *
                                     </label>
-                                    <input
+                                    <input 
                                         type="text"
                                         required
                                         value={editingItem.title}
                                         onChange={(e) => setEditingItem({ ...editingItem, title: e.target.value })}
-                                        className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-xl p-3.5 text-white font-semibold text-sm outline-none transition-all"
+                                        className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-xl p-3 text-white font-semibold text-sm outline-none"
                                     />
                                 </div>
 
+                                {/* Category Presets */}
                                 <div>
-                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-1.5">
                                         Category Tag
                                     </label>
-                                    <input
+                                    <div className="flex flex-wrap gap-1.5 mb-2">
+                                        {CATEGORY_PRESETS[editingItem.type].map((preset) => (
+                                            <button
+                                                key={preset}
+                                                type="button"
+                                                onClick={() => setEditingItem({ ...editingItem, category: preset })}
+                                                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all border ${
+                                                    editingItem.category === preset
+                                                        ? "bg-orange-500 text-white border-orange-500"
+                                                        : "bg-slate-800 text-slate-400 border-slate-700 hover:border-slate-500"
+                                                }`}
+                                            >
+                                                {preset}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <input 
                                         type="text"
                                         value={editingItem.category}
                                         onChange={(e) => setEditingItem({ ...editingItem, category: e.target.value })}
-                                        className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-xl p-3.5 text-white font-semibold text-sm outline-none transition-all"
+                                        className="w-full bg-slate-800 border border-slate-700 focus:border-orange-500 rounded-xl p-2.5 text-white font-semibold text-xs outline-none"
                                     />
                                 </div>
 
                                 {editingItem.type === "video" ? (
-                                    <div>
-                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2">
-                                            Duration
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={editingItem.duration || ""}
-                                            onChange={(e) => setEditingItem({ ...editingItem, duration: e.target.value })}
-                                            className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-xl p-3.5 text-white font-semibold text-sm outline-none transition-all"
-                                        />
-                                    </div>
+                                    <>
+                                        <div>
+                                            <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-1.5">
+                                                YouTube URL or Video ID
+                                            </label>
+                                            <input 
+                                                type="text"
+                                                value={editingItem.videoUrl || ""}
+                                                onChange={(e) => setEditingItem({ ...editingItem, videoUrl: e.target.value })}
+                                                className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-xl p-3 text-white font-mono text-sm outline-none"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-1.5">
+                                                Duration (Optional)
+                                            </label>
+                                            <input 
+                                                type="text"
+                                                value={editingItem.duration || ""}
+                                                onChange={(e) => setEditingItem({ ...editingItem, duration: e.target.value })}
+                                                className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-xl p-3 text-white text-sm outline-none"
+                                            />
+                                        </div>
+                                    </>
                                 ) : (
-                                    <div>
-                                        <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2">
-                                            Description / Details
-                                        </label>
-                                        <textarea
-                                            rows={3}
-                                            value={editingItem.description}
-                                            onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
-                                            className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-xl p-3.5 text-white font-semibold text-sm outline-none transition-all resize-none"
-                                        />
-                                    </div>
+                                    <>
+                                        <div>
+                                            <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-1.5">
+                                                Description / Details
+                                            </label>
+                                            <textarea 
+                                                rows={2}
+                                                value={editingItem.description || ""}
+                                                onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
+                                                className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-xl p-3 text-white text-sm outline-none resize-none"
+                                            />
+                                        </div>
+
+                                        {/* Image Swap */}
+                                        <div>
+                                            <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-1.5">
+                                                Replace Image (Optional)
+                                            </label>
+                                            <input 
+                                                ref={editFileInputRef}
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleEditFileChange}
+                                                className="hidden"
+                                                id="edit-file-upload-input"
+                                            />
+                                            <label
+                                                htmlFor="edit-file-upload-input"
+                                                className="flex items-center justify-between p-3 rounded-xl border border-dashed border-slate-700 hover:border-orange-500 bg-slate-800/60 cursor-pointer text-xs"
+                                            >
+                                                <span className="truncate text-slate-300">
+                                                    {editSelectedFile ? editSelectedFile.name : "Choose new photo to replace existing"}
+                                                </span>
+                                                <Upload className="w-4 h-4 text-orange-400 flex-shrink-0" />
+                                            </label>
+
+                                            {(editPreviewUrl || editingItem.image) && (
+                                                <div className="mt-2 flex items-center gap-3">
+                                                    <img 
+                                                        src={editPreviewUrl || editingItem.image} 
+                                                        alt="Preview" 
+                                                        className="w-16 h-12 object-cover rounded-lg border border-slate-700"
+                                                    />
+                                                    <span className="text-[11px] text-slate-400">
+                                                        {editPreviewUrl ? "New replacement selected" : "Current image on website"}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </>
                                 )}
 
-                                <div className="flex items-center justify-end gap-3 pt-4">
+                                <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
                                     <button
                                         type="button"
                                         onClick={() => setEditingItem(null)}
-                                        className="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm transition-colors cursor-pointer"
+                                        className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors cursor-pointer"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={isUpdating}
-                                        className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-bold text-sm shadow-lg shadow-orange-500/20 transition-all cursor-pointer disabled:opacity-50"
+                                        className="px-6 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold transition-colors shadow-lg shadow-orange-500/20 cursor-pointer disabled:opacity-50 flex items-center gap-2"
                                     >
                                         {isUpdating ? "Saving..." : "Save Changes"}
                                     </button>
                                 </div>
                             </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* ─── DELETE CONFIRMATION MODAL (Safe Delete) ─── */}
+            <AnimatePresence>
+                {deleteConfirmItem && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center space-y-5"
+                        >
+                            <div className="inline-flex p-4 rounded-2xl bg-red-500/10 text-red-400 border border-red-500/20">
+                                <AlertTriangle className="w-8 h-8" />
+                            </div>
+
+                            <div>
+                                <h3 className="text-xl font-bold text-white">Delete this item?</h3>
+                                <p className="text-slate-400 text-xs mt-1 px-2">
+                                    Are you sure you want to remove <span className="text-white font-semibold">"{deleteConfirmItem.title}"</span>? This will immediately remove it from the live website.
+                                </p>
+                            </div>
+
+                            <div className="flex items-center justify-center gap-3 pt-2">
+                                <button
+                                    onClick={() => setDeleteConfirmItem(null)}
+                                    disabled={isDeleting}
+                                    className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-colors cursor-pointer"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleConfirmDelete}
+                                    disabled={isDeleting}
+                                    className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition-colors shadow-lg shadow-red-500/20 cursor-pointer flex items-center gap-2 disabled:opacity-50"
+                                >
+                                    {isDeleting ? "Deleting..." : "Yes, Delete Item"}
+                                </button>
+                            </div>
                         </motion.div>
                     </div>
                 )}
