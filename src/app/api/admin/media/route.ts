@@ -91,46 +91,61 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: true, item: newVideo, message: "YouTube video added successfully!" });
         }
 
-        // 2. Handle News / Press Item OR Field Work Photo
+        // 2. Handle News / Press Item OR Field Work Photo (Single or Multi-Photo Batch)
         if (type === "news" || type === "field_work") {
-            const file = formData.get("image") as File | null;
-            let imagePath = formData.get("imagePath") as string || "";
+            // Retrieve all uploaded files
+            const rawFiles = [...formData.getAll("images"), ...formData.getAll("image")];
+            const files = rawFiles.filter(f => f && typeof f !== "string" && (f as File).size > 0) as File[];
 
-            if (file && typeof file !== "string" && file.size > 0) {
-                const buffer = Buffer.from(await file.arrayBuffer());
-                const cleanFileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-                
-                const targetSubDir = type === "news" ? "media" : "resources";
-                const targetFolder = path.join(process.cwd(), "public", "images", targetSubDir);
-
-                if (!fs.existsSync(targetFolder)) {
-                    fs.mkdirSync(targetFolder, { recursive: true });
+            if (files.length === 0) {
+                const singlePath = formData.get("imagePath") as string;
+                if (!singlePath) {
+                    return NextResponse.json({ error: "Please select at least one photo to upload." }, { status: 400 });
                 }
-
-                const fullPath = path.join(targetFolder, cleanFileName);
-                fs.writeFileSync(fullPath, buffer);
-                imagePath = `/images/${targetSubDir}/${cleanFileName}`;
             }
 
-            if (!imagePath) {
-                return NextResponse.json({ error: "Please select an image to upload." }, { status: 400 });
+            const targetSubDir = type === "news" ? "media" : "resources";
+            const targetFolder = path.join(process.cwd(), "public", "images", targetSubDir);
+
+            if (!fs.existsSync(targetFolder)) {
+                fs.mkdirSync(targetFolder, { recursive: true });
             }
 
-            const newItem = {
-                title,
-                description: description || title,
-                image: imagePath,
-                category: category || (type === "news" ? "News" : "Field Work")
-            };
+            const newItems: Array<{ title: string; description: string; image: string; category: string }> = [];
+
+            if (files.length > 0) {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const buffer = Buffer.from(await file.arrayBuffer());
+                    const cleanFileName = `${Date.now()}_${i}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+                    const fullPath = path.join(targetFolder, cleanFileName);
+                    fs.writeFileSync(fullPath, buffer);
+                    const imagePath = `/images/${targetSubDir}/${cleanFileName}`;
+
+                    // If multiple photos in a batch, label them neatly: "Title (1)", "Title (2)", etc.
+                    const itemTitle = files.length > 1 ? `${title} (${i + 1})` : title;
+
+                    newItems.push({
+                        title: itemTitle,
+                        description: description || title,
+                        image: imagePath,
+                        category: category || (type === "news" ? "News" : "Field Work")
+                    });
+                }
+            }
 
             if (type === "news") {
-                mediaData.mediaCoverage.unshift(newItem);
+                mediaData.mediaCoverage.unshift(...newItems);
             } else {
-                mediaData.projectImages.unshift(newItem);
+                mediaData.projectImages.unshift(...newItems);
             }
 
             writeMediaData(mediaData);
-            return NextResponse.json({ success: true, item: newItem, message: "Published successfully!" });
+            const msg = newItems.length > 1 
+                ? `Successfully published batch of ${newItems.length} photos!` 
+                : "Published photo live to website successfully!";
+
+            return NextResponse.json({ success: true, items: newItems, count: newItems.length, message: msg });
         }
 
         return NextResponse.json({ error: "Invalid content type." }, { status: 400 });

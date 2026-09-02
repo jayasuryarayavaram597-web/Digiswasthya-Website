@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
     Lock, Video, Newspaper, Tent, PlusCircle, Trash2, 
     CheckCircle2, AlertCircle, Eye, RefreshCw, Upload, LogOut, ArrowRight, 
-    ShieldCheck, Edit3, X, Tag, Sparkles, AlertTriangle, Check
+    ShieldCheck, Edit3, X, Tag, Sparkles, AlertTriangle, Check, Images, Image as ImageIcon
 } from "lucide-react";
 import Link from "next/link";
 
@@ -56,8 +56,10 @@ export default function AdminPage() {
     const [description, setDescription] = useState("");
     const [videoUrl, setVideoUrl] = useState("");
     const [duration, setDuration] = useState("3 min");
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    
+    // Multi-Photo Upload State (Feature 5)
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
     const [isFetchingYoutubeTitle, setIsFetchingYoutubeTitle] = useState(false);
 
     // Editing State (Feature 4)
@@ -91,8 +93,9 @@ export default function AdminPage() {
     const handleTypeChange = (newType: ContentType) => {
         setContentType(newType);
         setCategory(CATEGORY_PRESETS[newType][0]);
-        setSelectedFile(null);
-        setPreviewUrl(null);
+        setSelectedFiles([]);
+        setPreviewUrls([]);
+        if (fileInputRef.current) fileInputRef.current.value = "";
         if (newType === "video") {
             setVideoUrl("");
         }
@@ -146,13 +149,26 @@ export default function AdminPage() {
         }
     };
 
+    // Multi-File selection handler (Feature 5)
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setSelectedFile(file);
-            const url = URL.createObjectURL(file);
-            setPreviewUrl(url);
+        const files = Array.from(e.target.files || []);
+        if (files.length > 0) {
+            setSelectedFiles((prev) => [...prev, ...files]);
+            const newUrls = files.map((f) => URL.createObjectURL(f));
+            setPreviewUrls((prev) => [...prev, ...newUrls]);
         }
+    };
+
+    // Remove single photo from selection
+    const handleRemoveFile = (index: number) => {
+        setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+        setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    const handleClearAllFiles = () => {
+        setSelectedFiles([]);
+        setPreviewUrls([]);
+        if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
     const handleEditFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,7 +210,7 @@ export default function AdminPage() {
         }
     };
 
-    // Handle Create New Content
+    // Handle Create New Content (Single or Batch Multi-Photo)
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setFeedbackMessage(null);
@@ -212,10 +228,12 @@ export default function AdminPage() {
                 formData.append("videoUrl", videoUrl);
                 formData.append("duration", duration);
             } else {
-                if (!selectedFile) {
-                    throw new Error("Please select an image file to upload.");
+                if (selectedFiles.length === 0) {
+                    throw new Error("Please select at least one image file to upload.");
                 }
-                formData.append("image", selectedFile);
+                selectedFiles.forEach((file) => {
+                    formData.append("images", file);
+                });
             }
 
             const res = await fetch("/api/admin/media", {
@@ -236,8 +254,8 @@ export default function AdminPage() {
             setDescription("");
             setVideoUrl("");
             setCategory(CATEGORY_PRESETS[contentType][0]);
-            setSelectedFile(null);
-            setPreviewUrl(null);
+            setSelectedFiles([]);
+            setPreviewUrls([]);
             if (fileInputRef.current) fileInputRef.current.value = "";
 
             // Refresh data list
@@ -476,8 +494,8 @@ export default function AdminPage() {
                                         >
                                             <Tent className="w-5 h-5 text-orange-400 flex-shrink-0" />
                                             <div className="text-left">
-                                                <div>Field Work Photo</div>
-                                                <div className="text-[11px] font-normal text-slate-400">Rural Camp / Center</div>
+                                                <div>Field Work Photos</div>
+                                                <div className="text-[11px] font-normal text-slate-400">Single or Bulk Photos</div>
                                             </div>
                                         </button>
                                     </div>
@@ -488,7 +506,7 @@ export default function AdminPage() {
                                     <div>
                                         <div className="flex items-center justify-between mb-2">
                                             <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block">
-                                                Title / Headline *
+                                                {contentType === "field_work" && selectedFiles.length > 1 ? "Event / Album Title *" : "Title / Headline *"}
                                             </label>
                                             {isFetchingYoutubeTitle && (
                                                 <span className="text-xs text-orange-400 flex items-center gap-1">
@@ -506,7 +524,7 @@ export default function AdminPage() {
                                                     ? "e.g. Telemedicine Camp in Basti Village" 
                                                     : contentType === "news" 
                                                     ? "e.g. DD News Coverage of DigiSwasthya" 
-                                                    : "e.g. Medical Team Consulting Patients at DS1"
+                                                    : "e.g. Rural Telemedicine Outreach Camp at Basti"
                                             }
                                             className="w-full bg-slate-800 border-2 border-slate-700 focus:border-orange-500 rounded-2xl p-4 text-white font-semibold text-sm outline-none transition-all placeholder:text-slate-500"
                                         />
@@ -597,7 +615,7 @@ export default function AdminPage() {
                                         )}
                                     </div>
                                 ) : (
-                                    /* 3B. Specific Fields for News & Field Work Photos */
+                                    /* 3B. Specific Fields for News & Field Work Photos (Single & Multi-Photo Feature 5) */
                                     <div className="space-y-4 bg-slate-800/40 p-5 rounded-2xl border border-slate-800">
                                         <div>
                                             <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2">
@@ -617,13 +635,26 @@ export default function AdminPage() {
                                         </div>
 
                                         <div>
-                                            <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block mb-2">
-                                                Upload Photo (From Camera or Gallery) *
-                                            </label>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <label className="text-xs font-bold uppercase tracking-wider text-slate-300 block">
+                                                    Upload Photos (Select Single or Multiple Photos) *
+                                                </label>
+                                                {selectedFiles.length > 0 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleClearAllFiles}
+                                                        className="text-[11px] text-red-400 hover:text-red-300 font-semibold cursor-pointer"
+                                                    >
+                                                        Clear all ({selectedFiles.length})
+                                                    </button>
+                                                )}
+                                            </div>
+
                                             <input
                                                 ref={fileInputRef}
                                                 type="file"
                                                 accept="image/*"
+                                                multiple
                                                 onChange={handleFileChange}
                                                 className="hidden"
                                                 id="file-upload-input"
@@ -632,31 +663,53 @@ export default function AdminPage() {
                                                 htmlFor="file-upload-input"
                                                 className="flex flex-col sm:flex-row items-center justify-center gap-3 p-6 rounded-2xl border-2 border-dashed border-slate-700 hover:border-orange-500 bg-slate-800/60 hover:bg-slate-800 cursor-pointer transition-all text-center sm:text-left"
                                             >
-                                                <Upload className="w-7 h-7 text-orange-400" />
+                                                <div className="p-3 bg-orange-500/10 rounded-xl text-orange-400 border border-orange-500/20">
+                                                    <Images className="w-6 h-6" />
+                                                </div>
                                                 <div>
                                                     <span className="text-sm font-bold text-white block">
-                                                        {selectedFile ? selectedFile.name : "Tap to choose photo from mobile or computer"}
+                                                        {selectedFiles.length > 0 
+                                                            ? `+ Add more photos (${selectedFiles.length} currently selected)` 
+                                                            : "Tap to choose single or multiple photos from phone or computer"}
                                                     </span>
                                                     <span className="text-xs text-slate-400">
-                                                        Supports JPG, PNG, WebP (Saved directly to {contentType === "news" ? "public/images/media/" : "public/images/resources/"})
+                                                        Select 1 photo or up to 10 photos at once • Supports JPG, PNG, WebP
                                                     </span>
                                                 </div>
                                             </label>
                                         </div>
 
-                                        {/* Image Preview */}
-                                        {previewUrl && (
-                                            <div className="flex items-center gap-4 bg-slate-800/80 p-3 rounded-xl border border-slate-700">
-                                                <img 
-                                                    src={previewUrl} 
-                                                    alt="Upload Preview" 
-                                                    className="w-20 h-14 object-cover rounded-lg border border-slate-600"
-                                                />
-                                                <div>
-                                                    <span className="text-xs font-bold text-green-400 flex items-center gap-1">
-                                                        <CheckCircle2 className="w-3.5 h-3.5" /> Image Ready to Upload
+                                        {/* Multi-Photo Preview Grid (Feature 5) */}
+                                        {selectedFiles.length > 0 && (
+                                            <div className="space-y-2 pt-2">
+                                                <div className="flex items-center justify-between text-xs text-slate-300 font-bold px-1">
+                                                    <span className="flex items-center gap-1.5 text-emerald-400">
+                                                        <CheckCircle2 className="w-4 h-4" /> {selectedFiles.length} {selectedFiles.length === 1 ? "Photo Ready" : "Photos Ready in Batch"}
                                                     </span>
-                                                    <p className="text-xs text-slate-400">{selectedFile?.name}</p>
+                                                    <span className="text-slate-400 text-[11px] font-normal">Tap ✕ on any photo to remove</span>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-800/80 p-3 rounded-2xl border border-slate-700">
+                                                    {previewUrls.map((url, index) => (
+                                                        <div key={index} className="relative group rounded-xl overflow-hidden border border-slate-700 bg-slate-900 aspect-video flex items-center justify-center">
+                                                            <img 
+                                                                src={url} 
+                                                                alt={`Selected ${index + 1}`} 
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                            <div className="absolute bottom-0 inset-x-0 bg-black/60 backdrop-blur-xs p-1 text-[10px] text-slate-200 truncate text-center">
+                                                                {selectedFiles[index]?.name}
+                                                            </div>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleRemoveFile(index)}
+                                                                className="absolute top-1.5 right-1.5 p-1 rounded-full bg-red-600/90 text-white hover:bg-red-500 transition-colors shadow-md cursor-pointer"
+                                                                title="Remove this photo"
+                                                            >
+                                                                <X className="w-3.5 h-3.5" />
+                                                            </button>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
                                         )}
@@ -679,7 +732,7 @@ export default function AdminPage() {
                                     </div>
                                 )}
 
-                                {/* Submit Button */}
+                                {/* Submit Button (Dynamic for Single vs Batch) */}
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
@@ -689,7 +742,10 @@ export default function AdminPage() {
                                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                                     ) : (
                                         <>
-                                            Publish Live to Website <ArrowRight className="w-5 h-5" />
+                                            {contentType !== "video" && selectedFiles.length > 1
+                                                ? `Publish All ${selectedFiles.length} Photos Live to Website`
+                                                : "Publish Live to Website"}
+                                            <ArrowRight className="w-5 h-5" />
                                         </>
                                     )}
                                 </button>
