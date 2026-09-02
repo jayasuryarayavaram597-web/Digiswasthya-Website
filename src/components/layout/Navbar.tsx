@@ -53,7 +53,7 @@ export function Navbar() {
                 </Link>
 
                 {/* Desktop Nav */}
-                <div className="hidden md:flex items-center gap-6 mt-8">
+                <div className="hidden md:flex items-center gap-6 mt-4">
                     {navLinks.map((link) => (
                         <Link
                             key={link.href}
@@ -68,13 +68,13 @@ export function Navbar() {
                     <div className="relative group">
                         <button
                             onClick={() => setIsResourcesOpen(!isResourcesOpen)}
-                            className="flex items-center gap-1 text-sm font-bold text-primary-950 hover:text-primary-700 focus:outline-none"
+                            className="flex items-center gap-1 text-sm font-bold text-primary-950 hover:text-primary-700 focus:outline-none cursor-pointer"
                         >
                             {t("nav.resources")} <ChevronDown className="h-4 w-4" />
                         </button>
 
                         {/* Dropdown Menu (Hover or Click) */}
-                        <div className="absolute right-0 top-full mt-2 w-48 rounded-md border bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <div className="absolute right-0 top-full mt-2 w-48 rounded-md border bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                             <div className="py-2">
                                 {resourcesLinks.map((link) => (
                                     <Link
@@ -89,11 +89,20 @@ export function Navbar() {
                         </div>
                     </div>
 
-                    <Button asChild variant="primary" className="gap-2">
-                        <Link href="/donate">
-                            <Heart className="h-4 w-4 fill-current" /> {t("nav.donate")}
+                    {/* Desktop Right Action Area: Staff Login DIRECTLY ABOVE Donate Button */}
+                    <div className="flex flex-col items-center -mt-3.5 gap-1.5">
+                        <Link 
+                            href="/admin" 
+                            className="text-[12px] font-black text-orange-700 hover:text-orange-800 transition-all flex items-center gap-1 tracking-tight py-0.5 hover:scale-105"
+                        >
+                            <span>🔒</span> Staff Login
                         </Link>
-                    </Button>
+                        <Button asChild variant="primary" className="gap-2 shadow-sm">
+                            <Link href="/donate">
+                                <Heart className="h-4 w-4 fill-current" /> {t("nav.donate")}
+                            </Link>
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -110,28 +119,37 @@ export function Navbar() {
                 </button>
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu Drawer */}
             {isOpen && (
-                <div className="md:hidden border-t bg-white">
-                    <div className="container py-4 flex flex-col gap-4">
+                <div className="md:hidden border-t border-slate-100 bg-white/98 backdrop-blur-xl shadow-2xl relative z-[60] max-h-[calc(100vh-6rem)] overflow-y-auto">
+                    <div className="container py-5 px-6 flex flex-col gap-4">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className="text-sm font-bold text-gray-900 hover:text-primary-700"
+                                className="text-sm font-bold text-gray-900 hover:text-primary-700 py-1 transition-colors"
                                 onClick={() => setIsOpen(false)}
                             >
                                 {link.name}
                             </Link>
                         ))}
 
-                        <div className="border-t pt-2">
-                            <div className="font-bold text-sm text-gray-900 mb-2">{t("nav.resources")}</div>
+                        <div className="border-t border-slate-100 pt-3">
+                            <div className="flex items-center justify-between mb-2">
+                                <div className="font-bold text-xs uppercase tracking-wider text-gray-400">{t("nav.resources")}</div>
+                                <Link
+                                    href="/admin"
+                                    onClick={() => setIsOpen(false)}
+                                    className="px-3 py-1 rounded-full bg-orange-700 hover:bg-orange-800 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs"
+                                >
+                                    <span>🔒</span> Staff Portal
+                                </Link>
+                            </div>
                             {resourcesLinks.map((link) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
-                                    className="block py-2 text-sm text-gray-700 hover:text-primary-600 pl-4"
+                                    className="block py-2 text-sm text-gray-700 hover:text-primary-600 pl-3 font-medium transition-colors"
                                     onClick={() => setIsOpen(false)}
                                 >
                                     {link.name}
@@ -139,11 +157,14 @@ export function Navbar() {
                             ))}
                         </div>
 
-                        <Button asChild variant="primary" className="w-full gap-2">
-                            <Link href="/donate" onClick={() => setIsOpen(false)}>
-                                <Heart className="h-4 w-4 fill-current" /> {t("nav.donate")}
-                            </Link>
-                        </Button>
+                        {/* Mobile Action Buttons: Donate Button */}
+                        <div className="pt-2">
+                            <Button asChild variant="primary" className="w-full gap-2 py-3 rounded-xl shadow-md">
+                                <Link href="/donate" onClick={() => setIsOpen(false)}>
+                                    <Heart className="h-4 w-4 fill-current" /> {t("nav.donate")}
+                                </Link>
+                            </Button>
+                        </div>
                     </div>
                 </div>
             )}

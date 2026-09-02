@@ -42,13 +42,15 @@ export default function ContactUs() {
             <div className="bg-gradient-to-b from-slate-50 to-white">
                 <div className="container py-20 px-4">
                     {/* Prominent Contact Actions at the Top */}
-                    <div className="mb-16 bg-white p-8 lg:p-12 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-8 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-300">
+                    <div className="mb-16 bg-white p-8 lg:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col md:flex-row items-center md:items-center justify-start gap-6 md:gap-10 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-300">
                         <div className="text-center md:text-left">
-                            <h2 className="text-2xl font-serif font-bold text-gray-900 tracking-tight mb-2">Need Support?</h2>
-                            <p className="text-gray-500 font-medium">Chat with us or call us directly for any healthcare queries.</p>
+                            <h2 className="text-2xl font-serif font-bold text-gray-900 tracking-tight mb-1.5">Need Support?</h2>
+                            <p className="text-gray-500 font-medium text-sm md:text-base">Chat with us directly on WhatsApp for any healthcare queries.</p>
+                        </div>
+                        <div className="flex-shrink-0">
+                            <ContactActions />
+                        </div>
                     </div>
-                    <ContactActions />
-                </div>
 
                 <div className="grid md:grid-cols-2 gap-8">
                     {/* General Support */}

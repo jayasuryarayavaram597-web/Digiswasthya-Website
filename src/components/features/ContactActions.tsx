@@ -35,7 +35,7 @@ export function ContactActions({
                 <motion.a
                     href={phoneLink}
                     whileHover={{ scale: 1.1 }}
-                    className="p-2 bg-primary-600 text-white rounded-full shadow-sm hover:shadow-md transition-shadow"
+                    className="p-2 bg-primary-600 text-white rounded-full shadow-sm hover:shadow-md transition-shadow md:hidden"
                     title="Call us"
                 >
                     <Phone className="h-5 w-5" />
@@ -52,7 +52,7 @@ export function ContactActions({
             transition={{ duration: 0.5 }}
             className="flex flex-wrap gap-4"
         >
-            {/* WhatsApp Button */}
+            {/* WhatsApp Button - Visible on Both Laptop & Mobile */}
             <motion.a
                 href={whatsappLink}
                 target="_blank"
@@ -68,11 +68,11 @@ export function ContactActions({
                 <span>Chat on WhatsApp</span>
             </motion.a>
 
-            {/* Phone Button */}
+            {/* Phone Button - Only Visible on Mobile Screens (Hidden on Laptop / Desktop) */}
             <motion.a
                 href={phoneLink}
                 whileHover={{ scale: 1.03 }}
-                className="flex items-center justify-center gap-3 px-6 py-3 bg-primary-600 text-white rounded-full font-bold shadow-sm hover:shadow-md transition-all group"
+                className="flex md:hidden items-center justify-center gap-3 px-6 py-3 bg-primary-600 text-white rounded-full font-bold shadow-sm hover:shadow-md transition-all group"
             >
                 <div className="bg-white/20 p-1 rounded-full">
                     <Phone className="h-4 w-4" />

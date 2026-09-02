@@ -3,6 +3,7 @@ import { DM_Sans, Lora } from "next/font/google";
 import { AccessibilityToolbar } from "@/components/features/AccessibilityToolbar";
 import { TranslationWidget } from "@/components/ai/TranslationWidget";
 import ChatBot from "@/components/chat/ChatBot";
+import { MilestoneManager } from "@/components/milestones/MilestoneManager";
 import "./globals.css";
 
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className={`${dmSans.variable} ${lora.variable} font-sans`}>
         <LanguageProvider>
           {children}
+          <MilestoneManager />
           <AccessibilityToolbar />
           <TranslationWidget />
           <ChatBot />

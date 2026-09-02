@@ -1,0 +1,140 @@
+{
+  "projectImages": [
+    {
+      "title": "DigiSwasthya Team at DS1 Center",
+      "description": "Our dedicated medical team consulting at the DS1 Telemedicine Center, providing quality healthcare to rural communities.",
+      "image": "/images/resources/telemedicine-team.jpg",
+      "category": "Field Work"
+    },
+    {
+      "title": "Rural Telemedicine Hub",
+      "description": "Bringing technology-driven healthcare to the doorsteps of rural families in their own village environment.",
+      "image": "/images/resources/rural-clinic.jpg",
+      "category": "Centers"
+    },
+    {
+      "title": "Impact in Real-time",
+      "description": "Bridging the gap between specialized doctors and remote patients through digital connectivity.",
+      "image": "/images/resources/consultation.jpg",
+      "category": "Consultation"
+    }
+  ],
+  "infographics": [
+    {
+      "title": "Healthcare Transformation Pillars",
+      "description": "Our core focus areas: Referral Networks, Awareness Campaigns, Cancer Care, and Digital Prescriptions.",
+      "image": "/images/resources/healthcare-pillars.png"
+    },
+    {
+      "title": "Mission & Values",
+      "description": "Awareness, Accessibility, Affordability, and Aid — the pillars of DigiSwasthya Foundation's impact.",
+      "image": "/images/resources/foundation-mission.jpg"
+    }
+  ],
+  "mediaCoverage": [
+    {
+      "title": "Ministry of Information and Broadcasting",
+      "description": "@MIB_India - Stories that Inspire (May 19, 2023). Recognized for the groundbreaking telemedicine mission in rural India.",
+      "image": "/images/media/mib-india.jpg",
+      "category": "Government"
+    },
+    {
+      "title": "India in Ireland (Embassy of India, Dublin)",
+      "description": "@IndiainIreland Ambassador @AkhileshIFS meeting with Mr. Sandeep Kumar. Very inspiring work spearheading healthcare in rural India.",
+      "image": "/images/media/embassy-ireland.jpg",
+      "category": "International"
+    },
+    {
+      "title": "Bridging the Medical Divide",
+      "description": "A film by Bidit Roy documenting DigiSwasthya Foundation's journey to connect rural patients with urban specialists.",
+      "image": "/images/media/bridging-divide.jpg",
+      "category": "Documentary"
+    },
+    {
+      "title": "DD Sahyadri News Coverage",
+      "description": "GNM_भाग७३ — मुंबईच्या संदीप कुमार यांनी सुरू केलं डीजी स्वास्थ्य हे आरोग्य अभियान. Marathi news feature on our mission.",
+      "image": "/images/media/dd-sahyadri.jpg",
+      "category": "News"
+    },
+    {
+      "title": "Covid Champions On The Ground",
+      "description": "Sandeep Kumar has been working tirelessly to provide aid during the pandemic, bridging the gap in healthcare infrastructure.",
+      "image": "/images/media/covid-champions.png",
+      "category": "Award"
+    },
+    {
+      "title": "Cancer survivor’s telemedicine centre links medics with villagers in remote areas",
+      "description": "How a cancer survivor's telemedicine mission is bridging the healthcare gap in remote villages. Featured in Gaon Connection.",
+      "image": "/images/media/gaon-connection.jpg",
+      "category": "Inspiration"
+    },
+    {
+      "title": "Augnito partners with DigiSwasthya to provide access to health care in rural India",
+      "description": "Strategic collaboration to leverage advanced speech-to-text AI for better healthcare documentation in rural settings.",
+      "image": "/images/media/augnito-partnership-1.jpg",
+      "category": "Partnership"
+    },
+    {
+      "title": "Augnito partners with DigiSwasthya to make healthcare accessible in rural India",
+      "description": "Working together to streamline medical records and improve doctor-patient interactions in underserved communities.",
+      "image": "/images/media/augnito-partnership-2.jpg",
+      "category": "Partnership"
+    },
+    {
+      "title": "Support received by DigiSwasthya so far",
+      "description": "Recognizing the vital CSR support and contributions from partners that fuel our healthcare missions.",
+      "image": "/images/media/csr-support.jpg",
+      "category": "Support"
+    },
+    {
+      "title": "Augnito Partners With DigiSwasthya",
+      "description": "A growing partnership focused on bridging the digital divide in India's rural healthcare infrastructure.",
+      "image": "/images/media/remote-health-mission.png",
+      "category": "Partnership"
+    },
+    {
+      "title": "An achievement for DigiSwasthya",
+      "description": "Reaching new heights in delivering affordable healthcare services to the last mile of rural India.",
+      "image": "/images/media/achievement.jpg",
+      "category": "Achievement"
+    },
+    {
+      "title": "10th National Conference On Social Innovation To Be Held In Pune on Nov 17th",
+      "description": "Selected to present our social innovation model at the prestigious Pune International Centre conference.",
+      "image": "/images/media/pune-conference.jpg",
+      "category": "Conference"
+    },
+    {
+      "title": "Village development professional, city doctor join hands to offer tele-medicine advice platform NGO",
+      "description": "Bridging the gap between rural needs and urban expertise through a collaborative NGO-driven platform.",
+      "image": "/images/media/telemedicine-platform.jpg",
+      "category": "News"
+    }
+  ],
+  "videos": [
+    {
+      "id": "A-WMlwtqcX0",
+      "title": "DigiSwasthya Foundation Impact",
+      "category": "Documentary",
+      "duration": "4 min"
+    },
+    {
+      "id": "F4QX0j6TprI",
+      "title": "Healthcare at Doorstep",
+      "category": "Rural Health",
+      "duration": "3 min"
+    },
+    {
+      "id": "WxtLBpEzfhM",
+      "title": "Rural Telemedicine Mission",
+      "category": "Field Camp",
+      "duration": "5 min"
+    },
+    {
+      "id": "3iefGVKirs0",
+      "title": "Tele-medicine Advice Platform",
+      "category": "Innovation",
+      "duration": "3 min"
+    }
+  ]
+}

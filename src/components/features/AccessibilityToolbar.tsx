@@ -36,19 +36,19 @@ export function AccessibilityToolbar() {
     };
 
     return (
-        <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex items-center">
+        <div className="fixed right-0 top-1/2 -translate-y-1/2 z-30 flex items-center">
             <Button
                 variant="primary"
                 size="icon"
-                className="rounded-l-md rounded-r-none shadow-lg bg-blue-600 hover:bg-blue-700 h-12 w-12"
+                className="rounded-l-md rounded-r-none shadow-lg bg-blue-600 hover:bg-blue-700 h-10 w-10 sm:h-12 sm:w-12"
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label="Accessibility Tools"
             >
-                <Settings className="h-6 w-6 text-white animate-spin-slow" />
+                <Settings className="h-5 w-5 sm:h-6 sm:w-6 text-white animate-spin-slow" />
             </Button>
 
             {isOpen && (
-                <div className="bg-white border rounded-l-md shadow-2xl p-4 w-64 mr-2 grid grid-cols-2 gap-2 absolute right-12 top-0 -translate-y-[40%]">
+                <div className="bg-white border rounded-l-xl shadow-2xl p-3 sm:p-4 w-[calc(100vw-3rem)] max-w-[260px] mr-1 sm:mr-2 grid grid-cols-2 gap-1.5 sm:gap-2 absolute right-10 sm:right-12 top-0 -translate-y-[40%]">
                     <div className="col-span-2 text-sm font-bold text-gray-700 mb-2 border-b pb-1">Accessibility Tools</div>
 
                     <ToolBtn

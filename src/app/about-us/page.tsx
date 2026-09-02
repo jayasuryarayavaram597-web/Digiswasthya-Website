@@ -596,7 +596,7 @@ export default function AboutUs() {
                         ))}
                     </div>
 
-                    {/* Our Care Model (Compact & Fit 4 Cards in Row 1 + 3 Centered Cards in Row 2) */}
+                    {/* Our Care Model (Mobile Horizontal Swipe / Desktop 4+3 Grid) */}
                     <div className="border-t border-slate-200/70 pt-10 mt-10">
                         <div className="text-center max-w-2xl mx-auto mb-7 space-y-2">
                             <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 border border-emerald-200 px-3.5 py-1 rounded-full shadow-sm">
@@ -608,65 +608,102 @@ export default function AboutUs() {
                             <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
                                 How every DigiSwasthya centre delivers safe, continuous, and trusted care — designed for the realities of rural India.
                             </p>
+                            <p className="text-[10px] text-slate-400 sm:hidden italic">👉 Swipe left to explore all 7 care pillars</p>
                         </div>
 
-                        {/* Row 1: 4 Cards */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5 mb-3 sm:mb-3.5">
+                        {/* Mobile Horizontal Swipe Carousel (Visible only on mobile < sm) */}
+                        <div className="flex sm:hidden overflow-x-auto pb-4 gap-3.5 snap-x">
                             {[
                                 { title: "Bringing Healthcare Closer to Communities", lead: "Trusted care, within your community.", icon: Users, color: "text-blue-600", bg: "bg-blue-50", desc: "A trained coordinator welcomes each patient, records their history and vital signs, and connects them with a qualified doctor over live video — followed by a digital prescription, counselling, and a clear follow-up plan, all without travelling long distances." },
                                 { title: "Delivering Better Care Through Technology", lead: "Technology strengthens care — it never replaces it.", icon: Cpu, color: "text-indigo-600", bg: "bg-indigo-50", desc: "Doctors instantly review a patient's past consultations, diagnoses, and medications, while AI summarises histories, highlights key clinical information, and checks prescriptions for interactions before they are issued — so clinicians can focus on the patient. AI enhances clinical judgement; it never replaces it." },
                                 { title: "Caring Beyond a Single Consultation", lead: "Continuity, not isolated visits.", icon: Activity, color: "text-emerald-600", bg: "bg-emerald-50", desc: "Chronic conditions like diabetes and hypertension need ongoing care. Patients receive regular follow-ups and a complete longitudinal health record, and coordinators reach out to those who miss appointments — turning episodic visits into lasting care relationships." },
-                                { title: "Understanding the Whole Person", lead: "Health is shaped by more than symptoms.", icon: HeartHandshake, color: "text-teal-600", bg: "bg-teal-50", desc: "Our model considers family health history, household conditions, water and sanitation, and nutrition — giving clinicians a fuller picture, helping identify risks earlier within families, and supporting healthier communities." }
-                            ].map((item, i) => (
-                                <div
-                                    key={i}
-                                    className="group bg-white p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-[0_2px_10px_rgba(15,23,42,0.03)] hover:shadow-md hover:-translate-y-0.5 hover:border-emerald-300 transition-all duration-200 flex flex-col justify-between cursor-pointer"
-                                >
-                                    <div>
-                                        <div className={`w-8 h-8 sm:w-8.5 sm:h-8.5 ${item.bg} rounded-lg sm:rounded-xl flex items-center justify-center mb-2.5 transition-transform duration-200 group-hover:scale-105 shadow-2xs`}>
-                                            <item.icon className={`${item.color} w-4 h-4`} />
-                                        </div>
-                                        <h4 className="text-xs sm:text-[13.5px] font-bold text-slate-900 mb-0.5 leading-snug group-hover:text-emerald-700 transition-colors">
-                                            {item.title}
-                                        </h4>
-                                        <p className={`text-[9.5px] sm:text-[10px] font-bold mb-1.5 ${item.color} tracking-wide uppercase`}>
-                                            {item.lead}
-                                        </p>
-                                        <p className="text-[11px] sm:text-[11.5px] text-slate-600 leading-relaxed font-normal">
-                                            {item.desc}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Row 2: 3 Cards Centered */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3.5 lg:w-[75%] lg:mx-auto">
-                            {[
+                                { title: "Understanding the Whole Person", lead: "Health is shaped by more than symptoms.", icon: HeartHandshake, color: "text-teal-600", bg: "bg-teal-50", desc: "Our model considers family health history, household conditions, water and sanitation, and nutrition — giving clinicians a fuller picture, helping identify risks earlier within families, and supporting healthier communities." },
                                 { title: "Built for Rural India", lead: "Designed for real-world conditions.", icon: Smartphone, color: "text-cyan-600", bg: "bg-cyan-50", desc: "Our systems work reliably even where connectivity is limited — coordinators keep registering patients and recording information offline, with data securely synced once back online. The platform runs in English and Hindi on affordable Android devices." },
                                 { title: "Protecting Every Patient's Trust", lead: "Privacy is fundamental to how we work.", icon: ShieldCheck, color: "text-amber-600", bg: "bg-amber-50", desc: "Patient information is encrypted, securely stored, and accessible only to authorised healthcare professionals involved in a patient's care. Strong security and controlled access keep confidentiality and dignity central to every consultation." },
                                 { title: "Scaling Quality Healthcare", lead: "Every improvement reaches every community.", icon: TrendingUp, color: "text-purple-600", bg: "bg-purple-50", desc: "As our network grows, new clinical guidance, enhanced safety features, improved AI capabilities, and better workflows roll out across all centres — so patients receive a consistent standard of care wherever they seek treatment." }
                             ].map((item, i) => (
                                 <div
-                                    key={i + 4}
-                                    className={`group bg-white p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-[0_2px_10px_rgba(15,23,42,0.03)] hover:shadow-md hover:-translate-y-0.5 hover:border-emerald-300 transition-all duration-200 flex flex-col justify-between cursor-pointer ${i === 2 ? "sm:col-span-2 sm:max-w-md sm:mx-auto sm:w-full lg:col-span-1" : ""}`}
+                                    key={i}
+                                    className="group min-w-[260px] snap-center bg-white p-4 rounded-2xl border border-slate-200/80 shadow-[0_2px_12px_rgba(15,23,42,0.04)] hover:shadow-lg hover:-translate-y-1 hover:border-emerald-300 transition-all duration-300 flex flex-col justify-between cursor-pointer"
                                 >
                                     <div>
-                                        <div className={`w-8 h-8 sm:w-8.5 sm:h-8.5 ${item.bg} rounded-lg sm:rounded-xl flex items-center justify-center mb-2.5 transition-transform duration-200 group-hover:scale-105 shadow-2xs`}>
+                                        <div className={`w-9 h-9 ${item.bg} rounded-xl flex items-center justify-center mb-2.5 transition-transform duration-200 group-hover:scale-105 shadow-2xs`}>
                                             <item.icon className={`${item.color} w-4 h-4`} />
                                         </div>
-                                        <h4 className="text-xs sm:text-[13.5px] font-bold text-slate-900 mb-0.5 leading-snug group-hover:text-emerald-700 transition-colors">
+                                        <h4 className="text-[13.5px] font-bold text-slate-900 mb-0.5 leading-snug group-hover:text-emerald-700 transition-colors">
                                             {item.title}
                                         </h4>
-                                        <p className={`text-[9.5px] sm:text-[10px] font-bold mb-1.5 ${item.color} tracking-wide uppercase`}>
+                                        <p className={`text-[10px] font-bold mb-1.5 ${item.color} tracking-wide uppercase`}>
                                             {item.lead}
                                         </p>
-                                        <p className="text-[11px] sm:text-[11.5px] text-slate-600 leading-relaxed font-normal">
+                                        <p className="text-[11.5px] text-slate-600 leading-relaxed font-normal">
                                             {item.desc}
                                         </p>
                                     </div>
                                 </div>
                             ))}
+                        </div>
+
+                        {/* Desktop Layout (Hidden on mobile, 4 in Row 1 + 3 Centered in Row 2) */}
+                        <div className="hidden sm:block">
+                            {/* Row 1: 4 Cards */}
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5 mb-3 sm:mb-3.5">
+                                {[
+                                    { title: "Bringing Healthcare Closer to Communities", lead: "Trusted care, within your community.", icon: Users, color: "text-blue-600", bg: "bg-blue-50", desc: "A trained coordinator welcomes each patient, records their history and vital signs, and connects them with a qualified doctor over live video — followed by a digital prescription, counselling, and a clear follow-up plan, all without travelling long distances." },
+                                    { title: "Delivering Better Care Through Technology", lead: "Technology strengthens care — it never replaces it.", icon: Cpu, color: "text-indigo-600", bg: "bg-indigo-50", desc: "Doctors instantly review a patient's past consultations, diagnoses, and medications, while AI summarises histories, highlights key clinical information, and checks prescriptions for interactions before they are issued — so clinicians can focus on the patient. AI enhances clinical judgement; it never replaces it." },
+                                    { title: "Caring Beyond a Single Consultation", lead: "Continuity, not isolated visits.", icon: Activity, color: "text-emerald-600", bg: "bg-emerald-50", desc: "Chronic conditions like diabetes and hypertension need ongoing care. Patients receive regular follow-ups and a complete longitudinal health record, and coordinators reach out to those who miss appointments — turning episodic visits into lasting care relationships." },
+                                    { title: "Understanding the Whole Person", lead: "Health is shaped by more than symptoms.", icon: HeartHandshake, color: "text-teal-600", bg: "bg-teal-50", desc: "Our model considers family health history, household conditions, water and sanitation, and nutrition — giving clinicians a fuller picture, helping identify risks earlier within families, and supporting healthier communities." }
+                                ].map((item, i) => (
+                                    <div
+                                        key={i}
+                                        className="group bg-white p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-[0_2px_10px_rgba(15,23,42,0.03)] hover:shadow-md hover:-translate-y-0.5 hover:border-emerald-300 transition-all duration-200 flex flex-col justify-between cursor-pointer"
+                                    >
+                                        <div>
+                                            <div className={`w-8 h-8 sm:w-8.5 sm:h-8.5 ${item.bg} rounded-lg sm:rounded-xl flex items-center justify-center mb-2.5 transition-transform duration-200 group-hover:scale-105 shadow-2xs`}>
+                                                <item.icon className={`${item.color} w-4 h-4`} />
+                                            </div>
+                                            <h4 className="text-xs sm:text-[13.5px] font-bold text-slate-900 mb-0.5 leading-snug group-hover:text-emerald-700 transition-colors">
+                                                {item.title}
+                                            </h4>
+                                            <p className={`text-[9.5px] sm:text-[10px] font-bold mb-1.5 ${item.color} tracking-wide uppercase`}>
+                                                {item.lead}
+                                            </p>
+                                            <p className="text-[11px] sm:text-[11.5px] text-slate-600 leading-relaxed font-normal">
+                                                {item.desc}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Row 2: 3 Cards Centered */}
+                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-3.5 lg:w-[75%] lg:mx-auto">
+                                {[
+                                    { title: "Built for Rural India", lead: "Designed for real-world conditions.", icon: Smartphone, color: "text-cyan-600", bg: "bg-cyan-50", desc: "Our systems work reliably even where connectivity is limited — coordinators keep registering patients and recording information offline, with data securely synced once back online. The platform runs in English and Hindi on affordable Android devices." },
+                                    { title: "Protecting Every Patient's Trust", lead: "Privacy is fundamental to how we work.", icon: ShieldCheck, color: "text-amber-600", bg: "bg-amber-50", desc: "Patient information is encrypted, securely stored, and accessible only to authorised healthcare professionals involved in a patient's care. Strong security and controlled access keep confidentiality and dignity central to every consultation." },
+                                    { title: "Scaling Quality Healthcare", lead: "Every improvement reaches every community.", icon: TrendingUp, color: "text-purple-600", bg: "bg-purple-50", desc: "As our network grows, new clinical guidance, enhanced safety features, improved AI capabilities, and better workflows roll out across all centres — so patients receive a consistent standard of care wherever they seek treatment." }
+                                ].map((item, i) => (
+                                    <div
+                                        key={i + 4}
+                                        className={`group bg-white p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-[0_2px_10px_rgba(15,23,42,0.03)] hover:shadow-md hover:-translate-y-0.5 hover:border-emerald-300 transition-all duration-200 flex flex-col justify-between cursor-pointer ${i === 2 ? "sm:col-span-2 sm:max-w-md sm:mx-auto sm:w-full lg:col-span-1" : ""}`}
+                                    >
+                                        <div>
+                                            <div className={`w-8 h-8 sm:w-8.5 sm:h-8.5 ${item.bg} rounded-lg sm:rounded-xl flex items-center justify-center mb-2.5 transition-transform duration-200 group-hover:scale-105 shadow-2xs`}>
+                                                <item.icon className={`${item.color} w-4 h-4`} />
+                                            </div>
+                                            <h4 className="text-xs sm:text-[13.5px] font-bold text-slate-900 mb-0.5 leading-snug group-hover:text-emerald-700 transition-colors">
+                                                {item.title}
+                                            </h4>
+                                            <p className={`text-[9.5px] sm:text-[10px] font-bold mb-1.5 ${item.color} tracking-wide uppercase`}>
+                                                {item.lead}
+                                            </p>
+                                            <p className="text-[11px] sm:text-[11.5px] text-slate-600 leading-relaxed font-normal">
+                                                {item.desc}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 

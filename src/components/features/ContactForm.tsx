@@ -106,7 +106,7 @@ export function ContactForm() {
                         
                         <div className="hidden lg:flex flex-col gap-6">
                             <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex items-start gap-4 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-300 group">
-                                <div className="bg-primary-50 p-4 rounded-2xl text-primary-700 group-hover:scale-110 transition-transform duration-300">
+                                <div className="bg-orange-50 p-4 rounded-2xl text-orange-600 group-hover:scale-110 transition-transform duration-300">
                                     <Phone className="w-6 h-6" />
                                 </div>
                                 <div className="pt-1">
@@ -115,7 +115,7 @@ export function ContactForm() {
                                 </div>
                             </div>
                             <div className="bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex items-start gap-4 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all duration-300 group">
-                                <div className="bg-primary-50 p-4 rounded-2xl text-primary-700 group-hover:scale-110 transition-transform duration-300">
+                                <div className="bg-orange-50 p-4 rounded-2xl text-orange-600 group-hover:scale-110 transition-transform duration-300">
                                     <Mail className="w-6 h-6" />
                                 </div>
                                 <div className="pt-1">
@@ -127,20 +127,26 @@ export function ContactForm() {
                     </div>
 
                     {/* Right Column: Form Container */}
-                    <div className="w-full lg:w-2/3 bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100/60 p-8 md:p-12 relative overflow-hidden">
-                        {/* Decorative glow inside form */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                    <div className="w-full lg:w-2/3 bg-white rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(15,23,42,0.12)] border border-slate-200/90 p-6 sm:p-10 md:p-12 relative overflow-hidden ring-1 ring-slate-100">
+                        {/* Top dark orange accent frame bar */}
+                        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-orange-600 via-amber-500 to-orange-600" />
+                        
+                        {/* Decorative subtle ambient background */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
+                        
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-7 relative z-10">
                             
                             {/* Contact Type Section */}
-                            <div className="bg-gray-50/50 p-6 rounded-3xl border border-gray-100 space-y-4">
-                                <label className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                                    <HelpCircle className="w-4 h-4 text-primary-600" />
+                            <div className="bg-slate-50/90 p-5 sm:p-6 rounded-3xl border-2 border-slate-200/80 space-y-3 shadow-sm">
+                                <label className="text-sm font-extrabold text-slate-900 flex items-center gap-2.5">
+                                    <span className="p-1.5 rounded-lg bg-orange-100 text-orange-700 flex items-center justify-center">
+                                        <HelpCircle className="w-4 h-4" />
+                                    </span>
                                     {t("contactForm.contactingAs")}
                                 </label>
                                 <select
                                     {...register("contactType")}
-                                    className="w-full bg-white border border-gray-100 rounded-2xl p-4 text-gray-900 font-semibold text-lg focus:border-primary-300 focus:ring-4 focus:ring-primary-50 transition-all outline-none shadow-sm cursor-pointer"
+                                    className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 rounded-2xl p-4 text-slate-900 font-bold text-base sm:text-lg focus:border-orange-600 focus:ring-4 focus:ring-orange-500/10 transition-all outline-none shadow-sm cursor-pointer"
                                 >
                                     <option value="General Inquiry">{t("contactForm.typeGeneral")}</option>
                                     <option value="Donor">{t("contactForm.typeDonor")}</option>
@@ -157,10 +163,10 @@ export function ContactForm() {
                                         exit={{ opacity: 0, height: 0, scale: 0.95 }}
                                         className="overflow-hidden"
                                     >
-                                        <div className="bg-gradient-to-br from-primary-50/50 to-blue-50/50 border border-primary-100/50 rounded-3xl p-6 mb-6 shadow-sm">
+                                        <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-3xl p-6 mb-6 shadow-sm">
                                             <div className="flex items-start gap-3 mb-4">
-                                                <HeartPulse className="w-6 h-6 text-primary-600 flex-shrink-0 mt-1" />
-                                                <p className="text-sm font-semibold text-primary-900 leading-relaxed">{t("contactForm.patientHelpNote")}</p>
+                                                <HeartPulse className="w-6 h-6 text-orange-700 flex-shrink-0 mt-1" />
+                                                <p className="text-sm font-bold text-slate-950 leading-relaxed">{t("contactForm.patientHelpNote")}</p>
                                             </div>
                                             <ContactActions />
                                         </div>
@@ -169,21 +175,25 @@ export function ContactForm() {
                             </AnimatePresence>
 
                             <div className="grid md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                                        <User className="w-4 h-4 text-gray-400" />
+                                <div className="space-y-2.5">
+                                    <label className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                        <span className="p-1 rounded-md bg-orange-50 text-orange-700">
+                                            <User className="w-4 h-4" />
+                                        </span>
                                         {t("contactForm.fullName")}
                                     </label>
                                     <input
                                         {...register("name", { required: t("contactForm.nameRequired") })}
                                         placeholder={t("contactForm.namePlaceholder")}
-                                        className="w-full bg-gray-50/50 hover:bg-gray-50 focus:bg-white border-2 border-transparent focus:border-primary-200 rounded-2xl p-4 text-gray-900 focus:ring-4 focus:ring-primary-50 transition-all outline-none font-medium placeholder:text-gray-400"
+                                        className="w-full bg-slate-50/90 hover:bg-slate-50 focus:bg-white border-2 border-slate-200/90 hover:border-slate-300 focus:border-orange-600 rounded-2xl p-4 text-slate-950 font-bold placeholder:text-slate-500 placeholder:font-normal focus:ring-4 focus:ring-orange-500/10 transition-all outline-none shadow-sm text-sm sm:text-base"
                                     />
-                                    {errors.name && <p className="text-xs text-red-500 font-bold px-1">{errors.name.message}</p>}
+                                    {errors.name && <p className="text-xs text-red-600 font-bold px-1">{errors.name.message}</p>}
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                                        <Mail className="w-4 h-4 text-gray-400" />
+                                <div className="space-y-2.5">
+                                    <label className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                        <span className="p-1 rounded-md bg-orange-50 text-orange-700">
+                                            <Mail className="w-4 h-4" />
+                                        </span>
                                         {t("contactForm.email")}
                                     </label>
                                     <input
@@ -197,16 +207,18 @@ export function ContactForm() {
                                         })}
                                         type="email"
                                         placeholder={t("contactForm.emailPlaceholder")}
-                                        className="w-full bg-gray-50/50 hover:bg-gray-50 focus:bg-white border-2 border-transparent focus:border-primary-200 rounded-2xl p-4 text-gray-900 focus:ring-4 focus:ring-primary-50 transition-all outline-none font-medium placeholder:text-gray-400"
+                                        className="w-full bg-slate-50/90 hover:bg-slate-50 focus:bg-white border-2 border-slate-200/90 hover:border-slate-300 focus:border-orange-600 rounded-2xl p-4 text-slate-950 font-bold placeholder:text-slate-500 placeholder:font-normal focus:ring-4 focus:ring-orange-500/10 transition-all outline-none shadow-sm text-sm sm:text-base"
                                     />
-                                    {errors.email && <p className="text-xs text-red-500 font-bold px-1">{errors.email.message}</p>}
+                                    {errors.email && <p className="text-xs text-red-600 font-bold px-1">{errors.email.message}</p>}
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                                    <Phone className="w-4 h-4 text-gray-400" />
-                                    {t("contactForm.phone")} <span className="text-gray-400 font-normal ml-1 text-xs">({t("contactForm.phoneOptionalUnlessNoEmail")})</span>
+                            <div className="space-y-2.5">
+                                <label className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                    <span className="p-1 rounded-md bg-orange-50 text-orange-700">
+                                        <Phone className="w-4 h-4" />
+                                    </span>
+                                    {t("contactForm.phone")} <span className="text-slate-500 font-medium ml-1 text-xs">({t("contactForm.phoneOptionalUnlessNoEmail")})</span>
                                 </label>
                                 <input
                                     {...register("phone", {
@@ -217,72 +229,80 @@ export function ContactForm() {
                                         }
                                     })}
                                     placeholder={t("contactForm.phonePlaceholder")}
-                                    className="w-full bg-gray-50/50 hover:bg-gray-50 focus:bg-white border-2 border-transparent focus:border-primary-200 rounded-2xl p-4 text-gray-900 focus:ring-4 focus:ring-primary-50 transition-all outline-none font-medium placeholder:text-gray-400"
+                                    className="w-full bg-slate-50/90 hover:bg-slate-50 focus:bg-white border-2 border-slate-200/90 hover:border-slate-300 focus:border-orange-600 rounded-2xl p-4 text-slate-950 font-bold placeholder:text-slate-500 placeholder:font-normal focus:ring-4 focus:ring-orange-500/10 transition-all outline-none shadow-sm text-sm sm:text-base"
                                 />
-                                {errors.phone && <p className="text-xs text-red-500 font-bold px-1">{errors.phone.message}</p>}
+                                {errors.phone && <p className="text-xs text-red-600 font-bold px-1">{errors.phone.message}</p>}
                             </div>
 
                             {isPatient && (
-                                <div className="grid md:grid-cols-2 gap-6 bg-red-50/30 p-6 rounded-3xl border border-red-100/50">
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                                            <MapPin className="w-4 h-4 text-red-400" />
+                                <div className="grid md:grid-cols-2 gap-6 bg-red-50/60 p-6 rounded-3xl border-2 border-red-200/70 shadow-sm">
+                                    <div className="space-y-2.5">
+                                        <label className="text-sm font-extrabold text-red-950 flex items-center gap-2">
+                                            <span className="p-1 rounded-md bg-red-100 text-red-700">
+                                                <MapPin className="w-4 h-4" />
+                                            </span>
                                             {t("contactForm.locationLabel")}
                                         </label>
                                         <input
                                             {...register("location")}
                                             placeholder={t("contactForm.locationPlaceholder")}
-                                            className="w-full bg-white border-2 border-transparent focus:border-red-200 rounded-2xl p-4 text-gray-900 focus:ring-4 focus:ring-red-50 transition-all outline-none font-medium shadow-sm"
+                                            className="w-full bg-white border-2 border-red-200 hover:border-red-300 focus:border-red-500 rounded-2xl p-4 text-slate-950 font-bold placeholder:text-slate-500 placeholder:font-normal focus:ring-4 focus:ring-red-500/10 transition-all outline-none shadow-sm text-sm sm:text-base"
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                                            <HeartPulse className="w-4 h-4 text-red-400" />
+                                    <div className="space-y-2.5">
+                                        <label className="text-sm font-extrabold text-red-950 flex items-center gap-2">
+                                            <span className="p-1 rounded-md bg-red-100 text-red-700">
+                                                <HeartPulse className="w-4 h-4" />
+                                            </span>
                                             {t("contactForm.assistanceLabel")}
                                         </label>
                                         <input
                                             {...register("assistanceNeeded")}
                                             placeholder={t("contactForm.assistancePlaceholder")}
-                                            className="w-full bg-white border-2 border-transparent focus:border-red-200 rounded-2xl p-4 text-gray-900 focus:ring-4 focus:ring-red-50 transition-all outline-none font-medium shadow-sm"
+                                            className="w-full bg-white border-2 border-red-200 hover:border-red-300 focus:border-red-500 rounded-2xl p-4 text-slate-950 font-bold placeholder:text-slate-500 placeholder:font-normal focus:ring-4 focus:ring-red-500/10 transition-all outline-none shadow-sm text-sm sm:text-base"
                                         />
                                     </div>
                                 </div>
                             )}
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                                    <MessageSquare className="w-4 h-4 text-gray-400" />
+                            <div className="space-y-2.5">
+                                <label className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                    <span className="p-1 rounded-md bg-orange-50 text-orange-700">
+                                        <MessageSquare className="w-4 h-4" />
+                                    </span>
                                     {t("contactForm.subject")}
                                 </label>
                                 <input
                                     {...register("subject")}
                                     placeholder={t("contactForm.subjectPlaceholder")}
-                                    className="w-full bg-gray-50/50 hover:bg-gray-50 focus:bg-white border-2 border-transparent focus:border-primary-200 rounded-2xl p-4 text-gray-900 focus:ring-4 focus:ring-primary-50 transition-all outline-none font-medium placeholder:text-gray-400"
+                                    className="w-full bg-slate-50/90 hover:bg-slate-50 focus:bg-white border-2 border-slate-200/90 hover:border-slate-300 focus:border-orange-600 rounded-2xl p-4 text-slate-950 font-bold placeholder:text-slate-500 placeholder:font-normal focus:ring-4 focus:ring-orange-500/10 transition-all outline-none shadow-sm text-sm sm:text-base"
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-                                    <MessageSquare className="w-4 h-4 text-gray-400" />
+                            <div className="space-y-2.5">
+                                <label className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                                    <span className="p-1 rounded-md bg-orange-50 text-orange-700">
+                                        <MessageSquare className="w-4 h-4" />
+                                    </span>
                                     {t("contactForm.message")}
                                 </label>
                                 <textarea
                                     {...register("message", { required: t("contactForm.messageRequired") })}
                                     placeholder={t("contactForm.messagePlaceholder")}
                                     rows={5}
-                                    className="w-full bg-gray-50/50 hover:bg-gray-50 focus:bg-white border-2 border-transparent focus:border-primary-200 rounded-2xl p-4 text-gray-900 focus:ring-4 focus:ring-primary-50 transition-all outline-none resize-none font-medium placeholder:text-gray-400"
+                                    className="w-full bg-slate-50/90 hover:bg-slate-50 focus:bg-white border-2 border-slate-200/90 hover:border-slate-300 focus:border-orange-600 rounded-2xl p-4 text-slate-950 font-bold placeholder:text-slate-500 placeholder:font-normal focus:ring-4 focus:ring-orange-500/10 transition-all outline-none resize-none shadow-sm text-sm sm:text-base"
                                 />
-                                {errors.message && <p className="text-xs text-red-500 font-bold px-1">{errors.message.message}</p>}
+                                {errors.message && <p className="text-xs text-red-600 font-bold px-1">{errors.message.message}</p>}
                             </div>
 
                             {isVolunteer && (
                                 <motion.div 
                                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                                    className="bg-yellow-50 border border-yellow-200 rounded-2xl p-5"
+                                    className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-5 shadow-sm"
                                 >
-                                    <p className="text-sm text-yellow-800 font-medium leading-relaxed">
+                                    <p className="text-sm text-amber-900 font-semibold leading-relaxed">
                                         {t("contactForm.volunteerNote")}{" "}
-                                        <a href={VOLUNTEER_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-yellow-900 font-bold underline decoration-yellow-400 decoration-2 underline-offset-2 hover:text-primary-700 transition-colors">
+                                        <a href={VOLUNTEER_FORM_URL} target="_blank" rel="noopener noreferrer" className="text-amber-950 font-extrabold underline decoration-amber-500 decoration-2 underline-offset-2 hover:text-primary-700 transition-colors">
                                             {t("contactForm.volunteerNoteLink")}
                                         </a>
                                         {t("contactForm.volunteerNoteEnd")}
@@ -290,16 +310,16 @@ export function ContactForm() {
                                 </motion.div>
                             )}
 
-                            <div className="flex items-start gap-3 pt-4">
+                            <div className="flex items-start gap-3 pt-2">
                                 <div className="flex items-center h-6">
                                     <input
                                         {...register("consent", { required: true })}
                                         type="checkbox"
                                         id="consent-form"
-                                        className="h-5 w-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500 transition-all cursor-pointer"
+                                        className="h-5 w-5 text-orange-600 border-2 border-slate-300 rounded focus:ring-orange-500 transition-all cursor-pointer"
                                     />
                                 </div>
-                                <label htmlFor="consent-form" className="text-sm text-gray-600 font-medium cursor-pointer leading-tight pt-0.5">
+                                <label htmlFor="consent-form" className="text-sm text-slate-700 font-semibold cursor-pointer leading-tight pt-0.5">
                                     {t("contactForm.consent")}
                                 </label>
                             </div>
@@ -309,10 +329,10 @@ export function ContactForm() {
                                     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                                     className="flex items-start gap-3 bg-red-50 border-l-4 border-red-500 rounded-r-xl p-5 shadow-sm"
                                 >
-                                    <AlertTriangle className="h-6 w-6 text-red-500 flex-shrink-0" />
+                                    <AlertTriangle className="h-6 w-6 text-red-600 flex-shrink-0" />
                                     <div>
-                                        <p className="text-base font-bold text-red-800">{t("contactForm.errorTitle")}</p>
-                                        <p className="text-sm text-red-600 mt-1">{t("contactForm.errorBody")}</p>
+                                        <p className="text-base font-bold text-red-900">{t("contactForm.errorTitle")}</p>
+                                        <p className="text-sm text-red-700 mt-1 font-medium">{t("contactForm.errorBody")}</p>
                                     </div>
                                 </motion.div>
                             )}
@@ -320,11 +340,11 @@ export function ContactForm() {
                             <motion.div
                                 whileHover={{ scale: 1.01 }}
                                 whileTap={{ scale: 0.98 }}
-                                className="pt-4"
+                                className="pt-2"
                             >
                                 <Button
                                     disabled={isSubmitting}
-                                    className="w-full py-7 text-xl rounded-2xl font-black shadow-[0_10px_40px_-10px_rgba(26,102,54,0.5)] hover:shadow-[0_15px_50px_-10px_rgba(26,102,54,0.6)] transition-all flex gap-3 items-center justify-center bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white border-0"
+                                    className="w-full py-7 text-xl rounded-2xl font-black shadow-[0_10px_40px_-10px_rgba(234,88,12,0.45)] hover:shadow-[0_15px_50px_-10px_rgba(234,88,12,0.55)] transition-all flex gap-3 items-center justify-center bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white border-0"
                                     type="submit"
                                 >
                                     {isSubmitting ? (

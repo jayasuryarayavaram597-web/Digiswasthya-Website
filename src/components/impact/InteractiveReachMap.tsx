@@ -689,24 +689,11 @@ export function InteractiveReachMap({ districtList = [] }: InteractiveReachMapPr
                         </div>
 
                         {/* Map Footer Summary Pill - Compact */}
-                        <div className="mt-2.5 bg-white border border-slate-200 rounded-xl px-3.5 py-2 shadow-2xs flex flex-wrap items-center justify-between gap-2 w-full max-w-[400px]">
-                            <div className="flex items-center gap-1.5">
-                                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
-                                <span className="text-[11px] font-bold text-slate-800 font-sans">
-                                    18 Active Clinics
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                                <span className="text-[10px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
-                                    14 MH
-                                </span>
-                                <span className="text-[10px] font-bold text-lime-700 bg-lime-50 px-2 py-0.5 rounded-md border border-lime-200">
-                                    3 UP
-                                </span>
-                                <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-200">
-                                    1 Bihar
-                                </span>
-                            </div>
+                        <div className="mt-2.5 bg-white border border-slate-200 rounded-xl px-3.5 py-1.5 shadow-2xs inline-flex items-center gap-2">
+                            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+                            <span className="text-[11px] font-bold text-slate-800 font-sans">
+                                18 Active Clinics
+                            </span>
                         </div>
                     </div>
 

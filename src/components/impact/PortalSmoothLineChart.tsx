@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { TrendingUp } from "lucide-react";
 
@@ -28,7 +28,13 @@ export function PortalSmoothLineChart({
     gradientTo = "#ffffff",
     maxScale = 28000
 }: PortalSmoothLineChartProps) {
-    const [hoveredIdx, setHoveredIdx] = useState<number | null>(data.length > 2 ? 2 : 0);
+    const [hoveredIdx, setHoveredIdx] = useState<number | null>(data.length > 0 ? data.length - 1 : null);
+
+    useEffect(() => {
+        if (data && data.length > 0) {
+            setHoveredIdx(data.length - 1);
+        }
+    }, [data]);
 
     // Compact dimensions for side-by-side view
     const svgWidth = 500;
@@ -192,21 +198,46 @@ export function PortalSmoothLineChart({
                     {points.map((p, idx) => {
                         const isHovered = hoveredIdx === idx;
                         return (
-                            <g key={idx} className="cursor-pointer">
-                                <circle
-                                    cx={p.x}
-                                    cy={p.y}
-                                    r="14"
+                            <g 
+                                key={idx} 
+                                className="cursor-pointer" 
+                                onClick={() => setHoveredIdx(idx)}
+                                onTouchStart={() => setHoveredIdx(idx)}
+                            >
+                                {/* Generous transparent hit area covering the entire vertical year column */}
+                                <rect
+                                    x={p.x - 25}
+                                    y={paddingTop}
+                                    width={50}
+                                    height={chartHeight + paddingBottom}
                                     fill="transparent"
                                     onMouseEnter={() => setHoveredIdx(idx)}
+                                    onTouchStart={() => setHoveredIdx(idx)}
+                                    onClick={() => setHoveredIdx(idx)}
                                 />
+
+                                {/* Outer gentle pulse glow on active node */}
+                                {isHovered && (
+                                    <motion.circle
+                                        cx={p.x}
+                                        cy={p.y}
+                                        r={9}
+                                        fill={lineColor}
+                                        opacity={0.25}
+                                        initial={{ scale: 0.8 }}
+                                        animate={{ scale: 1.35 }}
+                                        transition={{ repeat: Infinity, duration: 1.6, repeatType: "reverse" }}
+                                    />
+                                )}
+
+                                {/* Main visual circle node (enlarged for easy tapping & clear visibility) */}
                                 <motion.circle
                                     cx={p.x}
                                     cy={p.y}
-                                    r={isHovered ? 4.5 : 3}
+                                    r={isHovered ? 6.5 : 5}
                                     fill="white"
                                     stroke={lineColor}
-                                    strokeWidth="2"
+                                    strokeWidth={isHovered ? 3.5 : 2.5}
                                     initial={{ scale: 0 }}
                                     whileInView={{ scale: 1 }}
                                     viewport={{ once: true }}
@@ -214,11 +245,12 @@ export function PortalSmoothLineChart({
                                 />
                                 <text
                                     x={p.x}
-                                    y={paddingTop + chartHeight + 15}
+                                    y={paddingTop + chartHeight + 16}
                                     textAnchor="middle"
-                                    fontSize="9.5"
+                                    fontSize="10"
                                     fill={isHovered ? lineColor : "#64748b"}
-                                    fontWeight={isHovered ? "700" : "500"}
+                                    fontWeight={isHovered ? "800" : "600"}
+                                    className="select-none"
                                 >
                                     {p.year}
                                 </text>

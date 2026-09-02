@@ -132,8 +132,12 @@ export function Footer() {
                     </div>
                 </div>
 
-                <div className="border-t border-gray-800 mt-12 pt-8 text-center text-xs text-gray-500">
-                    {t("footer.copyright")}
+                <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+                    <div>{t("footer.copyright")}</div>
+                    <div className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center">
+                        <Link href="/privacy-policy" className="hover:text-gray-300 transition-colors">Privacy Policy</Link>
+                        <Link href="/terms-and-conditions" className="hover:text-gray-300 transition-colors">Terms</Link>
+                    </div>
                 </div>
             </div>
         </footer>

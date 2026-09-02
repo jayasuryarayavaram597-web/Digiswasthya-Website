@@ -8,6 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { ContactActions } from "@/components/features/ContactActions";
 
 import { useImpactData } from "@/hooks/useImpactData";
+import { MilestoneHeroBadge } from "@/components/milestones/MilestoneHeroBadge";
 
 function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
     const count = useSpring(0, { stiffness: 50, damping: 30 });
@@ -94,7 +95,7 @@ export function Hero() {
     };
 
     return (
-        <section className="relative min-h-[780px] w-full flex items-center overflow-hidden bg-gray-950 group/hero pb-24">
+        <section className="relative min-h-[840px] sm:min-h-[780px] w-full flex items-center overflow-hidden bg-gray-950 group/hero pb-56 sm:pb-24">
             {/* Background Photo Slideshow with Smooth Medium Glide & Fade */}
             <div className="absolute inset-0 overflow-hidden">
                 <AnimatePresence initial={false} custom={direction}>
@@ -137,8 +138,8 @@ export function Hero() {
                 <ChevronRight className="w-6 h-6" />
             </button>
 
-            {/* Slide Dot Indicators */}
-            <div className="absolute bottom-36 left-1/2 -translate-x-1/2 z-20 flex gap-2.5">
+            {/* Slide Dot Indicators — positioned nicely above the stats bar on both mobile & desktop */}
+            <div className="absolute bottom-[210px] sm:bottom-36 left-1/2 -translate-x-1/2 z-20 flex gap-2.5">
                 {images.map((_, index) => (
                     <button
                         key={index}
@@ -151,8 +152,13 @@ export function Hero() {
                 ))}
             </div>
 
+            {/* Top-Right Latest Achievement Star Button */}
+            <div className="absolute top-6 right-6 md:top-8 md:right-10 z-30">
+                <MilestoneHeroBadge />
+            </div>
+
             {/* Content — Left aligned */}
-            <div className="relative z-10 container mx-auto px-6 py-28">
+            <div className="relative z-10 container mx-auto px-6 pt-24 pb-20 sm:py-28">
                 <div className="max-w-2xl">
 
                     {/* Eyebrow label */}
@@ -233,17 +239,17 @@ export function Hero() {
                 transition={{ duration: 0.8, delay: 0.5 }}
                 className="absolute bottom-0 left-0 right-0 z-10 bg-black/50 hover:bg-black/65 backdrop-blur-md border-t border-white/10 transition-colors duration-300 group/stats"
             >
-                <Link href="/our-impact" className="block cursor-pointer py-6 px-6 relative">
-                    {/* Pulsing Highlight Badge centered on the top border */}
-                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-secondary-500 text-white text-[9px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg shadow-secondary-500/30 border border-secondary-400 flex items-center gap-1.5 group-hover/stats:bg-secondary-400 transition-colors duration-300">
-                        <span className="relative flex h-1.5 w-1.5">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+                <Link href="/our-impact" className="block cursor-pointer pt-4 sm:pt-6 pb-4 sm:pb-6 px-4 sm:px-6 relative">
+                    {/* Pulsing Highlight Button centered & lifted upwards into the hero banner space */}
+                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-[85%] sm:-translate-y-[60%] bg-secondary-500 hover:bg-secondary-400 text-white text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest px-4 sm:px-5 py-1.5 sm:py-2 rounded-full shadow-xl shadow-secondary-500/40 border border-secondary-300 flex items-center gap-2 whitespace-nowrap transition-all duration-300 hover:scale-105">
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
                         </span>
-                        {t("nav.impact") ? `${t("nav.impact")} - Click to View Details` : "Click to view detailed charts"}
+                        <span>{t("nav.impact") ? `${t("nav.impact")} - Click to View Details` : "Click to view detailed charts"}</span>
                     </div>
 
-                    <div className="container mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 relative">
+                    <div className="container mx-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-6 relative">
                         {stats.map((stat, i) => (
                             <div key={i} className="text-center md:text-left">
                                 <div className="text-2xl md:text-3xl font-bold text-secondary-400 group-hover/stats:text-secondary-300 transition-colors drop-shadow-sm">

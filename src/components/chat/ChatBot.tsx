@@ -215,7 +215,7 @@ export default function ChatBot() {
     const currentOptions = currentCategory ? CHAT_DATA[currentCategory] : CHAT_DATA.initial;
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end">
             {/* Chat Window */}
             <AnimatePresence>
                 {isOpen && (
@@ -224,7 +224,7 @@ export default function ChatBot() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className="mb-4 w-[350px] sm:w-[400px] h-[550px] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-primary-100"
+                        className="mb-3 w-[calc(100vw-2rem)] sm:w-[380px] max-w-[400px] h-[65vh] sm:h-[480px] max-h-[500px] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-primary-100"
                     >
                         {/* Header */}
                         <div className="bg-primary-600 p-4 text-white flex justify-between items-center shadow-md">
@@ -404,10 +404,10 @@ export default function ChatBot() {
 
             {/* Floating Icon */}
             <motion.button
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-colors duration-300 ${isOpen ? 'bg-white text-primary-600 border-2 border-primary-600' : 'bg-primary-600 text-white'
+                className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-lg flex items-center justify-center transition-colors duration-300 ${isOpen ? 'bg-white text-primary-600 border-2 border-primary-600' : 'bg-primary-600 text-white'
                     }`}
             >
                 <AnimatePresence mode="wait">
@@ -418,7 +418,7 @@ export default function ChatBot() {
                             animate={{ opacity: 1, rotate: 0 }}
                             exit={{ opacity: 0, rotate: 90 }}
                         >
-                            <X size={28} />
+                            <X size={24} />
                         </motion.div>
                     ) : (
                         <motion.div
@@ -427,7 +427,7 @@ export default function ChatBot() {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 1.5 }}
                         >
-                            <MessageCircle size={28} />
+                            <MessageCircle size={24} />
                         </motion.div>
                     )}
                 </AnimatePresence>
