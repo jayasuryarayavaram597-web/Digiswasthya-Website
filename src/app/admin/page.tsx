@@ -129,26 +129,53 @@ export default function AdminPage() {
     const verifyPin = async (pinToTest: string) => {
         setAuthError("");
         try {
-            const res = await fetch("/api/admin/media");
+            const res = await fetch("/api/admin/verify-pin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ pin: pinToTest }),
+            });
             if (res.ok) {
-                sessionStorage.setItem("digiswasthya_admin_pin", pinToTest);
                 setIsAuthenticated(true);
                 fetchCurrentData();
+            } else {
+                // Stale/invalid session PIN — clear it
+                sessionStorage.removeItem("digiswasthya_admin_pin");
             }
         } catch {
             setAuthError("Failed to connect to server.");
         }
     };
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!pin.trim()) {
             setAuthError("Please enter the Admin PIN.");
             return;
         }
-        sessionStorage.setItem("digiswasthya_admin_pin", pin.trim());
-        setIsAuthenticated(true);
-        fetchCurrentData();
+        setAuthError("");
+        try {
+            const res = await fetch("/api/admin/verify-pin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ pin: pin.trim() }),
+            });
+
+            if (res.status === 401) {
+                setAuthError("Invalid Admin PIN. Please check your PIN and try again.");
+                return;
+            }
+
+            if (!res.ok) {
+                setAuthError("Server error. Please try again.");
+                return;
+            }
+
+            sessionStorage.setItem("digiswasthya_admin_pin", pin.trim());
+            setIsAuthenticated(true);
+            fetchCurrentData();
+        } catch {
+            setAuthError("Failed to connect to server. Please try again.");
+        }
     };
 
     const handleLogout = () => {
